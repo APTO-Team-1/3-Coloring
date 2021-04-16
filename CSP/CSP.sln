@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSP", "CSP.csproj", "{9ECECB94-C093-4F62-9660-5D41E98660BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPTests", "..\CSPTests\CSPTests.csproj", "{066DB7BC-1132-4BBB-BC19-7ECD82898B16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9ECECB94-C093-4F62-9660-5D41E98660BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ECECB94-C093-4F62-9660-5D41E98660BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ECECB94-C093-4F62-9660-5D41E98660BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ECECB94-C093-4F62-9660-5D41E98660BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{066DB7BC-1132-4BBB-BC19-7ECD82898B16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066DB7BC-1132-4BBB-BC19-7ECD82898B16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066DB7BC-1132-4BBB-BC19-7ECD82898B16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066DB7BC-1132-4BBB-BC19-7ECD82898B16}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F477F47-4639-4891-9969-5841C0B7D306}
+	EndGlobalSection
+EndGlobal

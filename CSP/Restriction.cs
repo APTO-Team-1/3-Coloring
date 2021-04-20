@@ -8,20 +8,29 @@ namespace CSP
 {
     public class Restriction : IEquatable<Restriction>
     {
-        public Restriction(Color color1, Color color2)
+        public Restriction(Variable variable1, Color color1, Variable variable2, Color color2)
         {
-            this.Color1 = color1;
-            this.Color2 = color2;
+            this.Pair1 = new Pair(variable1, color1);
+            this.Pair2 = new Pair(variable2, color2);
         }
 
-        public Color Color1 { get; }
-        public Color Color2 { get; }
+        public Restriction(Pair pair1, Pair pair2)
+        {
+            this.Pair1 = pair1;
+            this.Pair2 = pair2;
+        }
+
+        public Pair Pair1 { get; }
+        public Pair Pair2 { get; }
 
         public bool Contains(Color color)
         {
-            return Color1 == color || Color2 == color;
+            return Pair1.Color == color || Pair2.Color == color;
         }
-
+        public bool Contains(Variable variable)
+        {
+            return Pair1.Variable == variable || Pair2.Variable == variable;
+        }
 
         public static bool operator ==(Restriction first, Restriction second)
         {
@@ -32,7 +41,7 @@ namespace CSP
 
         public bool Equals(Restriction other)
         {
-            return other.Contains(Color1) && other.Contains(Color2);
+            return other.Contains(Pair1.Color) && other.Contains(Pair2.Color);
         }
 
         public override bool Equals(object obj)
@@ -42,7 +51,7 @@ namespace CSP
 
         public override int GetHashCode()
         {
-            return Color1.GetHashCode() + Color2.GetHashCode();
+            return Pair1.Color.GetHashCode() + Pair2.Color.GetHashCode();
         }
     }
 }

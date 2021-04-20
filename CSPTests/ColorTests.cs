@@ -1,26 +1,26 @@
-﻿using Xunit;
-using CSP;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Xunit;
 
 namespace CSP.Tests
 {
     public class ColorTests
     {
         [Fact()]
-        public void ColorTest()
+        public void ConstructorTest()
         {
             var color = new Color(1);
             Assert.Equal(1, color.Value);
         }
 
         [Fact()]
-        public void ColorTest2()
+        public void ConstructorTest2()
         {
-            var restrictions = new List<Color>() { new Color(2), new Color(4), new Color(1) };
+            var variable = new Variable(3);
+            var restrictions = new List<Pair>() {
+                new Pair(variable, variable.AvalibleColors[0]),
+                new Pair(variable, variable.AvalibleColors[1]),
+                new Pair(variable, variable.AvalibleColors[2]),
+            };
             var color = new Color(1, restrictions);
             Assert.Equal(color.Restrictions.Count, restrictions.Count);
             foreach (var c in restrictions)
@@ -29,6 +29,6 @@ namespace CSP.Tests
             }
         }
 
-      
+
     }
 }

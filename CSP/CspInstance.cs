@@ -21,6 +21,10 @@ namespace CSP
             foreach (var restrictionPair in pair.Color.Restrictions)
             {
                 RemoveRestriction(pair, restrictionPair);
+                foreach (var pair2 in restrictionPair.Color.Restrictions)
+                {
+                    RemoveRestriction(pair2, restrictionPair);
+                }
                 restrictionPair.Variable.AvalibleColors.Remove(restrictionPair.Color);
             }
             foreach (var color in pair.Variable.AvalibleColors)

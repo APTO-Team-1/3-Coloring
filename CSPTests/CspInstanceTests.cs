@@ -232,6 +232,7 @@ namespace CSP.Tests
             var color12 = variable1.AvalibleColors[1];
             var color21 = variable2.AvalibleColors[0];
             var color22 = variable2.AvalibleColors[1];
+            var color23 = variable2.AvalibleColors[3];
             var color31 = variable3.AvalibleColors[0];
             var color32 = variable3.AvalibleColors[1];
             instance.AddRestriction(new Pair(variable1, color11), new Pair(variable2, color21));
@@ -239,11 +240,12 @@ namespace CSP.Tests
             instance.AddRestriction(new Pair(variable1, color12), new Pair(variable2, color22));
             instance.AddRestriction(new Pair(variable3, color31), new Pair(variable2, color22));
             instance.AddRestriction(new Pair(variable3, color32), new Pair(variable2, color22));
-            Assert.Equal(5, instance.Restrictions.Count);
+            instance.AddRestriction(new Pair(variable3, color32), new Pair(variable2, color23));
+            Assert.Equal(6, instance.Restrictions.Count);
             instance.AddToResult(new Pair(variable1, color11));
             Assert.Equal(2, instance.Variables.Count);
-            Assert.Equal(2, instance.Restrictions.Count);
             Assert.Equal(2, variable2.AvalibleColors.Count);
+            Assert.Equal(1, instance.Restrictions.Count);
         }
 
         [Fact()]
@@ -285,7 +287,7 @@ namespace CSP.Tests
                 csp.Variables.Add(variable);
             }
 
-            for (int i = 0; i < variablesCount * 3; i++)
+            for (int i = 0; i < variablesCount * 10; i++)
             {
                 var variable1 = variablesList[(i * 21 + 5) % variablesCount];
                 var variable2 = variablesList[(i * 12 + 11) % variablesCount];
@@ -379,7 +381,7 @@ namespace CSP.Tests
                 variablesList.Add(variable);
                 csp.Variables.Add(variable);
             }
-            for (int i = 0; i < variablesCount * 3; i++)
+            for (int i = 0; i < variablesCount * 10; i++)
             {
                 var variable1 = variablesList[(i * 21 + 5) % variablesCount];
                 var variable2 = variablesList[(i * 12 + 11) % variablesCount];

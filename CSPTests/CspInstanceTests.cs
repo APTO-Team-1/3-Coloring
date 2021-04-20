@@ -260,7 +260,7 @@ namespace CSP.Tests
         public void CloneWithVariablesTest()
         {
             var csp = new CspInstance();
-            int variablesCount = 100;
+            int variablesCount = 1000;
             for (int i = 0; i < variablesCount; i++)
             {
                 var variable = new Variable(i % 4 + 1);
@@ -277,7 +277,7 @@ namespace CSP.Tests
         {
             var csp = new CspInstance();
             var variablesList = new List<Variable>();
-            int variablesCount = 100;
+            int variablesCount = 1000;
             for (int i = 0; i < variablesCount; i++)
             {
                 var variable = new Variable(i % 4 + 1);
@@ -285,7 +285,7 @@ namespace CSP.Tests
                 csp.Variables.Add(variable);
             }
 
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < variablesCount * 3; i++)
             {
                 var variable1 = variablesList[(i * 21 + 5) % variablesCount];
                 var variable2 = variablesList[(i * 12 + 11) % variablesCount];
@@ -340,14 +340,14 @@ namespace CSP.Tests
         {
             var csp = new CspInstance();
             var variablesList = new List<Variable>();
-            int variablesCount = 100;
+            int variablesCount = 1000;
             for (int i = 0; i < variablesCount; i++)
             {
                 var variable = new Variable(i % 4 + 1);
                 variablesList.Add(variable);
                 csp.Variables.Add(variable);
             }
-            for (int i = 0; i < variablesList.Count; i+=5)
+            for (int i = 0; i < variablesList.Count; i += 5)
             {
                 var variable = variablesList[i];
                 csp.AddToResult(new Pair(variable, variable.AvalibleColors[i % variable.AvalibleColors.Count]));
@@ -372,14 +372,14 @@ namespace CSP.Tests
         {
             var csp = new CspInstance();
             var variablesList = new List<Variable>();
-            int variablesCount = 100;
+            int variablesCount = 1000;
             for (int i = 0; i < variablesCount; i++)
             {
                 var variable = new Variable(i % 4 + 1);
                 variablesList.Add(variable);
                 csp.Variables.Add(variable);
             }
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < variablesCount * 3; i++)
             {
                 var variable1 = variablesList[(i * 21 + 5) % variablesCount];
                 var variable2 = variablesList[(i * 12 + 11) % variablesCount];

@@ -11,7 +11,7 @@ namespace CSP
         public Pair(Variable variable, Color color)
         {
 #if DEBUG
-            if(!variable.AvalibleColors.Contains(color))
+            if (!variable.AvalibleColors.Contains(color))
             {
                 throw new ArgumentException("Pair cannot be made, becouse the color does not belong to the variable");
             }

@@ -14,7 +14,7 @@ namespace CSP
         public IReadOnlySet<Restriction> Restrictions { get => restrictions; }
 
         private readonly List<Pair> result = new();
-        public IReadOnlyList<Pair> Result { get => result;  }
+        public IReadOnlyList<Pair> Result { get => result; }
 
         public void AddToResult(Pair pair)
         {
@@ -27,7 +27,7 @@ namespace CSP
             {
                 foreach (var restrictionPair in color.Restrictions)
                 {
-                    RemoveRestriction(new Pair(pair.Variable,color), restrictionPair);
+                    RemoveRestriction(new Pair(pair.Variable, color), restrictionPair);
                 }
             }
             Variables.Remove(pair.Variable);

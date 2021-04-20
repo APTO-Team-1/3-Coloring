@@ -69,6 +69,6 @@ namespace CSP.Tests
             Assert.NotEqual(restriction, restriction3);
         }
 
-      
+
     }
 }

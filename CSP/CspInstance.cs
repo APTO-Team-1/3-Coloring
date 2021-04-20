@@ -41,6 +41,7 @@ namespace CSP
 
         public void AddRestriction(Restriction restriction)
         {
+            if (restriction.Pair1.Variable == restriction.Pair2.Variable) return;
             if (!restrictions.Contains(restriction))
             {
                 restrictions.Add(restriction);

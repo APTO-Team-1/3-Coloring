@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace CSP.Tests
@@ -11,6 +12,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(2);
             var variable2 = new Variable(2);
+            csp.Variables.Add(variable1);
+            csp.Variables.Add(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var restriction = new Restriction(variable1, color1, variable2, color2);
@@ -18,6 +21,8 @@ namespace CSP.Tests
             Assert.Equal(1, csp.Restrictions.Count);
             csp.AddRestriction(restriction);
             Assert.Equal(1, csp.Restrictions.Count);
+
+            CheckInstanceCorrectness(csp);
 
         }
 
@@ -27,6 +32,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(2);
             var variable2 = new Variable(2);
+            csp.Variables.Add(variable1);
+            csp.Variables.Add(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var restriction = new Restriction(variable1, color1, variable2, color2);
@@ -34,6 +41,8 @@ namespace CSP.Tests
             csp.AddRestriction(restriction);
             csp.AddRestriction(restriction2);
             Assert.Equal(1, csp.Restrictions.Count);
+
+            CheckInstanceCorrectness(csp);
 
         }
 
@@ -43,6 +52,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(1);
             var variable2 = new Variable(2);
+            csp.Variables.Add(variable1);
+            csp.Variables.Add(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var color3 = variable2.AvalibleColors[1];
@@ -51,6 +62,8 @@ namespace CSP.Tests
             csp.AddRestriction(restriction);
             csp.AddRestriction(restriction2);
             Assert.Equal(2, csp.Restrictions.Count);
+
+            CheckInstanceCorrectness(csp);
 
 
         }
@@ -61,12 +74,16 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(2);
             var variable2 = new Variable(2);
+            csp.Variables.Add(variable1);
+            csp.Variables.Add(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             csp.AddRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
             Assert.Equal(1, csp.Restrictions.Count);
             csp.AddRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
             Assert.Equal(1, csp.Restrictions.Count);
+
+            CheckInstanceCorrectness(csp);
         }
 
 
@@ -76,6 +93,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(1);
             var variable2 = new Variable(2);
+            csp.Variables.Add(variable1);
+            csp.Variables.Add(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var color3 = variable2.AvalibleColors[1];
@@ -88,6 +107,8 @@ namespace CSP.Tests
             csp.RemoveRestriction(restriction);
             Assert.Equal(0, csp.Restrictions.Count);
 
+            CheckInstanceCorrectness(csp);
+
         }
 
         [Fact()]
@@ -96,6 +117,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(1);
             var variable2 = new Variable(2);
+            csp.Variables.Add(variable1);
+            csp.Variables.Add(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var color3 = variable2.AvalibleColors[1];
@@ -105,6 +128,8 @@ namespace CSP.Tests
             Assert.Equal(1, csp.Restrictions.Count);
             csp.RemoveRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
             Assert.Equal(0, csp.Restrictions.Count);
+
+            CheckInstanceCorrectness(csp);
 
         }
 
@@ -120,6 +145,8 @@ namespace CSP.Tests
             var variable2 = new Variable(4);
             csp.Variables.Add(variable2);
             Assert.Equal(2, csp.Variables.Count);
+
+            CheckInstanceCorrectness(csp);
         }
 
         [Fact()]
@@ -134,6 +161,8 @@ namespace CSP.Tests
             Assert.Equal(1, csp.Variables.Count);
             csp.Variables.Remove(variable);
             Assert.Equal(0, csp.Variables.Count);
+
+            CheckInstanceCorrectness(csp);
         }
 
         [Fact()]
@@ -159,6 +188,8 @@ namespace CSP.Tests
             Assert.Contains(pair1, color2.Restrictions);
             Assert.DoesNotContain(pair2, color2.Restrictions);
             Assert.DoesNotContain(pair1, color1.Restrictions);
+
+            CheckInstanceCorrectness(csp);
 
         }
 
@@ -193,6 +224,7 @@ namespace CSP.Tests
             Assert.Equal(0, color1.Restrictions.Count);
             Assert.DoesNotContain(pair3, color1.Restrictions);
 
+            CheckInstanceCorrectness(csp);
         }
 
         [Fact()]
@@ -204,6 +236,8 @@ namespace CSP.Tests
             Assert.Equal(1, instance.Variables.Count);
             instance.AddToResult(new Pair(variable, variable.AvalibleColors[0]));
             Assert.Equal(0, instance.Variables.Count);
+
+            CheckInstanceCorrectness(instance);
         }
 
         [Fact()]
@@ -215,6 +249,8 @@ namespace CSP.Tests
             Assert.Equal(1, instance.Variables.Count);
             instance.AddToResult(variable, variable.AvalibleColors[0]);
             Assert.Equal(0, instance.Variables.Count);
+
+            CheckInstanceCorrectness(instance);
         }
 
         [Fact()]
@@ -246,6 +282,8 @@ namespace CSP.Tests
             Assert.Equal(2, instance.Variables.Count);
             Assert.Equal(2, variable2.AvalibleColors.Count);
             Assert.Equal(1, instance.Restrictions.Count);
+
+            CheckInstanceCorrectness(instance);
         }
 
         [Fact()]
@@ -256,6 +294,8 @@ namespace CSP.Tests
             Assert.Equal(cloned.Variables.Count, csp.Variables.Count);
             Assert.Equal(cloned.Restrictions.Count, csp.Restrictions.Count);
             Assert.Equal(cloned.Result.Count, csp.Result.Count);
+
+            CheckInstanceCorrectness(cloned);
         }
 
         [Fact()]
@@ -272,6 +312,8 @@ namespace CSP.Tests
             Assert.Equal(cloned.Variables.Count, csp.Variables.Count);
             Assert.Equal(cloned.Restrictions.Count, csp.Restrictions.Count);
             Assert.Equal(cloned.Result.Count, csp.Result.Count);
+
+            CheckInstanceCorrectness(cloned);
         }
 
         [Fact()]
@@ -335,6 +377,8 @@ namespace CSP.Tests
                     return true;
                 });
             }
+
+            CheckInstanceCorrectness(cloned);
         }
 
         [Fact()]
@@ -367,6 +411,8 @@ namespace CSP.Tests
                     return p.Variable.Id == res.Variable.Id && p.Color.Value == res.Color.Value;
                 });
             }
+
+            CheckInstanceCorrectness(cloned);
         }
 
         [Fact()]
@@ -418,6 +464,43 @@ namespace CSP.Tests
             foreach (var restriction in restrictionsMem)
             {
                 Assert.Contains(restriction, csp.Restrictions);
+            }
+
+            CheckInstanceCorrectness(csp);
+        }
+
+        private void CheckInstanceCorrectness(CspInstance instance)
+        {
+            foreach (var result in instance.Result)
+            {
+                Assert.DoesNotContain(result.Variable, instance.Variables);
+                Assert.Contains(result.Color, result.Variable.AvalibleColors);
+            }
+
+            foreach (var restriction in instance.Restrictions)
+            {
+                Assert.Single(instance.Variables, v =>
+                {
+                    return restriction.Pair1.Variable == v && v.AvalibleColors.Contains(restriction.Pair1.Color);
+                });
+                Assert.Single(instance.Variables, v =>
+                {
+                    return restriction.Pair2.Variable == v && v.AvalibleColors.Contains(restriction.Pair2.Color);
+                });
+            }
+
+            foreach (var variable in instance.Variables)
+            {
+                foreach (var color in variable.AvalibleColors)
+                {
+                    foreach (var pair in color.Restrictions)
+                    {
+                        Assert.Single(instance.Restrictions, r =>
+                        {
+                            return r.Contains(color) && r.Contains(pair.Color) && r.Contains(variable) && r.Contains(pair.Variable);
+                        });
+                    }
+                }
             }
         }
     }

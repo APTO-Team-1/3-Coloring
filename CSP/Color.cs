@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CSP
 {
@@ -12,7 +8,8 @@ namespace CSP
         {
             this.Value = value;
         }
-        public Color(int value, IEnumerable<Color> restrictions)
+
+        public Color(int value, IEnumerable<Pair> restrictions)
         {
             this.Value = value;
             foreach (var restriction in restrictions)
@@ -23,17 +20,17 @@ namespace CSP
 
         public int Value { get; set; }
 
-        private HashSet<Color> restrictions = new HashSet<Color>();
+        private readonly HashSet<Pair> restrictions = new();
 
-        public IReadOnlySet<Color> Restrictions { get => restrictions; } 
+        public IReadOnlySet<Pair> Restrictions { get => restrictions; }
 
-        internal void AddRestriction(Color color)
+        internal void AddRestriction(Pair pair)
         {
-            restrictions.Add(color);
+            restrictions.Add(pair);
         }
-        internal void RemoveRestriction(Color color)
+        internal void RemoveRestriction(Pair pair)
         {
-            restrictions.Remove(color);
+            restrictions.Remove(pair);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace CSP.Tests
             Assert.Equal(4, variable.AvalibleColors.Count);
             for (int i = 0; i < variable.AvalibleColors.Count; i++)
             {
-                for (int j = i+1; j < variable.AvalibleColors.Count; j++)
+                for (int j = i + 1; j < variable.AvalibleColors.Count; j++)
                 {
                     Assert.NotEqual(variable.AvalibleColors[i].Value, variable.AvalibleColors[j].Value);
                 }
@@ -27,7 +27,7 @@ namespace CSP.Tests
         [Fact()]
         public void VariableTest1()
         {
-            var colors  = new List<Color>() { new Color(2), new Color(4), new Color(1) };
+            var colors = new List<Color>() { new Color(2), new Color(4), new Color(1) };
             var variable = new Variable(colors);
             Assert.Equal(colors.Count, variable.AvalibleColors.Count);
             for (int i = 0; i < colors.Count; i++)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CSP;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -502,6 +503,43 @@ namespace CSP.Tests
                     }
                 }
             }
+        }
+
+        [Fact()]
+        public void RemoveColorTest()
+        {
+            var instance = new CspInstance();
+            var variable1 = new Variable(2);
+            var variable2 = new Variable(4);
+            var variable3 = new Variable(4);
+            instance.Variables.Add(variable1);
+            instance.Variables.Add(variable2);
+            instance.Variables.Add(variable3);
+            Assert.Equal(3, instance.Variables.Count);
+            var color11 = variable1.AvalibleColors[0];
+            var color12 = variable1.AvalibleColors[1];
+            var color21 = variable2.AvalibleColors[0];
+            var color22 = variable2.AvalibleColors[1];
+            var color23 = variable2.AvalibleColors[3];
+            var color31 = variable3.AvalibleColors[0];
+            var color32 = variable3.AvalibleColors[1];
+            instance.AddRestriction(new Pair(variable1, color11), new Pair(variable2, color21));
+            instance.AddRestriction(new Pair(variable1, color11), new Pair(variable2, color22));
+            instance.AddRestriction(new Pair(variable1, color12), new Pair(variable2, color22));
+            instance.AddRestriction(new Pair(variable3, color31), new Pair(variable2, color22));
+            instance.AddRestriction(new Pair(variable3, color32), new Pair(variable2, color22));
+            instance.AddRestriction(new Pair(variable3, color32), new Pair(variable2, color23));
+            
+            instance.RemoveColor(variable1,color11);
+
+            Assert.Equal(3, instance.Variables.Count);
+            Assert.Equal(1, variable1.AvalibleColors.Count);
+            Assert.Equal(4, instance.Restrictions.Count);
+
+            instance.RemoveColor(variable2, color23);
+            Assert.Equal(3, variable2.AvalibleColors.Count);
+
+            CheckInstanceCorrectness(instance);
         }
     }
 }

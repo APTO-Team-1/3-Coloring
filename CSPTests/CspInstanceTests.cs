@@ -469,7 +469,7 @@ namespace CSP.Tests
             CheckInstanceCorrectness(csp);
         }
 
-        private void CheckInstanceCorrectness(CspInstance instance)
+        private static void CheckInstanceCorrectness(CspInstance instance)
         {
             foreach (var result in instance.Result)
             {

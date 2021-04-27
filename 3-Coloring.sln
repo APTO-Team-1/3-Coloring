@@ -7,13 +7,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSP", "CSP\CSP.csproj", "{9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSPTests", "CSPTests\CSPTests.csproj", "{066DB7BC-1132-4BBB-BC19-7ECD82898B16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphLib", "GraphLib\GraphLib.csproj", "{7C19EFB6-B53C-4236-8D2C-89F00D7911E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphLib", "GraphLib\GraphLib.csproj", "{7C19EFB6-B53C-4236-8D2C-89F00D7911E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphLibTests", "GraphLibTests\GraphLibTests.csproj", "{7F3BF373-93CB-4634-AABC-B2CEB062AC63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphLibTests", "GraphLibTests\GraphLibTests.csproj", "{7F3BF373-93CB-4634-AABC-B2CEB062AC63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreeColoringAlgorithms", "ThreeColoringAlgorithms\ThreeColoringAlgorithms.csproj", "{D9AC0849-4CF0-4607-A8EA-37A4FFF246AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeColoringAlgorithms", "ThreeColoringAlgorithms\ThreeColoringAlgorithms.csproj", "{D9AC0849-4CF0-4607-A8EA-37A4FFF246AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreeColoringAlgorithmsTests", "ThreeColoringAlgorithmsTests\ThreeColoringAlgorithmsTests.csproj", "{8A7A53FE-FA54-40E6-81B9-B0AF3CDC4E33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeColoringAlgorithmsTests", "ThreeColoringAlgorithmsTests\ThreeColoringAlgorithmsTests.csproj", "{8A7A53FE-FA54-40E6-81B9-B0AF3CDC4E33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPLemmas", "CSPLemmas\CSPLemmas.csproj", "{C9A82BF4-EA68-480B-B615-475955659ECB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPLemmasTests", "CSPLemmasTests\CSPLemmasTests.csproj", "{1583B023-D92C-4120-903A-192CF0D22069}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{8A7A53FE-FA54-40E6-81B9-B0AF3CDC4E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A7A53FE-FA54-40E6-81B9-B0AF3CDC4E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A7A53FE-FA54-40E6-81B9-B0AF3CDC4E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9A82BF4-EA68-480B-B615-475955659ECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9A82BF4-EA68-480B-B615-475955659ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9A82BF4-EA68-480B-B615-475955659ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9A82BF4-EA68-480B-B615-475955659ECB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1583B023-D92C-4120-903A-192CF0D22069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1583B023-D92C-4120-903A-192CF0D22069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1583B023-D92C-4120-903A-192CF0D22069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1583B023-D92C-4120-903A-192CF0D22069}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

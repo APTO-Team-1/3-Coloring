@@ -25,7 +25,7 @@ namespace CSP
                 {
                     RemoveRestriction(pair2, restrictionPair);
                 }
-                restrictionPair.Variable.AvalibleColors.Remove(restrictionPair.Color);
+                RemoveColor(restrictionPair.Variable, restrictionPair.Color);
             }
             foreach (var color in pair.Variable.AvalibleColors)
             {
@@ -62,6 +62,17 @@ namespace CSP
             }
         }
         public void RemoveRestriction(Pair pair1, Pair pair2) => RemoveRestriction(new Restriction(pair1, pair2));
+
+        public void RemoveColor(Pair pair)
+        {
+            foreach (var restriction in pair.Color.Restrictions)
+            {
+                RemoveRestriction(pair, restriction);
+            }
+            pair.Variable.avalibleColors.Remove(pair.Color);
+        }
+        public void RemoveColor(Variable variable, Color color) => RemoveColor(new Pair(variable, color));
+       
 
         public CspInstance Clone()
         {

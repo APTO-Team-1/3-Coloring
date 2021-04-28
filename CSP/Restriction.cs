@@ -8,10 +8,8 @@ namespace CSP
 {
     public class Restriction : IEquatable<Restriction>
     {
-        public Restriction(Variable variable1, Color color1, Variable variable2, Color color2)
+        public Restriction(Variable variable1, Color color1, Variable variable2, Color color2): this(new Pair(variable1, color1), new Pair(variable2, color2))
         {
-            this.Pair1 = new Pair(variable1, color1);
-            this.Pair2 = new Pair(variable2, color2);
         }
 
         public Restriction(Pair pair1, Pair pair2)

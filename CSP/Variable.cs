@@ -8,24 +8,25 @@ namespace CSP
 {
     public class Variable
     {
-        public static int uniqueId = 0;
+        static int uniqueId = 0;
 
         public Variable(int avalibleColorsCount)
         {
             for (int i = 0; i < avalibleColorsCount; i++)
             {
-                this.AvalibleColors.Add(new Color(i));
+                this.avalibleColors.Add(new Color(i));
             }
         }
 
         public Variable(IEnumerable<Color> avalibleColors)
         {
-            this.AvalibleColors.AddRange(avalibleColors);
+            this.avalibleColors.AddRange(avalibleColors);
         }
 
         public int Id { get; set; } = uniqueId++;
 
-        public List<Color> AvalibleColors { get; set; } = new List<Color>();
+        internal List<Color> avalibleColors = new();
+        public IReadOnlyList<Color> AvalibleColors { get => avalibleColors;  } 
 
     }
 }

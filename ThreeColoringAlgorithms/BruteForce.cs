@@ -13,6 +13,7 @@ namespace GraphLib.Algorithms
         public int[] ThreeColorig(Graph g)
         {
             int[] coloring = new int[g.VerticesCount];
+            for (int i = 0; i < coloring.Length; i++) coloring[i] = -1;
 
             var success = ThreeColoringInternal(0);
             return success ? coloring : null;
@@ -21,31 +22,30 @@ namespace GraphLib.Algorithms
             {
                 if (currV >= g.VerticesCount)
                     return true;
-                
-                for(int c = 1; c<=3; c++)
+
+                bool[] isColorFree = new bool[] { true, true, true };
+
+                foreach (var n in g.GetNeighbors(currV))
                 {
-                    bool isColorFree = true;
-                    foreach(var n in g.GetNeighbors(currV))
+                    if(coloring[n] != -1)
+                        isColorFree[coloring[n]] = false;
+                }
+                for (int i = 0; i < isColorFree.Length; i++)
+                {
+                    if (isColorFree[i])
                     {
-                        if(c == coloring[n])
+                        coloring[currV] = i;
+                        if (ThreeColoringInternal(currV + 1)) return true;
+                        
+                        int v = currV+1;
+                        do
                         {
-                            isColorFree = false;
-                            break;
-                        }    
-                    }
-                    if (isColorFree)
-                    {
-                        coloring[currV] = c;
-                        break;
+                            if (coloring[v] == -1) break;
+                            coloring[v++] = -1;
+                        } while (v < coloring.Length);
                     }
                 }
-
-                if (coloring[currV] == 0) // color not found
-                    return false;
-
-                currV++;
-
-                return ThreeColoringInternal(currV);
+                return false;
             }
         }
     }

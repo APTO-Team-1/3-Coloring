@@ -92,6 +92,7 @@ namespace ThreeColoringAlgorithmsTests
             var data = new List<object[]>
             {
             new object[] { NoColoring1() },
+            new object[] { NoColoring2() },
             };
 
             return data;
@@ -107,6 +108,20 @@ namespace ThreeColoringAlgorithmsTests
             g.AddEdge(1, 3);
             g.AddEdge(2, 3);
 
+            return g;
+        }
+
+        private static Graph NoColoring2()
+        {
+            int veritceCount = 40;
+            Graph g = new(veritceCount);
+            for (int i = 0; i < veritceCount; i++)
+            {
+                g.AddEdge(i, (i + 1) % veritceCount);
+                g.AddEdge(i, (i + 3) % veritceCount);
+                g.AddEdge(i, (i + 8) % veritceCount);
+                g.AddEdge(i, (i + 11) % veritceCount);
+            }
             return g;
         }
 

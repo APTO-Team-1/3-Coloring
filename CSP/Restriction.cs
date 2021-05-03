@@ -39,7 +39,7 @@ namespace CSP
 
         public bool Equals(Restriction other)
         {
-            return other.Contains(Pair1.Color) && other.Contains(Pair2.Color);
+            return other.Contains(Pair1.Color) && other.Contains(Pair2.Color) && other.Contains(Pair1.Variable) && other.Contains(Pair2.Variable);
         }
 
         public override bool Equals(object obj)

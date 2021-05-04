@@ -16,9 +16,7 @@ namespace CSPLemmas
         {
             if (c.Restrictions.Count == 1) // (v,c) has one constraint
             {
-                var c2v2 = c.Restrictions.ElementAt(0);
-                var c2 = c2v2.Color;
-                var v2 = c2v2.Variable;
+                (var v2, var c2) = c.Restrictions.ElementAt(0);
                 if (c2.Restrictions.Count == 1) // (v2, c2) has one constraint too => isolated constraint
                 {
                     if (v.AvalibleColors.Count == 3 && v2.AvalibleColors.Count == 3)

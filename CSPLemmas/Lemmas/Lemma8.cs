@@ -37,7 +37,7 @@ namespace CSPLemmas
 
                         instance.RemoveVariable(v);
                         instance.RemoveVariable(v2);
-                        instance.AddVariable(vCombinedColors);
+                        instance.AddVariableAndColorsRestrictions(vCombinedColors);
                         return new() { instance };
                     }
                     else

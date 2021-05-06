@@ -86,9 +86,15 @@ namespace CSP
         #endregion
 
         #region variable
-        public void AddVariable(IEnumerable<Color> variableColors)
+        public void AddVariableAndColorsRestrictions(IEnumerable<Color> variableColors)
         {
-            AddVariable(new Variable(variableColors));   
+            var v = new Variable(variableColors);
+            AddVariable(v);
+            foreach (var c in variableColors)
+            {
+                AddColor(new Pair(v, c));
+            }
+
         }
 
         public void AddVariable(Variable v)

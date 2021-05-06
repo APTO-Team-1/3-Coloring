@@ -21,5 +21,11 @@ namespace CSP
         }
         public Variable Variable;
         public Color Color;
+
+        public void Deconstruct(out Variable variable, out Color color)
+        {
+            variable = Variable;
+            color = Color;
+        }
     }
 }

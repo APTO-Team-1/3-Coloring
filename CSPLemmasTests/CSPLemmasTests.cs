@@ -19,12 +19,12 @@ namespace CSPLemmas.Tests
             {
                 CspInstance instance = new();
                 Variable v2colors = new(2);
-                instance.Variables.Add(v2colors);
+                instance.AddVariable(v2colors);
                 List<Variable> variables = new();
                 for (int j = 0; j < i; j++)
                 {
                     var v = new Variable(j % 3 + 2);
-                    instance.Variables.Add(v);
+                    instance.AddVariable(v);
                     variables.Add(v);
                 }
                 for (int j = 0; j < i * 10; j++)
@@ -45,11 +45,11 @@ namespace CSPLemmas.Tests
             var data = new List<object[]>();
             for (int i = 0; i < 20; i++)
             {
-                var instance = GetRandomInstance(2,3,i * 50 + 1, i * 500 + 1);
+                var instance = GetRandomInstance(2, 3, i * 50 + 1, i * 500 + 1);
                 var v1 = new Variable(3);
                 var v2 = new Variable(3);
-                instance.Variables.Add(v1);
-                instance.Variables.Add(v2);
+                instance.AddVariable(v1);
+                instance.AddVariable(v2);
                 instance.AddRestriction(new Pair(v1, v1.AvalibleColors[0]), new Pair(v2, v2.AvalibleColors[0]));
                 instance.AddRestriction(new Pair(v1, v1.AvalibleColors[0]), new Pair(v2, v2.AvalibleColors[1]));
                 instance.AddRestriction(new Pair(v1, v1.AvalibleColors[1]), new Pair(v2, v2.AvalibleColors[0]));
@@ -69,17 +69,17 @@ namespace CSPLemmas.Tests
             Random r = new();
             for (int i = 0; i < 20; i++)
             {
-                var instance = GetRandomInstance(3,3,i * 50 + 1, i * 500 + 1);
+                var instance = GetRandomInstance(3, 3, i * 50 + 1, i * 500 + 1);
                 List<Variable> variables = new();
                 variables.AddRange(instance.Variables);
                 var v = new Variable(3);
-                instance.Variables.Add(v);
+                instance.AddVariable(v);
                 int i1 = Math.Abs(r.Next(0, v.AvalibleColors.Count));
                 int i2 = Math.Abs(r.Next(0, v.AvalibleColors.Count));
                 i2 = i2 == i1 ? (i2 + 1) % v.AvalibleColors.Count : i2;
                 var c1 = v.AvalibleColors[i1];
                 var c2 = v.AvalibleColors[i2];
-                for (int j = 0; j < r.Next(5,20); j++)
+                for (int j = 0; j < r.Next(5, 20); j++)
                 {
                     var v3 = variables[r.Next(0, variables.Count)];
                     var c3 = v3.AvalibleColors[r.Next(0, v3.AvalibleColors.Count)];
@@ -138,22 +138,145 @@ namespace CSPLemmas.Tests
                 var v2 = variables[i2];
                 foreach (var color in v2.AvalibleColors)
                 {
-                    instance.AddRestriction(new Pair(v, c), new Pair(v2,color));
+                    instance.AddRestriction(new Pair(v, c), new Pair(v2, color));
                 }
                 data.Add(new object[] { instance, new Pair(v, c) });
             }
             return data;
         }
 
-        private static CspInstance GetRandomInstance(int minColors = 2,int maxColors = 4,int variableCount = 100, int approximateRestrictionsCount = 1000)
+        public static IEnumerable<object[]> GetDataLemma8()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for (int i = 0; i < 30; i++)
+            {
+                var instance = GetRandomInstance(maxColors: i >= 15 ? 3 : 4);
+                int idx1;
+                int idx2;
+
+                do
+                {
+                    idx1 = r.Next(0, instance.Variables.Count);
+                    idx2 = r.Next(0, instance.Variables.Count);
+                }
+                while (
+                    idx1 == idx2 ||
+                    instance.Variables.ElementAt(idx1).AvalibleColors == null ||
+                    instance.Variables.ElementAt(idx1).AvalibleColors.Count == 0 ||
+                    instance.Variables.ElementAt(idx2).AvalibleColors == null ||
+                    instance.Variables.ElementAt(idx2).AvalibleColors.Count == 0
+                    );
+
+                var v1 = instance.Variables.ElementAt(idx1);
+                var c1 = v1.AvalibleColors[0];
+                var v2 = instance.Variables.ElementAt(idx2);
+                var c2 = v2.AvalibleColors[0];
+
+                foreach (var restPair in c1.Restrictions)
+                    instance.RemoveRestriction(new Pair(v1, c1), restPair);
+
+                foreach (var restPair in c2.Restrictions)
+                    instance.RemoveRestriction(new Pair(v2, c2), restPair);
+
+                instance.AddRestriction(new Pair(v1, c1), new Pair(v2, c2)); // isolated costraint
+
+                data.Add(new object[] { instance, v1, c1, v2, c2 });
+            }
+
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetDataLemma9()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for (int i = 0; i < 30; i++)
+            {
+                var instance = GetRandomInstance(maxColors: i >= 15 ? 3 : 4);
+                int idx1;
+                int idx2;
+
+                do
+                {
+                    idx1 = r.Next(0, instance.Variables.Count);
+                    idx2 = r.Next(0, instance.Variables.Count);
+                }
+                while (
+                    idx1 == idx2 ||
+                    instance.Variables.ElementAt(idx1).AvalibleColors == null ||
+                    instance.Variables.ElementAt(idx1).AvalibleColors.Count == 0 ||
+                    instance.Variables.ElementAt(idx2).AvalibleColors == null ||
+                    instance.Variables.ElementAt(idx2).AvalibleColors.Count == 0
+                    );
+
+                var v1 = instance.Variables.ElementAt(idx1);
+                var c1 = v1.AvalibleColors[0];
+                var v2 = instance.Variables.ElementAt(idx2);
+                var c2 = v2.AvalibleColors[0];
+
+                foreach (var restPair in c1.Restrictions)
+                    instance.RemoveRestriction(new Pair(v1, c1), restPair);
+
+                instance.AddRestriction(new Pair(v1, c1), new Pair(v2, c2)); // dangling costraint
+
+                data.Add(new object[] { instance, v1, c1, v2, c2 });
+            }
+
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetDataLemma11()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for (int i = 0; i < 30; i++)
+            {
+                var instance = GetRandomInstance(maxColors: i >= 15 ? 3 : 4);
+
+                data.Add(new object[] { instance });
+            }
+
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetDataLemma12()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for (int i = 0; i < 50; i++)
+            {
+                var instance = GetRandomInstance(maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
+
+                data.Add(new object[] { instance });
+            }
+
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetDataLemma13()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for (int i = 0; i < 50; i++)
+            {
+                var instance = GetRandomInstance(maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
+
+                data.Add(new object[] { instance });
+            }
+
+            return data;
+        }
+
+        private static CspInstance GetRandomInstance(int minColors = 2, int maxColors = 4, int variableCount = 100, int approximateRestrictionsCount = 1000)
         {
             var instance = new CspInstance();
             List<Variable> variables = new();
-            Random r = new();
+            Random r = new(123);
             for (int i = 0; i < variableCount; i++)
             {
-                var v = new Variable(r.Next(minColors, maxColors+1));
-                instance.Variables.Add(v);
+                var v = new Variable(r.Next(minColors, maxColors + 1));
+                instance.AddVariable(v);
                 variables.Add(v);
             }
             for (int i = 0; i < approximateRestrictionsCount; i++)
@@ -167,6 +290,9 @@ namespace CSPLemmas.Tests
             }
             return instance;
         }
+
+
+
         #endregion
 
 
@@ -248,6 +374,147 @@ namespace CSPLemmas.Tests
         {
             CSPLemmas.Lemma6(instance);
             Assert.DoesNotContain(pair.Color, pair.Variable.AvalibleColors);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma8))]
+        public void Lemma8Test(CspInstance instance, Variable v, Color c, Variable v2, Color c2)
+        {
+            //if two 3 - color vertices changed to one 4 - color
+            if (v.AvalibleColors.Count == 3 && v2.AvalibleColors.Count == 3)
+            {
+                var oldColors = v.AvalibleColors.Select(c => new Color(c.Value, c.Restrictions)).Union(v2.AvalibleColors.Select(c => new Color(c.Value, c.Restrictions)));
+                var res = CSPLemmas.Lemma8(instance, v, c);
+                Assert.Single(res);
+                Assert.Null(res[0].Variables.FirstOrDefault(vbl => vbl == v));
+                Assert.Null(res[0].Variables.FirstOrDefault(vbl => vbl == v2));
+                var vCombined = res[0].Variables.FirstOrDefault(vbl =>
+                    vbl.AvalibleColors.Count == 4 &&
+                    vbl.AvalibleColors.All(avCol => oldColors.Any(oc => oc.Value == avCol.Value)));
+                Assert.NotNull(vCombined);
+            }
+            //if returend two correct instances
+            else
+            {
+                var res = CSPLemmas.Lemma8(instance, v, c);
+                Assert.Equal(2, res.Count);
+                Assert.True(
+                    res.Any(inst => inst.Result.Any(p => p.Variable == v && p.Color == c)) ||
+                    res.Any(inst => inst.Result.Any(p => p.Variable == v2 && p.Color == c2)));
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma9))]
+        public void Lemma9Test(CspInstance instance, Variable v, Color c, Variable v2, Color c2)
+        {
+            var res = CSPLemmas.Lemma9(instance, v, c);
+            Assert.Equal(2, res.Count);
+            Assert.True(
+                res.Any(inst => inst.Result.Any(p => p.Variable == v && p.Color == c)) ||
+                res.Any(inst => inst.Result.Any(p => p.Variable == v2 && p.Color == c2)));
+        }
+
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma11))]
+        public void Lemma11Test(CspInstance instance)
+        {
+            foreach (var v in instance.Variables)
+            {
+                foreach (var c in v.AvalibleColors)
+                {
+
+                    if ((c.Restrictions.Count >= 3 && v.AvalibleColors.Count == 4) ||
+                        (c.Restrictions.Count >= 4 && v.AvalibleColors.Count == 3)) // Lemma11 applies
+                    {
+                        if (c.Restrictions.Select(r => r.Variable).Distinct().Count() != c.Restrictions.Select(r => r.Variable).Count())
+                        {
+                            Assert.Throws<ArgumentException>(() => CSPLemmas.Lemma11(instance, v, c));
+                        }
+                        else
+                        {
+                            var res = CSPLemmas.Lemma11(instance, v, c);
+                            Assert.Equal(2, res.Count);
+                            Assert.Contains(res, inst => inst.Result.Any(p => p.Variable == v && p.Color == c));
+                        }
+                    }
+                    else
+                    {
+                        var res = CSPLemmas.Lemma11(instance, v, c);
+                        Assert.Single(res);
+                    }
+                }
+            }
+        }
+
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma12))]
+        public void Lemma12Test(CspInstance instance)
+        {
+            foreach (var v in instance.Variables)
+            {
+                foreach (var c in v.AvalibleColors)
+                {
+                    if (c.Restrictions.Count == 3)
+                    {
+                        foreach (var restrictionPair in c.Restrictions)
+                        {
+                            (var v2, var c2) = restrictionPair;
+                            if (v2.AvalibleColors.Count == 4) // Lemma12 applies
+                            {
+                                if (c2.Restrictions.Count != 2)
+                                    Assert.Throws<ArgumentException>(() => CSPLemmas.Lemma12(instance, v, c));
+
+                                var res = CSPLemmas.Lemma12(instance, v, c);
+                                Assert.True(res.Count >= 2 && res.Count <= 3);
+                                Assert.Contains(res, inst => inst.Result.Any(p => p.Variable == v && p.Color == c));
+                            }
+                            else
+                            {
+                                var res = CSPLemmas.Lemma12(instance, v, c);
+                                Assert.Single(res);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma13))]
+        public void Lemma13Test(CspInstance instance)
+        {
+            foreach (var v in instance.Variables)
+            {
+                foreach (var c in v.AvalibleColors)
+                {
+                    if (c.Restrictions.Count == 3)
+                    {
+                        foreach (var restrictionPair in c.Restrictions)
+                        {
+                            (var v2, var c2) = restrictionPair;
+                            if (c2.Restrictions.Count == 2) // Lemma13 applies
+                            {
+
+                                if (c.Restrictions.Any(r => r.Variable.AvalibleColors.Count != 3))
+                                    Assert.Throws<ArgumentException>(() => CSPLemmas.Lemma13(instance, v, c));
+
+                                var res = CSPLemmas.Lemma13(instance, v, c);
+                                Assert.Equal(3, res.Count);
+                                Assert.Contains(res, inst => inst.Result.Any(p => p.Variable == v && p.Color == c));
+                            }
+                            else
+                            {
+                                var res = CSPLemmas.Lemma13(instance, v, c);
+                                Assert.Single(res);
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

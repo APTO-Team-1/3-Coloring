@@ -13,8 +13,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(2);
             var variable2 = new Variable(2);
-            csp.Variables.Add(variable1);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable1);
+            csp.AddVariable(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var restriction = new Restriction(variable1, color1, variable2, color2);
@@ -33,8 +33,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(2);
             var variable2 = new Variable(2);
-            csp.Variables.Add(variable1);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable1);
+            csp.AddVariable(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var restriction = new Restriction(variable1, color1, variable2, color2);
@@ -53,8 +53,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(1);
             var variable2 = new Variable(2);
-            csp.Variables.Add(variable1);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable1);
+            csp.AddVariable(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var color3 = variable2.AvalibleColors[1];
@@ -75,8 +75,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(2);
             var variable2 = new Variable(2);
-            csp.Variables.Add(variable1);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable1);
+            csp.AddVariable(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             csp.AddRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
@@ -94,8 +94,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(1);
             var variable2 = new Variable(2);
-            csp.Variables.Add(variable1);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable1);
+            csp.AddVariable(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var color3 = variable2.AvalibleColors[1];
@@ -118,8 +118,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable1 = new Variable(1);
             var variable2 = new Variable(2);
-            csp.Variables.Add(variable1);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable1);
+            csp.AddVariable(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
             var color3 = variable2.AvalibleColors[1];
@@ -139,12 +139,12 @@ namespace CSP.Tests
         {
             var csp = new CspInstance();
             var variable = new Variable(3);
-            csp.Variables.Add(variable);
+            csp.AddVariable(variable);
             Assert.Equal(1, csp.Variables.Count);
-            csp.Variables.Add(variable);
+            csp.AddVariable(variable);
             Assert.Equal(1, csp.Variables.Count);
             var variable2 = new Variable(4);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable2);
             Assert.Equal(2, csp.Variables.Count);
 
             CheckInstanceCorrectness(csp);
@@ -156,11 +156,11 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable = new Variable(3);
             var variable2 = new Variable(4);
-            csp.Variables.Add(variable);
+            csp.AddVariable(variable);
             Assert.Equal(1, csp.Variables.Count);
-            csp.Variables.Remove(variable2);
+            csp.RemoveVariable(variable2);
             Assert.Equal(1, csp.Variables.Count);
-            csp.Variables.Remove(variable);
+            csp.RemoveVariable(variable);
             Assert.Equal(0, csp.Variables.Count);
 
             CheckInstanceCorrectness(csp);
@@ -173,8 +173,8 @@ namespace CSP.Tests
             var variable = new Variable(3);
             var variable2 = new Variable(4);
 
-            csp.Variables.Add(variable);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable);
+            csp.AddVariable(variable2);
 
             var color1 = variable.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
@@ -200,8 +200,8 @@ namespace CSP.Tests
             var csp = new CspInstance();
             var variable = new Variable(3);
             var variable2 = new Variable(4);
-            csp.Variables.Add(variable);
-            csp.Variables.Add(variable2);
+            csp.AddVariable(variable);
+            csp.AddVariable(variable2);
 
             var color1 = variable.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
@@ -233,7 +233,7 @@ namespace CSP.Tests
         {
             var instance = new CspInstance();
             var variable = new Variable(2);
-            instance.Variables.Add(variable);
+            instance.AddVariable(variable);
             Assert.Equal(1, instance.Variables.Count);
             instance.AddToResult(new Pair(variable, variable.AvalibleColors[0]));
             Assert.Equal(0, instance.Variables.Count);
@@ -246,7 +246,7 @@ namespace CSP.Tests
         {
             var instance = new CspInstance();
             var variable = new Variable(2);
-            instance.Variables.Add(variable);
+            instance.AddVariable(variable);
             Assert.Equal(1, instance.Variables.Count);
             instance.AddToResult(variable, variable.AvalibleColors[0]);
             Assert.Equal(0, instance.Variables.Count);
@@ -261,9 +261,9 @@ namespace CSP.Tests
             var variable1 = new Variable(2);
             var variable2 = new Variable(4);
             var variable3 = new Variable(4);
-            instance.Variables.Add(variable1);
-            instance.Variables.Add(variable2);
-            instance.Variables.Add(variable3);
+            instance.AddVariable(variable1);
+            instance.AddVariable(variable2);
+            instance.AddVariable(variable3);
             Assert.Equal(3, instance.Variables.Count);
             var color11 = variable1.AvalibleColors[0];
             var color12 = variable1.AvalibleColors[1];
@@ -307,7 +307,7 @@ namespace CSP.Tests
             for (int i = 0; i < variablesCount; i++)
             {
                 var variable = new Variable(i % 4 + 1);
-                csp.Variables.Add(variable);
+                csp.AddVariable(variable);
             }
             var cloned = csp.Clone();
             Assert.Equal(cloned.Variables.Count, csp.Variables.Count);
@@ -327,7 +327,7 @@ namespace CSP.Tests
             {
                 var variable = new Variable(i % 4 + 1);
                 variablesList.Add(variable);
-                csp.Variables.Add(variable);
+                csp.AddVariable(variable);
             }
 
             for (int i = 0; i < variablesCount * 10; i++)
@@ -392,7 +392,7 @@ namespace CSP.Tests
             {
                 var variable = new Variable(i % 4 + 1);
                 variablesList.Add(variable);
-                csp.Variables.Add(variable);
+                csp.AddVariable(variable);
             }
             for (int i = 0; i < variablesList.Count; i += 5)
             {
@@ -426,7 +426,7 @@ namespace CSP.Tests
             {
                 var variable = new Variable(i % 4 + 1);
                 variablesList.Add(variable);
-                csp.Variables.Add(variable);
+                csp.AddVariable(variable);
             }
             for (int i = 0; i < variablesCount * 10; i++)
             {
@@ -512,9 +512,9 @@ namespace CSP.Tests
             var variable1 = new Variable(2);
             var variable2 = new Variable(4);
             var variable3 = new Variable(4);
-            instance.Variables.Add(variable1);
-            instance.Variables.Add(variable2);
-            instance.Variables.Add(variable3);
+            instance.AddVariable(variable1);
+            instance.AddVariable(variable2);
+            instance.AddVariable(variable3);
             Assert.Equal(3, instance.Variables.Count);
             var color11 = variable1.AvalibleColors[0];
             var color12 = variable1.AvalibleColors[1];

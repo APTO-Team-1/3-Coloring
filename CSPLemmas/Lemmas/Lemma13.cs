@@ -32,6 +32,7 @@ namespace CSPLemmas
                             (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(new Variable[] { v, v2 }, new Color[] { c, c2 });
                             var i2v = i2vArr[0]; var i2v2 = i2vArr[1];
                             var i2c = i2cArr[0]; var i2c2 = i2cArr[1];
+
                             instance.AddToResult(v, c);
                             instance2.RemoveColor(i2v, i2c); // create a dangling constraint (v2, c2)
 
@@ -46,13 +47,13 @@ namespace CSPLemmas
                             if(c3.Restrictions.Count == 3)
                             {
                                 (var instance2, var i2v2, var i2c2) = instance.CloneAndReturnCorresponding(v2, c2);
-                                (var instance3, var i2v3, var i2c3) = instance.CloneAndReturnCorresponding(v3, c3);
+                                (var instance3, var i3v3, var i3c3) = instance.CloneAndReturnCorresponding(v3, c3);
                                 instance.AddToResult(v, c);
                                 instance2.AddToResult(i2v2, i2c2);
-                                instance3.AddToResult(i2v3, i2c3);
+                                instance3.AddToResult(i3v3, i3c3);
                                 return new() { instance, instance2, instance3 };
                             }
-                            else if(c3.Restrictions.Count == 3)
+                            else if(c3.Restrictions.Count == 2)
                             {
                                 (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(new Variable[] { v, v2 }, new Color[] { c, c2 });
                                 var i2v = i2vArr[0]; var i2v2 = i2vArr[1];

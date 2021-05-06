@@ -24,9 +24,10 @@ namespace CSPLemmas
                     throw new ArgumentException("We can assume form Lemma 10 that each constraint connects (v, R) to a different varaible.");
                 }
 #endif
-                (var instance2, var i2v2, var i2c2) = instance.CloneAndReturnCorresponding(v, c);
+                (var instance2, var i2v, var i2c) = instance.CloneAndReturnCorresponding(v, c);
                 instance.AddToResult(v, c);
-                instance2.RemoveColor(i2v2, i2c2);
+                instance2.RemoveColor(i2v, i2c);
+                // TODO?: Analyze above cases more precisely?
                 return new() { instance, instance2 };
                 
             }

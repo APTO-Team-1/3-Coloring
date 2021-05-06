@@ -19,12 +19,12 @@ namespace CSPLemmas.Tests
             {
                 CspInstance instance = new();
                 Variable v2colors = new(2);
-                instance.Variables.Add(v2colors);
+                instance.AddVariable(v2colors);
                 List<Variable> variables = new();
                 for (int j = 0; j < i; j++)
                 {
                     var v = new Variable(j % 3 + 2);
-                    instance.Variables.Add(v);
+                    instance.AddVariable(v);
                     variables.Add(v);
                 }
                 for (int j = 0; j < i * 10; j++)
@@ -48,8 +48,8 @@ namespace CSPLemmas.Tests
                 var instance = GetRandomInstance(2, 3, i * 50 + 1, i * 500 + 1);
                 var v1 = new Variable(3);
                 var v2 = new Variable(3);
-                instance.Variables.Add(v1);
-                instance.Variables.Add(v2);
+                instance.AddVariable(v1);
+                instance.AddVariable(v2);
                 instance.AddRestriction(new Pair(v1, v1.AvalibleColors[0]), new Pair(v2, v2.AvalibleColors[0]));
                 instance.AddRestriction(new Pair(v1, v1.AvalibleColors[0]), new Pair(v2, v2.AvalibleColors[1]));
                 instance.AddRestriction(new Pair(v1, v1.AvalibleColors[1]), new Pair(v2, v2.AvalibleColors[0]));
@@ -73,7 +73,7 @@ namespace CSPLemmas.Tests
                 List<Variable> variables = new();
                 variables.AddRange(instance.Variables);
                 var v = new Variable(3);
-                instance.Variables.Add(v);
+                instance.AddVariable(v);
                 int i1 = Math.Abs(r.Next(0, v.AvalibleColors.Count));
                 int i2 = Math.Abs(r.Next(0, v.AvalibleColors.Count));
                 i2 = i2 == i1 ? (i2 + 1) % v.AvalibleColors.Count : i2;
@@ -276,7 +276,7 @@ namespace CSPLemmas.Tests
             for (int i = 0; i < variableCount; i++)
             {
                 var v = new Variable(r.Next(minColors, maxColors + 1));
-                instance.Variables.Add(v);
+                instance.AddVariable(v);
                 variables.Add(v);
             }
             for (int i = 0; i < approximateRestrictionsCount; i++)

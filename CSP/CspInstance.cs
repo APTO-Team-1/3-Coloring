@@ -8,7 +8,9 @@ namespace CSP
         public CspInstance()
         {
         }
-        public ISet<Variable> Variables { get; } = new HashSet<Variable>();
+
+        private readonly HashSet<Variable> variables = new();
+        public IReadOnlySet<Variable> Variables { get => variables; } 
 
         private readonly HashSet<Restriction> restrictions = new();
         public IReadOnlySet<Restriction> Restrictions { get => restrictions; }
@@ -28,14 +30,7 @@ namespace CSP
                 }
                 RemoveColor(restrictionPair.Variable, restrictionPair.Color);
             }
-            foreach (var color in pair.Variable.AvalibleColors)
-            {
-                foreach (var restrictionPair in color.Restrictions)
-                {
-                    RemoveRestriction(new Pair(pair.Variable, color), restrictionPair);
-                }
-            }
-            Variables.Remove(pair.Variable);
+            RemoveVariable(pair.Variable);
             result.Add(pair);
         }
         public void AddToResult(Variable variable, Color color) => AddToResult(new Pair(variable, color));
@@ -93,13 +88,12 @@ namespace CSP
         #region variable
         public void AddVariable(IEnumerable<Color> variableColors)
         {
-            var v = new Variable(variableColors);
-            Variables.Add(v);
-            foreach (var c in variableColors)
-            {
-                AddColor(new Pair(v, c));
-            }
-            
+            AddVariable(new Variable(variableColors));   
+        }
+
+        public void AddVariable(Variable v)
+        {
+            variables.Add(v);
         }
 
         public void RemoveVariable(Variable v)
@@ -111,7 +105,7 @@ namespace CSP
                     RemoveRestriction(new Pair(v, c), restriction);
                 }
             }
-            Variables.Remove(v);
+            variables.Remove(v);
         }
 
         #endregion
@@ -125,7 +119,7 @@ namespace CSP
                 {
                     Id = variable.Id
                 };
-                cloned.Variables.Add(clonedVariable);
+                cloned.AddVariable(clonedVariable);
                 variableDict.Add(clonedVariable.Id, clonedVariable);
                 for (int i = 0; i < variable.AvalibleColors.Count; i++)
                 {
@@ -188,7 +182,7 @@ namespace CSP
                 if (idxV!=-1)
                     correspondingVs[idxV] = clonedVariable;
 
-                cloned.Variables.Add(clonedVariable);
+                cloned.AddVariable(clonedVariable);
                 variableDict.Add(clonedVariable.Id, clonedVariable);
                 for (int i = 0; i < variable.AvalibleColors.Count; i++)
                 {

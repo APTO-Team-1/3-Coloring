@@ -20,15 +20,7 @@ namespace CSPLemmas
                     instance.AddRestriction(pair1, pair2);
                 }
             }
-            foreach (var pair in v.AvalibleColors[0].Restrictions)
-            {
-                instance.RemoveRestriction(pair, new Pair(v, v.AvalibleColors[0]));
-            }
-            foreach (var pair in v.AvalibleColors[1].Restrictions)
-            {
-                instance.RemoveRestriction(pair, new Pair(v, v.AvalibleColors[1]));
-            }
-            instance.Variables.Remove(v);
+            instance.RemoveVariable(v);
             
         }
 

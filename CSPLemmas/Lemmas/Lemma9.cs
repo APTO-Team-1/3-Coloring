@@ -20,6 +20,7 @@ namespace CSPLemmas
                 (var instance2, var i2v2, var i2c2) = instance.CloneAndReturnCorresponding(v2, c2);
                 instance.AddToResult(v, c);
                 instance2.AddToResult(i2v2, i2c2);
+                // TODO?: analyze above cases more precisely? 
                 return new() { instance, instance2 };  
             }
             return new() { instance };

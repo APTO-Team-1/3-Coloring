@@ -29,11 +29,12 @@ namespace CSPLemmas
                         // second neighbor of v2
                         (var v3, var c3) = c2.Restrictions.Where(r => r.Variable != v).First();
 
-                        if(Are_v1c1v2c2v3c3_FormTraingle(v, c, c3))
+                        if(Do_v1c1v2c2v3c3_FormTraingle(v, c, c3))
                         {
                             (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(new Variable[] { v, v2 }, new Color[] { c, c2 });
                             var i2v = i2vArr[0]; var i2v2 = i2vArr[1];
                             var i2c = i2cArr[0]; var i2c2 = i2cArr[1];
+
                             instance.AddToResult(v, c);
                             instance2.RemoveColor(i2v, i2c); // creating a dangling constraint at (v2, c2)
 
@@ -58,7 +59,7 @@ namespace CSPLemmas
             return new() { instance };
 
 
-            bool Are_v1c1v2c2v3c3_FormTraingle(Variable v, Color c, Color c3)
+            bool Do_v1c1v2c2v3c3_FormTraingle(Variable v, Color c, Color c3)
             {
                 // we know that (v, c)-----(v2, c2) and (v2, c2)-----(v3, c3).
                 // let's check whether (v3, c3)-----(v, c):

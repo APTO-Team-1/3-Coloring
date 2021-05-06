@@ -170,60 +170,95 @@ namespace CSP
         }
             
 
+        //public (CspInstance instance, Variable[] vArr, Color[] cArr) CloneAndReturnCorresponding(Variable[] vArr, Color[] cArr)
+        //{
+        //    Variable[] correspondingVs = new Variable[vArr.Length];
+        //    Color[] correspondingCs = new Color[cArr.Length];
+
+        //    var cloned = new CspInstance();
+        //    var variableDict = new Dictionary<int, Variable>();
+        //    foreach (var variable in this.Variables)
+        //    {
+        //        var clonedVariable = new Variable(variable.AvalibleColors.Count)
+        //        {
+        //            Id = variable.Id
+        //        };
+
+        //        var idxV = Array.IndexOf(vArr, variable);
+        //        if (idxV!=-1)
+        //            correspondingVs[idxV] = clonedVariable;
+
+        //        cloned.AddVariable(clonedVariable);
+        //        variableDict.Add(clonedVariable.Id, clonedVariable);
+        //        for (int i = 0; i < variable.AvalibleColors.Count; i++)
+        //        {
+        //            clonedVariable.AvalibleColors[i].Value = variable.AvalibleColors[i].Value;
+
+        //            var idxC = Array.IndexOf(cArr, variable.AvalibleColors[i]);
+        //            if (idxC != -1)
+        //                correspondingCs[idxC] = clonedVariable.AvalibleColors[i];
+        //        }
+        //    }
+
+        //    foreach (var restriction in this.restrictions)
+        //    {
+        //        var clonedVariable1 = variableDict[restriction.Pair1.Variable.Id];
+        //        var clonedVariable2 = variableDict[restriction.Pair2.Variable.Id];
+        //        var color1 = clonedVariable1.AvalibleColors.Find(c => c.Value == restriction.Pair1.Color.Value);
+        //        var color2 = clonedVariable2.AvalibleColors.Find(c => c.Value == restriction.Pair2.Color.Value);
+        //        cloned.AddRestriction(new Pair(clonedVariable1, color1), new Pair(clonedVariable2, color2));
+        //    }
+
+        //    foreach (var pair in this.result)
+        //    {
+        //        var clonedVariable = new Variable(pair.Variable.AvalibleColors.Count)
+        //        {
+        //            Id = pair.Variable.Id
+        //        };
+        //        for (int i = 0; i < pair.Variable.AvalibleColors.Count; i++)
+        //        {
+        //            clonedVariable.AvalibleColors[i].Value = pair.Variable.AvalibleColors[i].Value;
+        //        }
+        //        var color = clonedVariable.AvalibleColors.Find(c => c.Value == pair.Color.Value);
+        //        cloned.result.Add(new Pair(clonedVariable, color)); // dont use AddResult, becouse variable is not in Variable set
+        //    }
+
+        //    return (cloned, correspondingVs, correspondingCs);
+        //}
+
+
         public (CspInstance instance, Variable[] vArr, Color[] cArr) CloneAndReturnCorresponding(Variable[] vArr, Color[] cArr)
         {
-            Variable[] correspondingVs = new Variable[vArr.Length];
-            Color[] correspondingCs = new Color[cArr.Length];
+            if (vArr.Length != cArr.Length)
+                throw new ArgumentException("vArr.ength must be equal to cArr.Length");
 
-            var cloned = new CspInstance();
-            var variableDict = new Dictionary<int, Variable>();
-            foreach (var variable in this.Variables)
+
+            var clonedInstance = Clone();
+            var correspondingVariables = new Variable[vArr.Length];
+            var correspondingColors = new Color[cArr.Length];
+
+            foreach(var clonedVaraible in clonedInstance.Variables)
             {
-                var clonedVariable = new Variable(variable.AvalibleColors.Count)
+                for (int i = 0; i < vArr.Length; i++)
                 {
-                    Id = variable.Id
-                };
+                    if (vArr[i].Id == clonedVaraible.Id)
+                    {
+                        correspondingVariables[i] = clonedVaraible;
 
-                var idxV = Array.IndexOf(vArr, variable);
-                if (idxV!=-1)
-                    correspondingVs[idxV] = clonedVariable;
-
-                cloned.AddVariable(clonedVariable);
-                variableDict.Add(clonedVariable.Id, clonedVariable);
-                for (int i = 0; i < variable.AvalibleColors.Count; i++)
-                {
-                    clonedVariable.AvalibleColors[i].Value = variable.AvalibleColors[i].Value;
-
-                    var idxC = Array.IndexOf(cArr, variable.AvalibleColors[i]);
-                    if (idxC != -1)
-                        correspondingCs[idxC] = clonedVariable.AvalibleColors[i];
+                        foreach(var clonedColor in clonedVaraible.AvalibleColors)
+                        {
+                            if (clonedColor.Value == cArr[i].Value)
+                            {
+                                correspondingColors[i] = clonedColor;
+                                break;
+                            }
+                        }
+                        break;
+                    }
                 }
             }
 
-            foreach (var restriction in this.restrictions)
-            {
-                var clonedVariable1 = variableDict[restriction.Pair1.Variable.Id];
-                var clonedVariable2 = variableDict[restriction.Pair2.Variable.Id];
-                var color1 = clonedVariable1.AvalibleColors.Find(c => c.Value == restriction.Pair1.Color.Value);
-                var color2 = clonedVariable2.AvalibleColors.Find(c => c.Value == restriction.Pair2.Color.Value);
-                cloned.AddRestriction(new Pair(clonedVariable1, color1), new Pair(clonedVariable2, color2));
-            }
-
-            foreach (var pair in this.result)
-            {
-                var clonedVariable = new Variable(pair.Variable.AvalibleColors.Count)
-                {
-                    Id = pair.Variable.Id
-                };
-                for (int i = 0; i < pair.Variable.AvalibleColors.Count; i++)
-                {
-                    clonedVariable.AvalibleColors[i].Value = pair.Variable.AvalibleColors[i].Value;
-                }
-                var color = clonedVariable.AvalibleColors.Find(c => c.Value == pair.Color.Value);
-                cloned.result.Add(new Pair(clonedVariable, color)); // dont use AddResult, becouse variable is not in Variable set
-            }
-
-            return (cloned, correspondingVs, correspondingCs);
+            return (clonedInstance, correspondingVariables, correspondingColors);
         }
     }
 }

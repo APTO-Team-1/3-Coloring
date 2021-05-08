@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CSP\CSP.csproj" />
+    <ProjectReference Include="..\GraphLib\GraphLib.csproj" />
   </ItemGroup>
 
 </Project>

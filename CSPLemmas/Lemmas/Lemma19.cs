@@ -73,8 +73,10 @@ namespace CSPLemmas
                 int currId = indexToId[result[i]]; // id zmiennej ktora została przyznana do small2componentu i
                 if (Small2Components[i].Item1.Variable.Id == currId)
                     instance.AddToResult(Small2Components[i].Item1);
-                else
+                else if (Small2Components[i].Item2.Variable.Id == currId)
                     instance.AddToResult(Small2Components[i].Item2);
+                else
+                    instance.AddToResult(Small2Components[i].Item3);
             }
             for (int i = 0; i < Good3Components.Count; i++)
             {
@@ -84,8 +86,10 @@ namespace CSPLemmas
                     instance.AddToResult(Good3Components[i].Item1);
                 else if (Good3Components[i].Item2.Variable.Id == currId)
                     instance.AddToResult(Good3Components[i].Item2);
-                else
+                else if (Good3Components[i].Item3.Variable.Id == currId)
                     instance.AddToResult(Good3Components[i].Item3);
+                else
+                    instance.AddToResult(Good3Components[i].Item4);
             }
         }
     }

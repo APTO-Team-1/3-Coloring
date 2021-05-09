@@ -15,9 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeColoringAlgorithms", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeColoringAlgorithmsTests", "ThreeColoringAlgorithmsTests\ThreeColoringAlgorithmsTests.csproj", "{8A7A53FE-FA54-40E6-81B9-B0AF3CDC4E33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPLemmas", "CSPLemmas\CSPLemmas.csproj", "{C9A82BF4-EA68-480B-B615-475955659ECB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSPLemmas", "CSPLemmas\CSPLemmas.csproj", "{C9A82BF4-EA68-480B-B615-475955659ECB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPLemmasTests", "CSPLemmasTests\CSPLemmasTests.csproj", "{1583B023-D92C-4120-903A-192CF0D22069}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSPLemmasTests", "CSPLemmasTests\CSPLemmasTests.csproj", "{1583B023-D92C-4120-903A-192CF0D22069}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPGraphConverter", "CSPGraphConverter\CSPGraphConverter.csproj", "{AD5C9067-BF87-4752-BD47-AA78015D1400}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPGraphConverterTests", "CSPGraphConverterTests\CSPGraphConverterTests.csproj", "{4A9442BB-06B2-424D-97F8-A04F741118A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{1583B023-D92C-4120-903A-192CF0D22069}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1583B023-D92C-4120-903A-192CF0D22069}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1583B023-D92C-4120-903A-192CF0D22069}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD5C9067-BF87-4752-BD47-AA78015D1400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD5C9067-BF87-4752-BD47-AA78015D1400}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD5C9067-BF87-4752-BD47-AA78015D1400}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD5C9067-BF87-4752-BD47-AA78015D1400}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A9442BB-06B2-424D-97F8-A04F741118A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A9442BB-06B2-424D-97F8-A04F741118A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A9442BB-06B2-424D-97F8-A04F741118A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A9442BB-06B2-424D-97F8-A04F741118A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

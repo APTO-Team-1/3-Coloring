@@ -79,10 +79,10 @@ namespace CSPLemmas
             for (int i = 0; i < Good3Components.Count; i++)
             {
                 if (result[i] == -1) throw new Exception("nie da sie pokolorwoać co teraz");
-                int currId = indexToId[result[i + Small2Components.Count]]; // id zmiennej ktora została przyznana do small2componentu i
+                int currId = indexToId[result[i + Small2Components.Count]]; // id zmiennej ktora została przyznana do good3component i
                 if (Good3Components[i].Item1.Variable.Id == currId)
                     instance.AddToResult(Good3Components[i].Item1);
-                else if (Small2Components[i].Item2.Variable.Id == currId)
+                else if (Good3Components[i].Item2.Variable.Id == currId)
                     instance.AddToResult(Good3Components[i].Item2);
                 else
                     instance.AddToResult(Good3Components[i].Item3);

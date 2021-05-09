@@ -95,20 +95,11 @@ namespace CSPLemmas
 
             return result;
         }
-        private static HashSet<Pair> findBigThreeComponent(IReadOnlySet<Restriction> restrictions)
+        public static HashSet<Pair> findBigThreeComponent(IReadOnlySet<Restriction> restrictions)
         {
             foreach (Restriction res in restrictions)
             {
-                int count = 0;
-                foreach (Restriction res2 in restrictions)
-                {
-                    if (res.Pair1.Equals(res2.Pair1) ||
-                        res.Pair1.Equals(res2.Pair2))
-                    {
-                        count++;
-                    }
-                }
-                if (count == 3)
+                if (res.Pair1.Color.Restrictions.Count == 3)
                 {
                     HashSet<Pair> pairs = new() { res.Pair1 };
                     findComponentForPair(restrictions, res.Pair1, pairs);
@@ -125,17 +116,7 @@ namespace CSPLemmas
                         }
                     }
                 }
-
-                count = 0;
-                foreach (Restriction res2 in restrictions)
-                {
-                    if (res.Pair2.Equals(res2.Pair1) ||
-                        res.Pair2.Equals(res2.Pair2))
-                    {
-                        count++;
-                    }
-                }
-                if (count == 3)
+                if (res.Pair2.Color.Restrictions.Count == 3)
                 {
                     HashSet<Pair> pairs = new() { res.Pair2 };
                     findComponentForPair(restrictions, res.Pair2, pairs);

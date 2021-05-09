@@ -1,6 +1,7 @@
 ﻿using CSP;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CSPLemmas
 {
@@ -12,6 +13,7 @@ namespace CSPLemmas
             HashSet<Pair> set = findSmallBadThreeComponent(instance.Restrictions);
             if(set != null)
             {
+                Debug.WriteLine(set.Count);
                 if(set.Count == 12)
                 {
                     List<Pair> list = bruteColor(set, instance.Restrictions);
@@ -68,51 +70,32 @@ namespace CSPLemmas
             }
             return result;
         }
-        private static HashSet<Pair> findSmallBadThreeComponent(IReadOnlySet<Restriction> restrictions) 
+        public static HashSet<Pair> findSmallBadThreeComponent(IReadOnlySet<Restriction> restrictions) 
         {
             foreach(Restriction res in restrictions)
             {
-                int count = 0;
-                foreach(Restriction res2 in restrictions)
-                {
-                    if( res.Pair1.Equals(res2.Pair1) ||
-                        res.Pair1.Equals(res2.Pair2))
-                    {
-                        count++;
-                    }
-                }
-                if(count == 3)
+                if(res.Pair1.Color.Restrictions.Count == 3)
                 {
                     HashSet<Pair> pairs = new() { res.Pair1 };
                     findComponentForPair(restrictions, res.Pair1, pairs);
-                    if(pairs != null && pairs.Count > 4)
+                    if (pairs != null && pairs.Count > 4)
                     {
                         HashSet<Variable> distinctVariables = new();
-                        foreach(Pair p in pairs)
+                        foreach (Pair p in pairs)
                         {
                             distinctVariables.Add(p.Variable);
                         }
-                        if(distinctVariables.Count == 4)
+                        if (distinctVariables.Count == 4)
                         {
                             return pairs;
-                        }     
+                        }
                     }
                 }
-
-                count = 0;
-                foreach (Restriction res2 in restrictions)
+                if (res.Pair2.Color.Restrictions.Count == 3)
                 {
-                    if (res.Pair2.Equals(res2.Pair1) ||
-                        res.Pair2.Equals(res2.Pair2))
-                    {
-                        count++;
-                    }
-                }
-                if(count == 3)
-                {
-                    HashSet<Pair> pairs = new() { res.Pair2};
+                    HashSet<Pair> pairs = new() { res.Pair2 };
                     findComponentForPair(restrictions, res.Pair2, pairs);
-                    if(pairs != null && pairs.Count > 4)
+                    if (pairs != null && pairs.Count > 4)
                     {
                         HashSet<Variable> distinctVariables = new();
                         foreach (Pair p in pairs)
@@ -130,29 +113,16 @@ namespace CSPLemmas
         }
         private static void findComponentForPair(IReadOnlySet<Restriction> restrictions, Pair pair, HashSet<Pair> result)
         {
+            if (pair.Color.Restrictions.Count != 3) result = null;
             if (result == null) return;
-            int count = 0;
-            foreach(Restriction res in restrictions)
+            foreach(Pair restrictionPair in pair.Color.Restrictions)
             {
-                if(res.Pair1.Equals(pair))
+                if(!result.Contains(restrictionPair))
                 {
-                    count++;
-                    if(!result.Contains(res.Pair2))
-                    {
-                        result.Add(res.Pair2);
-                        findComponentForPair(restrictions, res.Pair2, result);
-                    }
-                } else if(res.Pair2.Equals(pair))
-                {
-                    count++;
-                    if (!result.Contains(res.Pair1))
-                    {
-                        result.Add(res.Pair1);
-                        findComponentForPair(restrictions, res.Pair1, result);
-                    }
+                    result.Add(restrictionPair);
+                    findComponentForPair(restrictions, restrictionPair, result);
                 }
             }
-            if (count != 3) result = null;
         }
         private static List<Pair> getWithTriangle(HashSet<Pair> set, IReadOnlySet<Restriction> restrictions)
         {
@@ -192,6 +162,8 @@ namespace CSPLemmas
                 }
                 if (t2_1.HasValue) break;
             }
+
+            if (!t1_1.HasValue || !t2_1.HasValue) return null;
 
             if (t1_1.Value.Variable == t2_2.Value.Variable)
             {

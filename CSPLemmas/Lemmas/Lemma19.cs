@@ -35,7 +35,7 @@ namespace CSPLemmas
                 g.AddEdge(idsToIndex[Good3Components[i].Item3.Id], i + Small2Components.Count);
                 g.AddEdge(idsToIndex[Good3Components[i].Item4.Id], i + Small2Components.Count);
             }
-            int[] result = new BipartieGraphMaxMatching().FindMaxMatching(g);
+            int[] result = new BipartieGraphMaxMatching().FindMaxMatching(g); // pozostaje dodac do rezultatu według tego jak zostało wykonane bipartition
         }
 
         private static List<(Variable, Variable, Variable)> FindAll2SmallComponents(CspInstance instance)

@@ -42,6 +42,7 @@ namespace CSPLemmas
                             }
                             if (currColor == color) // mamy 2 komponent
                             {
+                                List<CspInstance> result = new List<CspInstance>();
                                 if (TwoComponent.Count == 4)  // cykl długości 4 kolorujemy po przekątnej
                                 {
                                     CspInstance instance2 = instance.Clone();
@@ -52,7 +53,6 @@ namespace CSPLemmas
                                     instance2.AddToResult(TwoComponent[1]);
                                     instance2.AddToResult(TwoComponent[3]);
 
-                                    List<CspInstance> result = new List<CspInstance>();
                                     result.AddRange(Lemma18(instance));
                                     result.AddRange(Lemma18(instance2));
                                     return result;
@@ -67,7 +67,7 @@ namespace CSPLemmas
                                         CspInstance instance2 = instance.Clone();
                                         instance.AddToResult(last5Pairs[1]);
                                         instance2.AddToResult(last5Pairs[2]);
-                                        List<CspInstance> result = new List<CspInstance>();
+
                                         result.AddRange(Lemma18(instance));
                                         result.AddRange(Lemma18(instance2));
                                         return result;
@@ -77,7 +77,7 @@ namespace CSPLemmas
                                         CspInstance instance2 = instance.Clone();
                                         instance.AddToResult(last5Pairs[2]);
                                         instance2.AddToResult(last5Pairs[3]);
-                                        List<CspInstance> result = new List<CspInstance>();
+
                                         result.AddRange(Lemma18(instance));
                                         result.AddRange(Lemma18(instance2));
                                         return result;
@@ -90,7 +90,7 @@ namespace CSPLemmas
                                         instance2.AddToResult(last5Pairs[2]);
                                         instance3.AddToResult(last5Pairs[0]);
                                         instance3.AddToResult(last5Pairs[3]);
-                                        List<CspInstance> result = new List<CspInstance>();
+
                                         result.AddRange(Lemma18(instance));
                                         result.AddRange(Lemma18(instance2));
                                         result.AddRange(Lemma18(instance3));

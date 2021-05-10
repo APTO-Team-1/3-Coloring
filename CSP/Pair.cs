@@ -27,5 +27,10 @@ namespace CSP
             variable = Variable;
             color = Color;
         }
+
+        public bool Equals(Pair pair)
+        {
+            return Variable == pair.Variable && Color == pair.Color ? true : false;
+        }
     }
 }

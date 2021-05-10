@@ -268,6 +268,110 @@ namespace CSPLemmas.Tests
             return data;
         }
 
+        public static IEnumerable<object[]> GetDataLemma15()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for(int i = 0; i < 48; i++)
+            {
+                var instance = GetRandomInstance(minColors: 3, maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
+                data.Add(new object[] { instance });
+            }
+
+            CspInstance cspInstance = new();
+            Variable v = new Variable(3);
+            Variable w = new Variable(3);
+            Variable x = new Variable(3);
+            Variable y = new Variable(3);
+            cspInstance.AddVariable(v);
+            cspInstance.AddVariable(w);
+            cspInstance.AddVariable(x);
+            cspInstance.AddVariable(y);
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[1]), new Pair(w, w.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[1]), new Pair(x, x.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[1]), new Pair(y, y.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[2]), new Pair(w, w.AvalibleColors[1]));
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[2]), new Pair(x, x.AvalibleColors[1]));
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[2]), new Pair(y, y.AvalibleColors[1]));
+            cspInstance.AddRestriction(new Pair(w, w.AvalibleColors[1]), new Pair(x, x.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(w, w.AvalibleColors[1]), new Pair(y, y.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(w, w.AvalibleColors[2]), new Pair(x, x.AvalibleColors[1]));
+            cspInstance.AddRestriction(new Pair(w, w.AvalibleColors[2]), new Pair(y, y.AvalibleColors[1]));
+            cspInstance.AddRestriction(new Pair(x, x.AvalibleColors[1]), new Pair(y, y.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(x, x.AvalibleColors[2]), new Pair(y, y.AvalibleColors[1]));
+            data.Add(new object[] { cspInstance });
+
+
+            CspInstance cspInstance2 = new();
+            Variable v2 = new Variable(3);
+            Variable w2 = new Variable(3);
+            Variable x2 = new Variable(3);
+            Variable y2 = new Variable(3);
+            cspInstance2.AddVariable(v2);
+            cspInstance2.AddVariable(w2);
+            cspInstance2.AddVariable(x2);
+            cspInstance2.AddVariable(y2);
+            cspInstance2.AddRestriction(new Pair(v2, v2.AvalibleColors[1]), new Pair(w2, w2.AvalibleColors[2]));
+            cspInstance2.AddRestriction(new Pair(v2, v2.AvalibleColors[1]), new Pair(x2, x2.AvalibleColors[2]));
+            cspInstance2.AddRestriction(new Pair(v2, v2.AvalibleColors[1]), new Pair(y2, y2.AvalibleColors[2]));
+            cspInstance2.AddRestriction(new Pair(v2, v2.AvalibleColors[2]), new Pair(w2, w2.AvalibleColors[1]));
+            cspInstance2.AddRestriction(new Pair(v2, v2.AvalibleColors[2]), new Pair(x2, x2.AvalibleColors[1]));
+            cspInstance2.AddRestriction(new Pair(v2, v2.AvalibleColors[2]), new Pair(y2, y2.AvalibleColors[1]));
+            cspInstance2.AddRestriction(new Pair(w2, w2.AvalibleColors[1]), new Pair(x2, x2.AvalibleColors[2]));
+            cspInstance2.AddRestriction(new Pair(w2, w2.AvalibleColors[1]), new Pair(y2, y2.AvalibleColors[2]));
+            cspInstance2.AddRestriction(new Pair(w2, w2.AvalibleColors[2]), new Pair(x2, x2.AvalibleColors[1]));
+            cspInstance2.AddRestriction(new Pair(w2, w2.AvalibleColors[2]), new Pair(y2, y2.AvalibleColors[1]));
+            cspInstance2.AddRestriction(new Pair(x2, x2.AvalibleColors[1]), new Pair(y2, y2.AvalibleColors[1]));
+            cspInstance2.AddRestriction(new Pair(x2, x2.AvalibleColors[2]), new Pair(y2, y2.AvalibleColors[2]));
+            data.Add(new object[] { cspInstance2 });
+
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetDataLemma17()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for (int i = 0; i < 49; i++)
+            {
+                var instance = GetRandomInstance(minColors: 3, maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
+                data.Add(new object[] { instance });
+            }
+
+            CspInstance cspInstance = new();
+            Variable v = new Variable(3);
+            Variable w = new Variable(3);
+            Variable x = new Variable(3);
+            Variable y = new Variable(3);
+            Variable z = new Variable(3);
+            Variable a = new Variable(3);
+            Variable b = new Variable(3);
+            Variable c = new Variable(3);
+            cspInstance.AddVariable(v);
+            cspInstance.AddVariable(w);
+            cspInstance.AddVariable(x);
+            cspInstance.AddVariable(y);
+            cspInstance.AddVariable(z);
+            cspInstance.AddVariable(a);
+            cspInstance.AddVariable(b);
+            cspInstance.AddVariable(c);
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[2]), new Pair(w, w.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[2]), new Pair(x, x.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(v, v.AvalibleColors[2]), new Pair(y, y.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(w, w.AvalibleColors[2]), new Pair(x, x.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(w, w.AvalibleColors[2]), new Pair(z, z.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(x, x.AvalibleColors[2]), new Pair(a, a.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(y, y.AvalibleColors[2]), new Pair(a, a.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(y, y.AvalibleColors[2]), new Pair(b, b.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(z, z.AvalibleColors[2]), new Pair(b, b.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(z, z.AvalibleColors[2]), new Pair(c, c.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(b, b.AvalibleColors[2]), new Pair(c, c.AvalibleColors[2]));
+            cspInstance.AddRestriction(new Pair(a, a.AvalibleColors[2]), new Pair(c, c.AvalibleColors[2]));
+            data.Add(new object[] { cspInstance });
+
+            return data;
+        }
+
         private static CspInstance GetRandomInstance(int minColors = 2, int maxColors = 4, int variableCount = 100, int approximateRestrictionsCount = 1000)
         {
             var instance = new CspInstance();
@@ -514,7 +618,48 @@ namespace CSPLemmas.Tests
                     }
                 }
             }
+        }
 
+        [Theory]
+        [MemberData(nameof(GetDataLemma15))]
+        public void Lemma15Test(CspInstance instance)
+        {
+            (var res, bool b) = CSPLemmas.Lemma15(instance);
+            if(b == true)
+            {
+                foreach (var inst in res)
+                {
+                    if(inst != null)
+                    {
+                        Lemma15Test(inst);
+                    }
+                    
+                }
+            } 
+            else
+            {
+                Assert.Null(CSPLemmas.findSmallBadThreeComponent(instance.Restrictions));
+            }
+            
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma17))]
+        public void Lemma17Test(CspInstance instance)
+        {
+            (var res, bool b) = CSPLemmas.Lemma17(instance);
+            if(b == false)
+            {
+                Assert.Null(CSPLemmas.findBigThreeComponent(instance.Restrictions));
+            }
+            else
+            {
+                foreach (var inst in res)
+                {
+                    Lemma17Test(inst);
+                }
+            }
+            
         }
     }
 }

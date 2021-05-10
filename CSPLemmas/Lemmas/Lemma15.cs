@@ -34,7 +34,7 @@ namespace CSPLemmas
                     } 
                     else
                     {
-                        return (null, true);
+                        throw new ApplicationException("Brute color returned null");
                     }
                 }
                 else if (set.Count == 8)

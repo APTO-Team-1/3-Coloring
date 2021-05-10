@@ -624,11 +624,23 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma15))]
         public void Lemma15Test(CspInstance instance)
         {
-            var res = CSPLemmas.Lemma15(instance);
-            foreach(var inst in res)
+            (var res, bool b) = CSPLemmas.Lemma15(instance);
+            if(b == true)
             {
-                Assert.Null(CSPLemmas.findSmallBadThreeComponent(inst.Restrictions));
+                foreach (var inst in res)
+                {
+                    if(inst != null)
+                    {
+                        Lemma15Test(inst);
+                    }
+                    
+                }
+            } 
+            else
+            {
+                Assert.Null(CSPLemmas.findSmallBadThreeComponent(instance.Restrictions));
             }
+            
         }
 
         [Theory]
@@ -636,10 +648,18 @@ namespace CSPLemmas.Tests
         public void Lemma17Test(CspInstance instance)
         {
             var res = CSPLemmas.Lemma17(instance);
-            foreach (var inst in res)
+            if(res.Count == 1)
             {
-                Assert.Null(CSPLemmas.findBigThreeComponent(inst.Restrictions));
+                Assert.Null(CSPLemmas.findBigThreeComponent(instance.Restrictions));
             }
+            else
+            {
+                foreach (var inst in res)
+                {
+                    Lemma17Test(inst);
+                }
+            }
+            
         }
     }
 }

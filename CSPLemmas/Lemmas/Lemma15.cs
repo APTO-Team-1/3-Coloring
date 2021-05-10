@@ -2,19 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace CSPLemmas
 {
     public static partial class CSPLemmas
     {
-        public static List<CspInstance> Lemma15(CspInstance instance)
+        public static (List<CspInstance>, bool) Lemma15(CspInstance instance)
         {
             List<CspInstance> result = new();
             HashSet<Pair> set = findSmallBadThreeComponent(instance.Restrictions);
+            
             if(set != null)
             {
-                Debug.WriteLine(set.Count);
-                if(set.Count == 12)
+                foreach (var xd in set)
+                {
+                    if (!instance.Variables.Contains(xd.Variable)) throw new NotImplementedException();
+                }
+                if (set.Count == 12)
                 {
                     List<Pair> list = bruteColor(set, instance.Restrictions);
                     if(list != null)
@@ -23,11 +28,11 @@ namespace CSPLemmas
                         {
                             instance.AddToResult(p);
                         }
-                        result.AddRange(Lemma15(instance));
+                        result.Add(instance);
                     } 
                     else
                     {
-                        return null;
+                        return (null, true);
                     }
                 }
                 else if (set.Count == 8)
@@ -35,23 +40,36 @@ namespace CSPLemmas
                     List<Pair> setWithTriangles = getWithTriangle(set, instance.Restrictions);
                     if(setWithTriangles != null) //v1, v2, w1, w2, x1, x2, y1, y2
                     {
-                        CspInstance instance2 = instance.Clone();
-                        CspInstance instance3 = instance.Clone();
+                        for(int i = 0; i < 8; i++)
+                        {
+                            if(!setWithTriangles[i].Variable.AvalibleColors.Contains(setWithTriangles[i].Color))
+                            {
+                                throw new NotImplementedException();
+                            }
+                        }
+                        (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(
+                            new Variable[] { setWithTriangles[0].Variable, setWithTriangles[2].Variable, setWithTriangles[7].Variable },
+                            new Color[] { setWithTriangles[0].Color, setWithTriangles[2].Color, setWithTriangles[7].Color });
+
+                        (var instance3, var i3vArr, var i3cArr) = instance.CloneAndReturnCorresponding(
+                            new Variable[] { setWithTriangles[5].Variable, setWithTriangles[7].Variable },
+                            new Color[] { setWithTriangles[5].Color, setWithTriangles[7].Color });
 
                         instance.AddToResult(setWithTriangles[0]);
                         instance.AddToResult(setWithTriangles[2]);
                         instance.AddToResult(setWithTriangles[5]);
 
-                        instance2.AddToResult(setWithTriangles[0]);
-                        instance2.AddToResult(setWithTriangles[2]);
-                        instance2.AddToResult(setWithTriangles[7]);
+                        instance2.AddToResult(i2vArr[0], i2cArr[0]);
+                        instance2.AddToResult(i2vArr[1], i2cArr[1]);
+                        instance2.AddToResult(i2vArr[2], i2cArr[2]);
+                                             
+                        instance3.AddToResult(i3vArr[0], i3cArr[0]);
+                        instance3.AddToResult(i3vArr[1], i3cArr[1]);
 
-                        instance3.AddToResult(setWithTriangles[5]);
-                        instance3.AddToResult(setWithTriangles[7]);
 
-                        result.AddRange(Lemma15(instance));
-                        result.AddRange(Lemma15(instance2));
-                        result.AddRange(Lemma15(instance3));
+                        result.Add(instance);
+                        result.Add(instance2);
+                        result.Add(instance3);
                     }
                     else
                     {
@@ -60,15 +78,15 @@ namespace CSPLemmas
                         {
                             instance.AddToResult(p);
                         }
-                        result.AddRange(Lemma15(instance));
+                        result.Add(instance);
                     }
                 }
             } 
             else
             {
-                return new() { instance };
+                return (new() { instance }, false);
             }
-            return result;
+            return (result, true);
         }
         public static HashSet<Pair> findSmallBadThreeComponent(IReadOnlySet<Restriction> restrictions) 
         {

@@ -33,10 +33,10 @@ namespace CSPLemmas
                             instance3.AddToResult(witness[1]);
                             instance4.AddToResult(witness[2]);
 
-                            result.AddRange(Lemma17(instance1));
-                            result.AddRange(Lemma17(instance2));
-                            result.AddRange(Lemma17(instance3));
-                            result.AddRange(Lemma17(instance4));
+                            result.Add(instance1);
+                            result.Add(instance2);
+                            result.Add(instance3);
+                            result.Add(instance4);
                         } 
                         else if(instance.Restrictions.Contains(new Restriction(witness[1], witness[3])))
                         {
@@ -46,10 +46,10 @@ namespace CSPLemmas
                             instance3.AddToResult(witness[1]);
                             instance4.AddToResult(witness[3]);
 
-                            result.AddRange(Lemma17(instance1));
-                            result.AddRange(Lemma17(instance2));
-                            result.AddRange(Lemma17(instance3));
-                            result.AddRange(Lemma17(instance4));
+                            result.Add(instance1);
+                            result.Add(instance2);
+                            result.Add(instance3);
+                            result.Add(instance4);
                         }
                         else
                         {
@@ -74,8 +74,8 @@ namespace CSPLemmas
                             RemoveVariableWith2Colors(instance1, p.Variable);
                         }
                         instance2.RemoveColor(witness[4]);
-                        result.AddRange(Lemma17(instance1));
-                        result.AddRange(Lemma17(instance2));
+                        result.Add(instance1);
+                        result.Add(instance2);
                     }
                     else if(neighbours == 3)
                     {
@@ -83,8 +83,8 @@ namespace CSPLemmas
                         instance1.AddToResult(witness[4]);
                         instance1.AddToResult(witness[0]);
                         instance2.RemoveColor(witness[4]);
-                        result.AddRange(Lemma17(instance1));
-                        result.AddRange(Lemma17(instance2));
+                        result.Add(instance1);
+                        result.Add(instance2);
                     }
                 }
             } 

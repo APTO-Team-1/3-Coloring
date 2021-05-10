@@ -40,20 +40,13 @@ namespace CSPLemmas
                     List<Pair> setWithTriangles = getWithTriangle(set, instance.Restrictions);
                     if(setWithTriangles != null) //v1, v2, w1, w2, x1, x2, y1, y2
                     {
-                        for(int i = 0; i < 8; i++)
-                        {
-                            if(!setWithTriangles[i].Variable.AvalibleColors.Contains(setWithTriangles[i].Color))
-                            {
-                                throw new NotImplementedException();
-                            }
-                        }
                         (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(
                             new Variable[] { setWithTriangles[0].Variable, setWithTriangles[2].Variable, setWithTriangles[7].Variable },
                             new Color[] { setWithTriangles[0].Color, setWithTriangles[2].Color, setWithTriangles[7].Color });
 
                         (var instance3, var i3vArr, var i3cArr) = instance.CloneAndReturnCorresponding(
-                            new Variable[] { setWithTriangles[5].Variable, setWithTriangles[7].Variable },
-                            new Color[] { setWithTriangles[5].Color, setWithTriangles[7].Color });
+                            new Variable[] { setWithTriangles[5].Variable, setWithTriangles[6].Variable },
+                            new Color[] { setWithTriangles[5].Color, setWithTriangles[6].Color });
 
                         instance.AddToResult(setWithTriangles[0]);
                         instance.AddToResult(setWithTriangles[2]);

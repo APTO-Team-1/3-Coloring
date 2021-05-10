@@ -647,8 +647,8 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma17))]
         public void Lemma17Test(CspInstance instance)
         {
-            var res = CSPLemmas.Lemma17(instance);
-            if(res.Count == 1)
+            (var res, bool b) = CSPLemmas.Lemma17(instance);
+            if(b == false)
             {
                 Assert.Null(CSPLemmas.findBigThreeComponent(instance.Restrictions));
             }

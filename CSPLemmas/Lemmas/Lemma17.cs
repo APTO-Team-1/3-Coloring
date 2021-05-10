@@ -6,13 +6,14 @@ namespace CSPLemmas
 {
     public static partial class CSPLemmas
     {
-        public static List<CspInstance> Lemma17(CspInstance instance)
+        public static (List<CspInstance>, bool) Lemma17(CspInstance instance)
         {
             List<CspInstance> result = new();
             HashSet<Pair> set = findBigThreeComponent(instance.Restrictions);
             if(set != null)
             {
-                foreach(List<Pair> witness in findWitness(set, instance.Restrictions))
+                List<Pair> witness = findWitness(set, instance.Restrictions);
+                if(witness != null)
                 {
                     CspInstance instance1 = instance.Clone();
                     int neighbours = 0;
@@ -53,16 +54,8 @@ namespace CSPLemmas
                         }
                         else
                         {
-                            List<CspInstance> firstAfterLemma12 = Lemma12(instance1, witness[1].Variable, witness[1].Color);
-                            List<CspInstance> secondAfterLemma12 = Lemma12(instance2, witness[1].Variable, witness[1].Color);
-                            foreach(CspInstance csp in firstAfterLemma12)
-                            {
-                                result.AddRange(Lemma17(csp));
-                            }
-                            foreach (CspInstance csp in secondAfterLemma12)
-                            {
-                                result.AddRange(Lemma17(csp));
-                            }
+                            result.AddRange(Lemma13(instance1, witness[0].Variable, witness[0].Color));
+                            result.AddRange(Lemma13(instance2, witness[0].Variable, witness[0].Color));
                         }
                     } 
                     else if(neighbours == 2)
@@ -90,10 +83,10 @@ namespace CSPLemmas
             } 
             else
             {
-                return new() { instance };
+                return (new() { instance }, false);
             }
 
-            return result;
+            return (result, true);
         }
         public static HashSet<Pair> findBigThreeComponent(IReadOnlySet<Restriction> restrictions)
         {
@@ -136,9 +129,8 @@ namespace CSPLemmas
             }
             return null;
         }
-        private static HashSet<List<Pair>> findWitness(HashSet<Pair> component, IReadOnlySet<Restriction> restrictions)
+        private static List<Pair> findWitness(HashSet<Pair> component, IReadOnlySet<Restriction> restrictions)
         {
-            HashSet<List<Pair>> result = new();
             foreach(Pair p1 in component)
             {
                 foreach(Pair p2 in component)
@@ -154,13 +146,13 @@ namespace CSPLemmas
                             {
                                 if (!restrictions.Contains(new Restriction(p2, p5)) || p5.Equals(p1) || p5.Equals(p3) || p5.Equals(p4)) break;
                                     
-                                result.Add(new List<Pair>() { p1, p2, p3, p4, p5 });
+                                return new List<Pair>() { p1, p2, p3, p4, p5 };
                             }
                         }
                     }
                 }
             }
-            return result;
+            return null;
         }
     }
 }

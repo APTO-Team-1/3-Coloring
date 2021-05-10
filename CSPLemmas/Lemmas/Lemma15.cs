@@ -15,10 +15,12 @@ namespace CSPLemmas
             
             if(set != null)
             {
+#if DEBUG
                 foreach (var xd in set)
                 {
                     if (!instance.Variables.Contains(xd.Variable)) throw new NotImplementedException();
                 }
+#endif
                 if (set.Count == 12)
                 {
                     List<Pair> list = bruteColor(set, instance.Restrictions);

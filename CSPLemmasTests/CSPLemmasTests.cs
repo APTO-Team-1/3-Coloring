@@ -304,6 +304,31 @@ namespace CSPLemmas.Tests
 
             return data;
         }
+        public static IEnumerable<object[]> GetDataLemma19()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for (int i = 40; i < 50; i++)
+            {
+                CspInstance instance = new CspInstance();
+                for (int j = 0; j < i; i++)
+                {
+                    var v = new Variable(r.Next(3, 4));
+                    instance.AddVariable(v);
+                }
+                data.Add(new object[] { instance });
+            }
+            return data;
+
+            void FormGood3Component()
+            {
+
+            }
+            void FormSmall2Component()
+            {
+
+            }
+        }
 
 
 
@@ -594,6 +619,75 @@ namespace CSPLemmas.Tests
                 }
             }
 
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma10))]
+        public void Lemma18Test(CspInstance instance)
+        {
+            List<CspInstance> instances = new() { instance };
+            List<Pair> TwoComponent;
+
+            Lemma18TestInternal();
+
+            
+            foreach (CspInstance inst in instances)  // sprawdzamy czy nie został jakis 2 komponent
+            {
+                foreach (Variable var in inst.Variables)
+                {
+                    foreach (Color color in var.AvalibleColors)
+                    {
+                        if (color.Restrictions.Count == 2)
+                        {
+                            TwoComponent = new();
+                            Color currColor = color;
+                            Color lastColor = color;
+                            Pair[] tempList = new Pair[2];
+
+                            TwoComponent.Add(currColor.Restrictions.First());
+                            currColor = currColor.Restrictions.First().Color;
+
+                            while (currColor.Restrictions.Count == 2)
+                            {
+                                tempList = currColor.Restrictions.ToArray();
+                                if (tempList[0].Color != lastColor)
+                                {
+                                    TwoComponent.Add(tempList[0]);
+                                    lastColor = currColor;
+                                    currColor = tempList[0].Color;
+                                }
+                                else
+                                {
+                                    TwoComponent.Add(tempList[1]);
+                                    lastColor = currColor;
+                                    currColor = tempList[1].Color;
+                                }
+                                Assert.NotEqual(currColor, color);
+                            }
+                        }
+                    }
+                }
+            }
+
+            void Lemma18TestInternal()
+            {
+                bool flag = false;
+                foreach(CspInstance inst in instances)
+                {
+                    var afterLemmaInst = CSPLemmas.Lemma18(inst);
+                    if(afterLemmaInst.Count > 0)
+                    {
+                        instances.Remove(inst);
+                        instances.AddRange(afterLemmaInst);
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag)
+                {
+                    Lemma18TestInternal();
+                }
+            }
         }
     }
 }

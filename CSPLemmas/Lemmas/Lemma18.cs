@@ -7,6 +7,7 @@ namespace CSPLemmas
 {
     public static partial class CSPLemmas
     {
+        //w main algorytmie while Lemma18(instance).count > 0 ...
         public static List<CspInstance> Lemma18(CspInstance instance)
         {
             List<Pair> TwoComponent;
@@ -42,7 +43,6 @@ namespace CSPLemmas
                             }
                             if (currColor == color) // mamy 2 komponent
                             {
-                                List<CspInstance> result = new List<CspInstance>();
                                 if (TwoComponent.Count == 4)  // cykl długości 4 kolorujemy po przekątnej
                                 {
                                     CspInstance instance2 = instance.Clone();
@@ -53,9 +53,7 @@ namespace CSPLemmas
                                     instance2.AddToResult(TwoComponent[1]);
                                     instance2.AddToResult(TwoComponent[3]);
 
-                                    result.AddRange(Lemma18(instance));
-                                    result.AddRange(Lemma18(instance2));
-                                    return result;
+                                    return new() { instance, instance2 };
                                 }
                                 List<Pair> last5Pairs = new List<Pair> { TwoComponent[0], TwoComponent[1], TwoComponent[2], TwoComponent[3], TwoComponent[4] };
                                 int lastIndex = 4;
@@ -68,9 +66,7 @@ namespace CSPLemmas
                                         instance.AddToResult(last5Pairs[1]);
                                         instance2.AddToResult(last5Pairs[2]);
 
-                                        result.AddRange(Lemma18(instance));
-                                        result.AddRange(Lemma18(instance2));
-                                        return result;
+                                        return new() { instance, instance2 };
                                     }
                                     else if (last5Pairs[1].Variable == last5Pairs[4].Variable) // cykl postci (v,R), (w,R), (x,R), (v,G)
                                     {
@@ -78,9 +74,7 @@ namespace CSPLemmas
                                         instance.AddToResult(last5Pairs[2]);
                                         instance2.AddToResult(last5Pairs[3]);
 
-                                        result.AddRange(Lemma18(instance));
-                                        result.AddRange(Lemma18(instance2));
-                                        return result;
+                                        return new() { instance, instance2 };
                                     }
                                     else if (HasDifferentVariables(last5Pairs))// 5 różnych variabli pod rząd
                                     {
@@ -91,10 +85,7 @@ namespace CSPLemmas
                                         instance3.AddToResult(last5Pairs[0]);
                                         instance3.AddToResult(last5Pairs[3]);
 
-                                        result.AddRange(Lemma18(instance));
-                                        result.AddRange(Lemma18(instance2));
-                                        result.AddRange(Lemma18(instance3));
-                                        return result;
+                                        return new() { instance, instance2, instance3 };
                                     }
                                     last5Pairs.RemoveAt(0); // usuniecie pierwszej pary
                                     lastIndex++;

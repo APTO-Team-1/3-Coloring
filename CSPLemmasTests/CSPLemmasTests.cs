@@ -291,6 +291,20 @@ namespace CSPLemmas.Tests
             return instance;
         }
 
+        public static IEnumerable<object[]> GetDataLemma10()
+        {
+            var data = new List<object[]>();
+            Random r = new(12345);
+            for (int i = 40; i < 50; i++)
+            {
+                var instance = GetRandomInstance(maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
+
+                data.Add(new object[] { instance });
+            }
+
+            return data;
+        }
+
 
 
         #endregion
@@ -512,6 +526,71 @@ namespace CSPLemmas.Tests
                             }
                         }
                     }
+                }
+            }
+
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma10))]
+        public void Lemma10Test(CspInstance instance)
+        {
+            List<CspInstance> instances = new() { instance };
+            Lemma10TestInternal();
+
+            foreach (CspInstance inst in instances)
+            {
+                foreach (var var in inst.Variables)
+                {
+                    foreach (var col in var.AvalibleColors)
+                    {
+                        if (col.Restrictions.Count == 2)
+                        {
+                            var tempTab = col.Restrictions.ToArray();
+                            Assert.NotEqual(tempTab[0].Variable, tempTab[1].Variable);
+                        }
+                    }
+                }
+            }
+
+            void Lemma10TestInternal()
+            {
+                bool foundFlag = false;
+                int indexOfInst = 0;
+                Variable v = new(1), v2 = new(1);
+                Color c = new(1), c2_1 = new(1), c2_2 = new(1);
+                foreach(CspInstance inst in instances)
+                {
+                    foreach (var var in inst.Variables)
+                    {
+                        foreach (var col in var.AvalibleColors)
+                        {
+                            if (col.Restrictions.Count == 2)
+                            {
+                                var tempTab = col.Restrictions.ToArray();
+                                if (tempTab[0].Variable == tempTab[1].Variable)
+                                {
+                                    c = col;
+                                    c2_1 = tempTab[0].Color;
+                                    c2_2 = tempTab[1].Color;
+                                    indexOfInst = instances.IndexOf(inst);
+                                    v2 = tempTab[0].Variable;
+                                    foundFlag = true;
+                                    break;
+                                }
+                            }
+                            if (foundFlag) break;
+                        }
+                        if (foundFlag) break;
+                    }
+                    if (foundFlag) break;
+                }
+                if(foundFlag)
+                {
+                    CspInstance foundInst = instances[indexOfInst];
+                    instances.RemoveAt(indexOfInst);
+                    instances.AddRange(CSPLemmas.Lemma10(foundInst, v, c, v2, c2_1, c2_2));
+                    Lemma10TestInternal();
                 }
             }
 

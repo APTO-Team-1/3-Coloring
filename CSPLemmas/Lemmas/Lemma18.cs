@@ -58,7 +58,7 @@ namespace CSPLemmas
                                 List<Pair> last5Pairs = new List<Pair> { TwoComponent[0], TwoComponent[1], TwoComponent[2], TwoComponent[3], TwoComponent[4] };
                                 int lastIndex = 4;
                                 Pair currPair = TwoComponent[4];
-                                while (currPair.Color.Value != TwoComponent[4].Color.Value)
+                                do
                                 {
                                     if (last5Pairs[0].Variable == last5Pairs[3].Variable) // cykl postci (v,R), (w,R), (x,R), (v,G)
                                     {
@@ -89,8 +89,9 @@ namespace CSPLemmas
                                     }
                                     last5Pairs.RemoveAt(0); // usuniecie pierwszej pary
                                     lastIndex++;
-                                    last5Pairs.Add(TwoComponent[lastIndex % TwoComponent.Count]); //dodanie na koniec nastepnej
-                                }
+                                    lastIndex = lastIndex % TwoComponent.Count;
+                                    last5Pairs.Add(TwoComponent[lastIndex]); //dodanie na koniec nastepnej
+                                } while (lastIndex != 4);
                                 // przeszlismy cały 2komponent i nie znalezlismy zadnych z szczegolnych przypadkow czyli mamy cykl po czterech variablach o długosci 8 lub 12
                                 instance.AddToResult(TwoComponent[0]);
                                 instance.AddToResult(TwoComponent[2]);

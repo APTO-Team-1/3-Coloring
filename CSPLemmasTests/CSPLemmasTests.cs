@@ -306,26 +306,130 @@ namespace CSPLemmas.Tests
         }
         public static IEnumerable<object[]> GetDataLemma19()
         {
+            List<Variable> variables = new();
+            CspInstance instance = new CspInstance();
             var data = new List<object[]>();
             Random r = new(12345);
-            for (int i = 40; i < 50; i++)
+            for (int i = 10; i < 15; i++)
             {
-                CspInstance instance = new CspInstance();
+                variables = new();
+                instance = new CspInstance();
                 for (int j = 0; j < i; i++)
                 {
                     var v = new Variable(r.Next(3, 4));
                     instance.AddVariable(v);
+                    variables.Add(v);
+                }
+                for(int j =0; j< 15; j++)
+                {
+                    FormGood3Component(i);
+                    FormSmall2Component(i);
+                }
+                foreach(Variable var in variables)
+                {
+                    bool isInComponent = false;
+                    foreach(Color col in var.AvalibleColors)
+                    {
+                        if (col.Restrictions.Count > 0) isInComponent = true;
+                    }
+                    if (!isInComponent) instance.RemoveVariable(var);
                 }
                 data.Add(new object[] { instance });
             }
             return data;
 
-            void FormGood3Component()
+            void FormGood3Component(int varCount)
             {
-
+                Random r = new Random();
+                int v1 = r.Next(varCount);
+                Color c1 = new Color(1), c2 = new Color(1), c3 = new Color(1), c4 = new Color(1);
+                int v2 = r.Next(varCount);
+                int v3 = r.Next(varCount);
+                int v4 = r.Next(varCount);
+                if (v1 == v2 || v1 == v3 || v1 == v4 || v2 == v3 || v2 == v4 || v3 == v4)
+                    return;
+                bool flag = false;
+                foreach (Color col in variables[v1].AvalibleColors)
+                {
+                    if (col.Restrictions.Count == 0)
+                    {
+                        flag = true;
+                        c1 = col;
+                    }
+                }
+                foreach (Color col in variables[v2].AvalibleColors)
+                {
+                    if (col.Restrictions.Count == 0)
+                    {
+                        flag = true;
+                        c2 = col;
+                    }
+                }
+                foreach (Color col in variables[v3].AvalibleColors)
+                {
+                    if (col.Restrictions.Count == 0)
+                    {
+                        flag = true;
+                        c3 = col;
+                    }
+                }
+                foreach (Color col in variables[v4].AvalibleColors)
+                {
+                    if (col.Restrictions.Count == 0)
+                    {
+                        flag = true;
+                        c4 = col;
+                    }
+                }
+                if (!flag) return;
+                instance.AddRestriction(new Pair(variables[v1],c1), new Pair(variables[v2],c2));
+                instance.AddRestriction(new Pair(variables[v1], c1), new Pair(variables[v3], c3));
+                instance.AddRestriction(new Pair(variables[v1], c1), new Pair(variables[v4], c4));
+                instance.AddRestriction(new Pair(variables[v2], c2), new Pair(variables[v3], c3));
+                instance.AddRestriction(new Pair(variables[v2], c2), new Pair(variables[v4], c4));
+                instance.AddRestriction(new Pair(variables[v3], c3), new Pair(variables[v4], c4));
             }
-            void FormSmall2Component()
+            void FormSmall2Component(int varCount)
             {
+                Random r = new Random();
+                int v1 = r.Next(varCount);
+                Color c1 = new Color(1), c2 = new Color(1), c3 = new Color(1);
+                int v2 = r.Next(varCount);
+                int v3 = r.Next(varCount);
+                if (v1 == v2 || v1 == v3 || v2 == v3  )
+                    return;
+                bool flag = false;
+                foreach (Color col in variables[v1].AvalibleColors)
+                {
+                    if (col.Restrictions.Count == 0)
+                    {
+                        flag = true;
+                        c1 = col;
+                        break;
+                    }
+                }
+                foreach (Color col in variables[v2].AvalibleColors)
+                {
+                    if (col.Restrictions.Count == 0)
+                    {
+                        flag = true;
+                        c2 = col;
+                        break;
+                    }
+                }
+                foreach (Color col in variables[v3].AvalibleColors)
+                {
+                    if (col.Restrictions.Count == 0)
+                    {
+                        flag = true;
+                        c3 = col;
+                        break;
+                    }
+                }
+                if (!flag) return;
+                instance.AddRestriction(new Pair(variables[v1], c1), new Pair(variables[v2], c2));
+                instance.AddRestriction(new Pair(variables[v1], c1), new Pair(variables[v3], c3));
+                instance.AddRestriction(new Pair(variables[v2], c2), new Pair(variables[v3], c3));
 
             }
         }
@@ -688,6 +792,19 @@ namespace CSPLemmas.Tests
                     Lemma18TestInternal();
                 }
             }
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDataLemma19))]
+        public void Lemma19Test(CspInstance instance)
+        {
+            CSPLemmas.Lemma19(instance);
+            foreach(var R1 in instance.Result)
+                foreach(var R2 in instance.Result)
+                {
+                    bool test = instance.Restrictions.Contains(new Restriction(R1,R2));
+                    Assert.False(test);
+                }                
         }
     }
 }

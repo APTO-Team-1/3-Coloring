@@ -810,7 +810,7 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma19))]
         public void Lemma19Test(CspInstance instance)
         {
-            CSPLemmas.Lemma19(instance);
+            bool canColor = CSPLemmas.Lemma19(instance);
             foreach(var R1 in instance.Result)
                 foreach(var R2 in instance.Result)
                 {

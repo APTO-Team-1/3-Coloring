@@ -9,7 +9,7 @@ namespace CSPLemmas
 {
     public static partial class CSPLemmas
     {
-        public static void Lemma19(CspInstance instance)
+        public static bool Lemma19(CspInstance instance)
         {
             Dictionary<Pair, bool> alreadyInACompontent = new();
 
@@ -69,7 +69,7 @@ namespace CSPLemmas
             int[] result = new BipartieGraphMaxMatching().FindMaxMatching(g); //partA  to są variables a partB to są komponenty
             for (int i = 0; i < Small2Components.Count; i++)
             {
-                if (result[i] == -1) throw new Exception("nie da sie pokolorwoać co teraz");
+                if (result[i] == -1) return false;
                 int currId = indexToId[result[i]]; // id zmiennej ktora została przyznana do small2componentu i
                 if (Small2Components[i].Item1.Variable.Id == currId)
                     instance.AddToResult(Small2Components[i].Item1);
@@ -80,7 +80,7 @@ namespace CSPLemmas
             }
             for (int i = 0; i < Good3Components.Count; i++)
             {
-                if (result[i] == -1) throw new Exception("nie da sie pokolorwoać co teraz");
+                if (result[i] == -1) return false;
                 int currId = indexToId[result[i + Small2Components.Count]]; // id zmiennej ktora została przyznana do good3component i
                 if (Good3Components[i].Item1.Variable.Id == currId)
                     instance.AddToResult(Good3Components[i].Item1);
@@ -91,6 +91,7 @@ namespace CSPLemmas
                 else
                     instance.AddToResult(Good3Components[i].Item4);
             }
+            return true;
         }
     }
 }

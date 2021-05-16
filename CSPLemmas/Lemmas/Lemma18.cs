@@ -45,13 +45,14 @@ namespace CSPLemmas
                             {
                                 if (TwoComponent.Count == 4)  // cykl długości 4 kolorujemy po przekątnej
                                 {
-                                    CspInstance instance2 = instance.Clone();
+                                    (CspInstance instance2,Variable[] var13,Color[] col13) = instance.CloneAndReturnCorresponding(new Variable[2] 
+                                        { TwoComponent[1].Variable,TwoComponent[3].Variable}, new Color[2] { TwoComponent[1].Color,TwoComponent[3].Color});
 
                                     instance.AddToResult(TwoComponent[0]);
                                     instance.AddToResult(TwoComponent[2]);
 
-                                    instance2.AddToResult(TwoComponent[1]);
-                                    instance2.AddToResult(TwoComponent[3]);
+                                    instance2.AddToResult(var13[0],col13[0]);
+                                    instance2.AddToResult(var13[1], col13[1]);
 
                                     return new() { instance, instance2 };
                                 }
@@ -62,28 +63,29 @@ namespace CSPLemmas
                                 {
                                     if (last5Pairs[0].Variable == last5Pairs[3].Variable) // cykl postci (v,R), (w,R), (x,R), (v,G)
                                     {
-                                        CspInstance instance2 = instance.Clone();
+                                        (CspInstance instance2, Variable v, Color c) = instance.CloneAndReturnCorresponding(last5Pairs[2].Variable, last5Pairs[2].Color);
                                         instance.AddToResult(last5Pairs[1]);
-                                        instance2.AddToResult(last5Pairs[2]);
+                                        instance2.AddToResult(v,c);
 
                                         return new() { instance, instance2 };
                                     }
                                     else if (last5Pairs[1].Variable == last5Pairs[4].Variable) // cykl postci (v,R), (w,R), (x,R), (v,G)
                                     {
-                                        CspInstance instance2 = instance.Clone();
+                                        (CspInstance instance2, Variable v, Color c) = instance.CloneAndReturnCorresponding(last5Pairs[3].Variable,last5Pairs[3].Color);
                                         instance.AddToResult(last5Pairs[2]);
-                                        instance2.AddToResult(last5Pairs[3]);
+                                        instance2.AddToResult(v,c);
 
                                         return new() { instance, instance2 };
                                     }
                                     else if (HasDifferentVariables(last5Pairs))// 5 różnych variabli pod rząd
                                     {
-                                        CspInstance instance2 = instance.Clone();
-                                        CspInstance instance3 = instance.Clone();
+                                        (CspInstance instance2, Variable v, Color c) = instance.CloneAndReturnCorresponding(last5Pairs[2].Variable, last5Pairs[2].Color);
+                                        (CspInstance instance3, Variable[] var03, Color[] col03) = instance.CloneAndReturnCorresponding(new Variable[2]
+                                        { TwoComponent[0].Variable,TwoComponent[3].Variable}, new Color[2] { TwoComponent[0].Color, TwoComponent[3].Color });
                                         instance.AddToResult(last5Pairs[1]);
-                                        instance2.AddToResult(last5Pairs[2]);
-                                        instance3.AddToResult(last5Pairs[0]);
-                                        instance3.AddToResult(last5Pairs[3]);
+                                        instance2.AddToResult(v, c);
+                                        instance3.AddToResult(var03[0],col03[0]);
+                                        instance3.AddToResult(var03[1], col03[1]);
 
                                         return new() { instance, instance2, instance3 };
                                     }

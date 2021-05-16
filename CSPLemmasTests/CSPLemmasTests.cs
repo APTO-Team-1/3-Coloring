@@ -297,7 +297,7 @@ namespace CSPLemmas.Tests
             Random r = new(12345);
             for (int i = 40; i < 50; i++)
             {
-                var instance = GetRandomInstance(maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
+                var instance = GetRandomInstance(maxColors:4, approximateRestrictionsCount: 500);
 
                 data.Add(new object[] { instance });
             }
@@ -310,11 +310,11 @@ namespace CSPLemmas.Tests
             CspInstance instance = new CspInstance();
             var data = new List<object[]>();
             Random r = new(12345);
-            for (int i = 10; i < 15; i++)
+            for (int i = 14; i < 15; i++)
             {
                 variables = new();
                 instance = new CspInstance();
-                for (int j = 0; j < i; i++)
+                for (int j = 0; j < i; j++)
                 {
                     var v = new Variable(r.Next(3, 4));
                     instance.AddVariable(v);
@@ -357,6 +357,8 @@ namespace CSPLemmas.Tests
                         c1 = col;
                     }
                 }
+                if (!flag) return;
+                flag = false;
                 foreach (Color col in variables[v2].AvalibleColors)
                 {
                     if (col.Restrictions.Count == 0)
@@ -365,6 +367,8 @@ namespace CSPLemmas.Tests
                         c2 = col;
                     }
                 }
+                if (!flag) return;
+                flag = false;
                 foreach (Color col in variables[v3].AvalibleColors)
                 {
                     if (col.Restrictions.Count == 0)
@@ -373,6 +377,8 @@ namespace CSPLemmas.Tests
                         c3 = col;
                     }
                 }
+                if (!flag) return;
+                flag = false;
                 foreach (Color col in variables[v4].AvalibleColors)
                 {
                     if (col.Restrictions.Count == 0)
@@ -408,6 +414,8 @@ namespace CSPLemmas.Tests
                         break;
                     }
                 }
+                if (!flag) return;
+                flag = false;
                 foreach (Color col in variables[v2].AvalibleColors)
                 {
                     if (col.Restrictions.Count == 0)
@@ -417,6 +425,8 @@ namespace CSPLemmas.Tests
                         break;
                     }
                 }
+                if (!flag) return;
+                flag = false;
                 foreach (Color col in variables[v3].AvalibleColors)
                 {
                     if (col.Restrictions.Count == 0)
@@ -700,6 +710,7 @@ namespace CSPLemmas.Tests
                                 if (tempTab[0].Variable == tempTab[1].Variable)
                                 {
                                     c = col;
+                                    v = var;
                                     c2_1 = tempTab[0].Color;
                                     c2_2 = tempTab[1].Color;
                                     indexOfInst = instances.IndexOf(inst);
@@ -718,7 +729,8 @@ namespace CSPLemmas.Tests
                 {
                     CspInstance foundInst = instances[indexOfInst];
                     instances.RemoveAt(indexOfInst);
-                    instances.AddRange(CSPLemmas.Lemma10(foundInst, v, c, v2, c2_1, c2_2));
+                    var aaa = CSPLemmas.Lemma10(foundInst, v, c, v2, c2_1, c2_2);
+                    instances.AddRange(aaa);
                     Lemma10TestInternal();
                 }
             }

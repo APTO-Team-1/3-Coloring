@@ -37,7 +37,7 @@ namespace CSPLemmas
                             alreadyInACompontent[tempTab[1]] = true;
                             alreadyInACompontent[tempTab[2]] = true;
                         }
-                        else throw new Exception("uhhhh cos chyba jest nie tak");
+                        //else throw new Exception($"restriction count was {col.Restrictions.Count}");
                     }
                 }
             }

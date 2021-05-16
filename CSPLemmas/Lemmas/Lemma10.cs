@@ -23,7 +23,7 @@ namespace CSPLemmas
             Color R = new(345376545);
             foreach (Color col in v2.AvalibleColors)
                 if (col.Value != c2_1.Value && col.Value != c2_2.Value) R = col;
-            (CspInstance instance2,Variable[] clonedV,Color[] ClonedC )= instance.CloneAndReturnCorresponding(new Variable[] {v,v2},new Color[] {c,c2_1,c2_2,R});
+            (CspInstance instance2,Variable[] clonedV,Color[] ClonedC )= instance.CloneAndReturnCorresponding(new Variable[] {v,v2,v,v2},new Color[] {c,c2_1,c2_2,R});
             Variable vCloned = clonedV[0], v2Cloned = clonedV[1];
             Color cCloned = ClonedC[0],RCloned = ClonedC[3];
 
@@ -33,7 +33,7 @@ namespace CSPLemmas
                 instance2.RemoveColor(v2Cloned, RCloned); // nie bierzemy kolora R
                 RemoveVariableWith2Colors(instance2, v2Cloned);  // zostały 2 kolory do wyboru
             }
-            else
+            else if (v2.AvalibleColors.Count == 4)
             {
                 Color R2 = new(345376545), R2Cloned = new(345376545);
                 foreach (Color col in v2.AvalibleColors)

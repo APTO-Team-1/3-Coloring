@@ -66,7 +66,7 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma4()
         {
             var data = new List<object[]>();
-            Random r = new();
+            Random r = new(123);
             for (int i = 0; i < 20; i++)
             {
                 var instance = GetRandomInstance(3, 3, i * 50 + 1, i * 500 + 1);
@@ -104,7 +104,7 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma5()
         {
             var data = new List<object[]>();
-            Random r = new();
+            Random r = new(123);
             for (int i = 0; i < 20; i++)
             {
                 var instance = GetRandomInstance(3, 3, i * 50 + 1, i * 500 + 1);
@@ -124,7 +124,7 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma6()
         {
             var data = new List<object[]>();
-            Random r = new();
+            Random r = new(123);
             for (int i = 0; i < 20; i++)
             {
                 var instance = GetRandomInstance(3, 3, i * 50 + 2, i * 500 + 1);
@@ -340,7 +340,7 @@ namespace CSPLemmas.Tests
 
             void FormGood3Component(int varCount)
             {
-                Random r = new Random();
+                Random r = new Random(123);
                 int v1 = r.Next(varCount);
                 Color c1 = new Color(1), c2 = new Color(1), c3 = new Color(1), c4 = new Color(1);
                 int v2 = r.Next(varCount);
@@ -397,7 +397,7 @@ namespace CSPLemmas.Tests
             }
             void FormSmall2Component(int varCount)
             {
-                Random r = new Random();
+                Random r = new Random(123);
                 int v1 = r.Next(varCount);
                 Color c1 = new Color(1), c2 = new Color(1), c3 = new Color(1);
                 int v2 = r.Next(varCount);

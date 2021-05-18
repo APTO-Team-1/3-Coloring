@@ -52,7 +52,7 @@ namespace GraphLib.Definitions
                 PartBVertices[i] = new();
         }
 
-    public BipartieGraph(HashSet<int>[] partAVertices, HashSet<int>[] partBVertices) 
+        public BipartieGraph(HashSet<int>[] partAVertices, HashSet<int>[] partBVertices) 
         {
             this.PartAVertices = partAVertices;
             this.PartBVertices = partBVertices;

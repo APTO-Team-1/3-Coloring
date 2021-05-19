@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
@@ -28,16 +28,15 @@ namespace CSPLemmas
                         foreach (var col in v2.AvalibleColors)
                             if (col != c2)
                             {
-                                var existingCombinedColor = vCombinedColors.FirstOrDefault(cc => cc.Value == col.Value);
-                                if (existingCombinedColor != null)
-                                    existingCombinedColor.Restrictions.Union(col.Restrictions);
-                                else
                                     vCombinedColors.Add(new Color(col.Value, col.Restrictions));
                             }
-
+#if DEBUG
+                        if (vCombinedColors.Count != 4) throw new System.ApplicationException("Powinien mieć 4 kolory");
+#endif
                         instance.RemoveVariable(v);
                         instance.RemoveVariable(v2);
                         instance.AddVariableAndColorsRestrictions(vCombinedColors);
+
                         return new() { instance };
                     }
                     else

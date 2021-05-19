@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
@@ -35,7 +35,7 @@ namespace CSPLemmas
             }
             else if (v2.AvalibleColors.Count == 4)
             {
-                Color R2 = new(345376545), R2Cloned = new(345376545);
+                Color R2, R2Cloned = new(345376545);
                 foreach (Color col in v2.AvalibleColors)
                     if (col.Value != c2_1.Value && col.Value != c2_2.Value && col.Value != R.Value) R2 = col;
                 foreach (Color col in clonedV[1].AvalibleColors)

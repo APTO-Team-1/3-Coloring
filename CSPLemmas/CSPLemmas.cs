@@ -1,7 +1,7 @@
 ﻿using CSP;
 using System;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {

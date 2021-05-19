@@ -30,7 +30,7 @@ namespace CSP
 
         public bool Equals(Pair pair)
         {
-            return Variable == pair.Variable && Color == pair.Color ? true : false;
+            return Variable == pair.Variable && Color == pair.Color;
         }
     }
 }

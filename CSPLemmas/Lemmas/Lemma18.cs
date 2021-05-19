@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
-        //w main algorytmie while Lemma18(instance).count > 0 ...
-        public static List<CspInstance> Lemma18(CspInstance instance)
+        //w main algorytmie while applied  ...
+        public static List<CspInstance> Lemma18(CspInstance instance, out bool applied)
         {
             List<Pair> TwoComponent;
 
@@ -18,6 +18,7 @@ namespace CSPLemmas
                 {
                     if (color.Restrictions.Count == 2)
                     {
+                        applied = true;
                         TwoComponent = new();
                         Color currColor = color;
                         Color lastColor = color;
@@ -56,9 +57,8 @@ namespace CSPLemmas
 
                                     return new() { instance, instance2 };
                                 }
-                                List<Pair> last5Pairs = new List<Pair> { TwoComponent[0], TwoComponent[1], TwoComponent[2], TwoComponent[3], TwoComponent[4] };
+                                List<Pair> last5Pairs = new() { TwoComponent[0], TwoComponent[1], TwoComponent[2], TwoComponent[3], TwoComponent[4] };
                                 int lastIndex = 4;
-                                Pair currPair = TwoComponent[4];
                                 do
                                 {
                                     if (last5Pairs[0].Variable == last5Pairs[3].Variable) // cykl postci (v,R), (w,R), (x,R), (v,G)
@@ -91,7 +91,7 @@ namespace CSPLemmas
                                     }
                                     last5Pairs.RemoveAt(0); // usuniecie pierwszej pary
                                     lastIndex++;
-                                    lastIndex = lastIndex % TwoComponent.Count;
+                                    lastIndex %= TwoComponent.Count;
                                     last5Pairs.Add(TwoComponent[lastIndex]); //dodanie na koniec nastepnej
                                 } while (lastIndex != 4);
                                 // przeszlismy cały 2komponent i nie znalezlismy zadnych z szczegolnych przypadkow czyli mamy cykl po czterech variablach o długosci 8 lub 12
@@ -105,7 +105,8 @@ namespace CSPLemmas
                     }
                 }
             }
-            return new List<CspInstance>();  // nie znaleźliśmu żadnych 2komponentów
+            applied = false;
+            return new List<CspInstance> { instance };  // nie znaleźliśmu żadnych 2komponentów
         }
         private static bool HasDifferentVariables(List<Pair> pairs)
         {

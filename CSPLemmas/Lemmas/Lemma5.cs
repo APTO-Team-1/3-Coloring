@@ -1,6 +1,6 @@
 ﻿using CSP;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {

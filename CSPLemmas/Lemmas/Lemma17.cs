@@ -2,17 +2,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
-        public static (List<CspInstance>, bool) Lemma17(CspInstance instance)
+        public static List<CspInstance> Lemma17(CspInstance instance, out bool applied)
         {
             List<CspInstance> result = new();
-            HashSet<Pair> set = findBigThreeComponent(instance.Restrictions);
+            HashSet<Pair> set = FindBigThreeComponent(instance.Restrictions);
             if(set != null)
             {
-                List<Pair> witness = findWitness(set, instance.Restrictions);
+                applied = true;
+                List<Pair> witness = FindWitness(set, instance.Restrictions);
                 if(witness != null)
                 {
                     CspInstance instance1 = instance.Clone();
@@ -80,22 +81,23 @@ namespace CSPLemmas
                         result.Add(instance2);
                     }
                 }
+                return result;
             } 
             else
             {
-                return (new() { instance }, false);
+                applied = false;
+                return new() { instance };
             }
 
-            return (result, true);
         }
-        public static HashSet<Pair> findBigThreeComponent(IReadOnlySet<Restriction> restrictions)
+        public static HashSet<Pair> FindBigThreeComponent(IReadOnlySet<Restriction> restrictions)
         {
             foreach (Restriction res in restrictions)
             {
                 if (res.Pair1.Color.Restrictions.Count == 3)
                 {
                     HashSet<Pair> pairs = new() { res.Pair1 };
-                    findComponentForPair(restrictions, res.Pair1, pairs);
+                    FindComponentForPair(restrictions, res.Pair1, pairs);
                     if (pairs != null)
                     {
                         HashSet<Variable> distinctVariables = new();
@@ -112,7 +114,7 @@ namespace CSPLemmas
                 if (res.Pair2.Color.Restrictions.Count == 3)
                 {
                     HashSet<Pair> pairs = new() { res.Pair2 };
-                    findComponentForPair(restrictions, res.Pair2, pairs);
+                    FindComponentForPair(restrictions, res.Pair2, pairs);
                     if (pairs != null)
                     {
                         HashSet<Variable> distinctVariables = new();
@@ -129,7 +131,7 @@ namespace CSPLemmas
             }
             return null;
         }
-        private static List<Pair> findWitness(HashSet<Pair> component, IReadOnlySet<Restriction> restrictions)
+        private static List<Pair> FindWitness(HashSet<Pair> component, IReadOnlySet<Restriction> restrictions)
         {
             foreach(Pair p1 in component)
             {

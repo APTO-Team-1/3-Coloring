@@ -4,18 +4,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
-        public static (List<CspInstance>, bool) Lemma15(CspInstance instance)
+        public static List<CspInstance> Lemma15(CspInstance instance, out bool applied)
         {
             List<CspInstance> result = new();
-            HashSet<Pair> set = findSmallBadThreeComponent(instance.Restrictions);
+            HashSet<Pair> set = FindSmallBadThreeComponent(instance.Restrictions);
             
             if(set != null)
             {
-#if DEBUG
+                applied = true;
+#if DEBUG       
                 foreach (var xd in set)
                 {
                     if (!instance.Variables.Contains(xd.Variable)) throw new NotImplementedException();
@@ -23,7 +24,7 @@ namespace CSPLemmas
 #endif
                 if (set.Count == 12)
                 {
-                    List<Pair> list = bruteColor(set, instance.Restrictions);
+                    List<Pair> list = BruteColor(set, instance.Restrictions);
                     if(list != null)
                     {
                         foreach (Pair p in list)
@@ -34,12 +35,12 @@ namespace CSPLemmas
                     } 
                     else
                     {
-                        return (new(), true);
+                        return new();
                     }
                 }
                 else if (set.Count == 8)
                 {
-                    List<Pair> setWithTriangles = getWithTriangle(set, instance.Restrictions);
+                    List<Pair> setWithTriangles = GetWithTriangle(set, instance.Restrictions);
                     if(setWithTriangles != null) //v1, v2, w1, w2, x1, x2, y1, y2
                     {
                         (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(
@@ -68,7 +69,7 @@ namespace CSPLemmas
                     }
                     else
                     {
-                        List<Pair> list = bruteColor(set, instance.Restrictions);
+                        List<Pair> list = BruteColor(set, instance.Restrictions);
                         foreach(Pair p in list)
                         {
                             instance.AddToResult(p);
@@ -76,21 +77,23 @@ namespace CSPLemmas
                         result.Add(instance);
                     }
                 }
+                return result;
             } 
             else
             {
-                return (new() { instance }, false);
+                applied = false;
+                return new() { instance };
             }
-            return (result, true);
+            
         }
-        public static HashSet<Pair> findSmallBadThreeComponent(IReadOnlySet<Restriction> restrictions) 
+        public static HashSet<Pair> FindSmallBadThreeComponent(IReadOnlySet<Restriction> restrictions) 
         {
             foreach(Restriction res in restrictions)
             {
                 if(res.Pair1.Color.Restrictions.Count == 3)
                 {
                     HashSet<Pair> pairs = new() { res.Pair1 };
-                    findComponentForPair(restrictions, res.Pair1, pairs);
+                    FindComponentForPair(restrictions, res.Pair1, pairs);
                     if (pairs != null && pairs.Count > 4)
                     {
                         HashSet<Variable> distinctVariables = new();
@@ -107,7 +110,7 @@ namespace CSPLemmas
                 if (res.Pair2.Color.Restrictions.Count == 3)
                 {
                     HashSet<Pair> pairs = new() { res.Pair2 };
-                    findComponentForPair(restrictions, res.Pair2, pairs);
+                    FindComponentForPair(restrictions, res.Pair2, pairs);
                     if (pairs != null && pairs.Count > 4)
                     {
                         HashSet<Variable> distinctVariables = new();
@@ -124,7 +127,7 @@ namespace CSPLemmas
             }
             return null;
         }
-        private static void findComponentForPair(IReadOnlySet<Restriction> restrictions, Pair pair, HashSet<Pair> result)
+        private static void FindComponentForPair(IReadOnlySet<Restriction> restrictions, Pair pair, HashSet<Pair> result)
         {
             if (pair.Color.Restrictions.Count != 3) result = null;
             if (result == null) return;
@@ -133,11 +136,11 @@ namespace CSPLemmas
                 if(!result.Contains(restrictionPair))
                 {
                     result.Add(restrictionPair);
-                    findComponentForPair(restrictions, restrictionPair, result);
+                    FindComponentForPair(restrictions, restrictionPair, result);
                 }
             }
         }
-        private static List<Pair> getWithTriangle(HashSet<Pair> set, IReadOnlySet<Restriction> restrictions)
+        private static List<Pair> GetWithTriangle(HashSet<Pair> set, IReadOnlySet<Restriction> restrictions)
         {
             List<Pair> ret = new();
             Pair? t1_1 = null;
@@ -273,7 +276,7 @@ namespace CSPLemmas
             }
             return ret;
         }
-        private static List<Pair> bruteColor(HashSet<Pair> pairs, IReadOnlySet<Restriction> restrictions)
+        private static List<Pair> BruteColor(HashSet<Pair> pairs, IReadOnlySet<Restriction> restrictions)
         {
             List<Pair> pairs1 = new();
             pairs1.AddRange(pairs);

@@ -5,6 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CSPGraphConverter\CSPGraphConverter.csproj" />
+    <ProjectReference Include="..\CSPLemmas\CSPLemmas.csproj" />
+    <ProjectReference Include="..\CSP\CSP.csproj" />
     <ProjectReference Include="..\GraphLib\GraphLib.csproj" />
   </ItemGroup>
 

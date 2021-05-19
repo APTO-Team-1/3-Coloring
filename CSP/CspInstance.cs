@@ -63,15 +63,15 @@ namespace CSP
         #endregion
 
         #region color
-        public void AddColor(Pair pair)
+       
+        public void AddColor(Variable variable, Color color)
         {
-            foreach (var restriction in pair.Color.Restrictions)
+            variable.avalibleColors.Add(color);
+            foreach (var restriction in color.Restrictions)
             {
-                AddRestriction(pair, restriction);
+                AddRestriction(new Pair(variable, color), restriction);
             }
-            pair.Variable.avalibleColors.Add(pair.Color);
         }
-        public void AddColor(Variable variable, Color color) => AddColor(new Pair(variable, color));
 
         public void RemoveColor(Pair pair)
         {
@@ -86,13 +86,13 @@ namespace CSP
         #endregion
 
         #region variable
-        public void AddVariableAndColorsRestrictions(IEnumerable<Color> variableColors)
+        public void AddVariableAndColorsRestrictions(List<Color> variableColors)
         {
-            var v = new Variable(variableColors);
+            var v = new Variable(0);
             AddVariable(v);
             foreach (var c in variableColors)
             {
-                AddColor(new Pair(v, c));
+                AddColor(v, c);
             }
 
         }
@@ -165,8 +165,8 @@ namespace CSP
         /// <returns></returns>
         public (CspInstance instance, Variable v, Color c) CloneAndReturnCorresponding(Variable v, Color c)
         {
-            var res =  CloneAndReturnCorresponding(new Variable[] { v }, new Color[] { c });
-            return (res.instance, res.vArr[0], res.cArr[0]);
+            var (instance, vArr, cArr) =  CloneAndReturnCorresponding(new Variable[] { v }, new Color[] { c });
+            return (instance, vArr[0], cArr[0]);
         }
            
         public (CspInstance instance, Variable[] vArr, Color[] cArr) CloneAndReturnCorresponding(Variable[] vArr, Color[] cArr)

@@ -8,7 +8,7 @@ namespace CSPSimplifying
         public static void RemoveVariableWith2Colors(CspInstance instance, Variable v)
         {
 #if DEBUG
-            if(v.AvalibleColors.Count != 2)
+            if (v.AvalibleColors.Count != 2)
             {
                 throw new ArgumentException("Variable doesn't have 2 avalible colors");
             }
@@ -20,12 +20,8 @@ namespace CSPSimplifying
                     instance.AddRestriction(pair1, pair2);
                 }
             }
+
             instance.RemoveVariable(v);
-            
         }
-
-       
     }
-
-  
 }

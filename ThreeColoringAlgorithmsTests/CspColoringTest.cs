@@ -3,11 +3,12 @@ using GraphLib.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ThreeColoringAlgorithms;
 using Xunit;
 
 namespace ThreeColoringAlgorithmsTests
 {
-    public class BruteForceTests
+    public class CspColoringTests
     {
         public static IEnumerable<object[]> GetData() => ColoringTestUtils.GetData();
         public static IEnumerable<object[]> GetDataFailure() => ColoringTestUtils.GetDataFailure();
@@ -16,7 +17,7 @@ namespace ThreeColoringAlgorithmsTests
         [MemberData(nameof(GetData))]
         public void TestColoringSuccesfull(Graph g)
         {
-            var coloring = new BruteForce().ThreeColorig(g);
+            var coloring = new CspColoring().ThreeColorig(g);
 
             ColoringTestUtils.CheckColoringCorrectness(g, coloring);
         }
@@ -25,7 +26,7 @@ namespace ThreeColoringAlgorithmsTests
         [MemberData(nameof(GetDataFailure))]
         public void TestColoringImposible(Graph g)
         {
-            Assert.Null(new BruteForce().ThreeColorig(g));
+            Assert.Null(new CspColoring().ThreeColorig(g));
         }
 
 

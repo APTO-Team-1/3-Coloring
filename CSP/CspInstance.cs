@@ -55,8 +55,11 @@ namespace CSP
             if (restrictions.Contains(restriction))
             {
                 restrictions.Remove(restriction);
-                restriction.Pair1.Color.RemoveRestriction(restriction.Pair2);
-                restriction.Pair2.Color.RemoveRestriction(restriction.Pair1);
+                var removed1 = restriction.Pair1.Color.RemoveRestriction(restriction.Pair2);
+                var removed2 = restriction.Pair2.Color.RemoveRestriction(restriction.Pair1);
+#if DEBUG
+                if (!removed1 || !removed2) throw new ApplicationException("Restriction not removed");
+#endif
             }
         }
         public void RemoveRestriction(Pair pair1, Pair pair2) => RemoveRestriction(new Restriction(pair1, pair2));
@@ -195,12 +198,37 @@ namespace CSP
                                 break;
                             }
                         }
-                        break;
                     }
                 }
             }
 
             return (clonedInstance, correspondingVariables, correspondingColors);
+        }
+
+        public (CspInstance instance, Pair[] pArr) CloneAndReturnCorresponding(Pair[] pArr)
+        {
+            var clonedInstance = Clone();
+            var correspondingPairs = new Pair[pArr.Length];
+
+            foreach (var clonedVaraible in clonedInstance.Variables)
+            {
+                for (int i = 0; i < pArr.Length; i++)
+                {
+                    if (pArr[i].Variable.Id == clonedVaraible.Id)
+                    {
+                        foreach (var clonedColor in clonedVaraible.AvalibleColors)
+                        {
+                            if (clonedColor.Value == pArr[i].Color.Value)
+                            {
+                                correspondingPairs[i] = new Pair(clonedVaraible,clonedColor);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return (clonedInstance, correspondingPairs);
         }
     }
 }

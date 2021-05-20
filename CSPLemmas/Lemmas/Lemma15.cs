@@ -11,15 +11,15 @@ namespace CSPSimplifying
         public static List<CspInstance> Lemma15(CspInstance instance, out bool applied)
         {
             List<CspInstance> result = new();
-            HashSet<Pair> set = FindSmallBadThreeComponent(instance.Restrictions);
+            HashSet<Pair> set = FindBadThreeComponent(instance, true);
             
             if(set != null)
             {
                 applied = true;
 #if DEBUG       
-                foreach (var xd in set)
+                foreach (var pair in set)
                 {
-                    if (!instance.Variables.Contains(xd.Variable)) throw new NotImplementedException();
+                    if (!instance.Variables.Contains(pair.Variable)) throw new ApplicationException("Pair is not in the instance");
                 }
 #endif
                 if (set.Count == 12)
@@ -86,60 +86,57 @@ namespace CSPSimplifying
             }
             
         }
-        public static HashSet<Pair> FindSmallBadThreeComponent(IReadOnlySet<Restriction> restrictions) 
+        public static HashSet<Pair> FindBadThreeComponent(CspInstance instance, bool small = true) 
         {
-            foreach(Restriction res in restrictions)
+            HashSet<Pair> NotVisited = new();
+            foreach (var variable in instance.Variables)
             {
-                if(res.Pair1.Color.Restrictions.Count == 3)
+                foreach (var color in variable.AvalibleColors)
                 {
-                    HashSet<Pair> pairs = new() { res.Pair1 };
-                    FindComponentForPair(restrictions, res.Pair1, pairs);
-                    if (pairs != null && pairs.Count > 4)
+                    if(color.Restrictions.Count == 3)
                     {
-                        HashSet<Variable> distinctVariables = new();
-                        foreach (Pair p in pairs)
+                        NotVisited.Add(new Pair(variable, color));
+                    }
+                }
+            }
+            HashSet<Pair> CurrentThreeCompnent = new();
+            while(NotVisited.Count > 0)
+            {
+                void Rec(Pair pair)
+                {
+                    NotVisited.Remove(pair);
+                    CurrentThreeCompnent.Add(pair);
+                    foreach (var p2 in pair.Color.Restrictions)
+                    {
+                        if(NotVisited.Contains(p2))
                         {
-                            distinctVariables.Add(p.Variable);
-                        }
-                        if (distinctVariables.Count == 4)
-                        {
-                            return pairs;
+                            Rec(p2);
                         }
                     }
                 }
-                if (res.Pair2.Color.Restrictions.Count == 3)
+                var pair = NotVisited.First();
+                Rec(pair);
+                if(CurrentThreeCompnent.Count > 4) // it's bad
                 {
-                    HashSet<Pair> pairs = new() { res.Pair2 };
-                    FindComponentForPair(restrictions, res.Pair2, pairs);
-                    if (pairs != null && pairs.Count > 4)
+                    if (small)
                     {
-                        HashSet<Variable> distinctVariables = new();
-                        foreach (Pair p in pairs)
+                        if (CurrentThreeCompnent.Select(p => p.Variable).Distinct().Count() == 4) // it's small
                         {
-                            distinctVariables.Add(p.Variable);
+                            return CurrentThreeCompnent;
                         }
-                        if (distinctVariables.Count == 4)
+                    }
+                    else
+                    {
+                        if (CurrentThreeCompnent.Select(p => p.Variable).Distinct().Count() > 4) // it's big
                         {
-                            return pairs;
+                            return CurrentThreeCompnent;
                         }
                     }
                 }
             }
             return null;
         }
-        private static void FindComponentForPair(IReadOnlySet<Restriction> restrictions, Pair pair, HashSet<Pair> result)
-        {
-            if (pair.Color.Restrictions.Count != 3) result = null;
-            if (result == null) return;
-            foreach(Pair restrictionPair in pair.Color.Restrictions)
-            {
-                if(!result.Contains(restrictionPair))
-                {
-                    result.Add(restrictionPair);
-                    FindComponentForPair(restrictions, restrictionPair, result);
-                }
-            }
-        }
+      
         private static List<Pair> GetWithTriangle(HashSet<Pair> set, IReadOnlySet<Restriction> restrictions)
         {
             List<Pair> ret = new();

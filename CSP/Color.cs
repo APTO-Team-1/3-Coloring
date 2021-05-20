@@ -24,13 +24,13 @@ namespace CSP
 
         public IReadOnlySet<Pair> Restrictions { get => restrictions; }
 
-        internal void AddRestriction(Pair pair)
+        internal bool AddRestriction(Pair pair)
         {
-            restrictions.Add(pair);
+            return restrictions.Add(pair);
         }
-        internal void RemoveRestriction(Pair pair)
+        internal bool RemoveRestriction(Pair pair)
         {
-            restrictions.Remove(pair);
+            return restrictions.Remove(pair);
         }
     }
 }

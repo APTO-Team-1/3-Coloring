@@ -12,30 +12,37 @@ namespace CSPSimplifying
         //      if resInstaces.Count > 0:
         //          recursion for every resnstaces[i]
 
-        public static List<CspInstance> Lemma8(CspInstance instance, Variable v, Color c)
+        public static List<CspInstance> Lemma8(CspInstance instance, Variable v, Color c, out bool applied)
         {
             if (c.Restrictions.Count == 1) // (v,c) has one constraint
             {
                 (var v2, var c2) = c.Restrictions.ElementAt(0);
                 if (c2.Restrictions.Count == 1) // (v2, c2) has one constraint too => isolated constraint
                 {
+                    applied = true;
                     if (v.AvalibleColors.Count == 3 && v2.AvalibleColors.Count == 3)
                     {
                         List<Color> vCombinedColors = new();
                         foreach (var col in v.AvalibleColors)
+                        {
                             if (col != c)
+                            {
                                 vCombinedColors.Add(new Color(col.Value, col.Restrictions));
+                            }
+                        }
                         foreach (var col in v2.AvalibleColors)
+                        {
                             if (col != c2)
                             {
-                                    vCombinedColors.Add(new Color(col.Value, col.Restrictions));
+                                vCombinedColors.Add(new Color(col.Value, col.Restrictions));
                             }
+                        }
 #if DEBUG
                         if (vCombinedColors.Count != 4) throw new System.ApplicationException("Powinien mieć 4 kolory");
 #endif
                         instance.RemoveVariable(v);
                         instance.RemoveVariable(v2);
-                        instance.AddVariableAndColorsRestrictions(vCombinedColors);
+                        instance.AddVariableAndColorsRestrictions(vCombinedColors);  // ZAMIANA
 
                         return new() { instance };
                     }
@@ -70,7 +77,8 @@ namespace CSPSimplifying
                     }
                 }
             }
-            return new() { instance};
+            applied = false;
+            return new() { instance };
         }
 
     }

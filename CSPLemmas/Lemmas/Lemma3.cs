@@ -1,42 +1,36 @@
 ﻿using CSP;
+using System.Linq;
 
 namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
-        public static void Lemma3(CspInstance instance)
+        public static void Lemma3(CspInstance instance, Variable v1, out bool applied)
         {
-            foreach (var v1 in instance.Variables)
+            applied = false;
+            for (int i = 0; i < v1.AvalibleColors.Count; i++)
             {
-                for (int i = 0; i < v1.AvalibleColors.Count; i++)
+                var c1 = v1.AvalibleColors[i];
+                var distinctVariables = c1.Restrictions.Select(r => r.Variable).Distinct();
+                if (distinctVariables.Count() == 1)
                 {
-                    var c1 = v1.AvalibleColors[i];
-                    foreach (var v2 in instance.Variables)
+                    var v2 = distinctVariables.First();
+                    for (int j = 0; j < v2.AvalibleColors.Count; j++)
                     {
-                        for (int j = 0; j < v2.AvalibleColors.Count; j++)
+                        var c2 = v2.AvalibleColors[j];
+                        if (!c1.Restrictions.Select(r => r.Color).Contains(c2))
                         {
-                            var c2 = v2.AvalibleColors[j];
-                            bool b = true;
-                            foreach (var pair in c1.Restrictions)
+                            var distinctVariables2 = c2.Restrictions.Select(r => r.Variable).Distinct();
+                            if (distinctVariables2.Count() == 1)
                             {
-                                if(pair.Variable != v2 || pair.Color == c2)
+                                var v21 = distinctVariables2.First();
+                                if (v1 == v21)
                                 {
-                                    b = false;
-                                    break;
+                                    applied = true;
+                                    instance.AddToResult(v1, c1);
+                                    instance.AddToResult(v2, c2);
+                                    return;
                                 }
-                            }
-                            foreach (var pair in c2.Restrictions)
-                            {
-                                if (pair.Variable != v1 || pair.Color == c1)
-                                {
-                                    b = false;
-                                    break;
-                                }
-                            }
-                            if(b)
-                            {
-                                instance.AddToResult(v1, c1);
-                                instance.AddToResult(v2, c2);
                             }
                         }
                     }

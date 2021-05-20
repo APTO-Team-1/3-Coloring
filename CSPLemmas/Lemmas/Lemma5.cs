@@ -4,20 +4,20 @@ namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
-        public static void Lemma5(CspInstance instance)
+        public static void Lemma5(CspInstance instance, Variable v, out bool applied)
         {
-            foreach (var v in instance.Variables)
+            applied = false;
+            for (int i = 0; i < v.AvalibleColors.Count; i++)
             {
-                for (int i = 0; i < v.AvalibleColors.Count; i++)
+                var c = v.AvalibleColors[i];
+                if (c.Restrictions.Count == 0)
                 {
-                    var c = v.AvalibleColors[i];
-                    if(c.Restrictions.Count == 0)
-                    {
-                        instance.AddToResult(v, c);
-                    }
-
+                    applied = true;
+                    instance.AddToResult(v, c);
                 }
+
             }
+
         }
     }
 }

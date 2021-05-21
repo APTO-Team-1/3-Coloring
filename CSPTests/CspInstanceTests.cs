@@ -334,9 +334,12 @@ namespace CSP.Tests
             {
                 var variable1 = variablesList[(i * 21 + 5) % variablesCount];
                 var variable2 = variablesList[(i * 12 + 11) % variablesCount];
-                var color1 = variable1.AvalibleColors[i % variable1.AvalibleColors.Count];
-                var color2 = variable2.AvalibleColors[i % variable2.AvalibleColors.Count];
-                csp.AddRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
+                if(variable1.AvalibleColors.Count > 0 && variable2.AvalibleColors.Count > 0)
+                {
+                    var color1 = variable1.AvalibleColors[i % variable1.AvalibleColors.Count];
+                    var color2 = variable2.AvalibleColors[i % variable2.AvalibleColors.Count];
+                    csp.AddRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
+                }
             }
 
             var cloned = csp.Clone();
@@ -432,9 +435,12 @@ namespace CSP.Tests
             {
                 var variable1 = variablesList[(i * 21 + 5) % variablesCount];
                 var variable2 = variablesList[(i * 12 + 11) % variablesCount];
-                var color1 = variable1.AvalibleColors[i % variable1.AvalibleColors.Count];
-                var color2 = variable2.AvalibleColors[i % variable2.AvalibleColors.Count];
-                csp.AddRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
+                if (variable1.AvalibleColors.Count > 0 && variable2.AvalibleColors.Count > 0)
+                {
+                    var color1 = variable1.AvalibleColors[i % variable1.AvalibleColors.Count];
+                    var color2 = variable2.AvalibleColors[i % variable2.AvalibleColors.Count];
+                    csp.AddRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
+                }
             }
             for (int i = 0; i < variablesList.Count; i += 5)
             {

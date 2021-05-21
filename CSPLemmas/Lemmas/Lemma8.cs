@@ -27,14 +27,36 @@ namespace CSPSimplifying
                         {
                             if (col != c)
                             {
-                                vCombinedColors.Add(new Color(col.Value, col.Restrictions));
+                                var newColor = new Color(col.Value, col.Restrictions);
+                                vCombinedColors.Add(newColor);
+                                instance.ResultRules.Push((IList<Pair> result) => {
+                                    var replacingList = result.Where(p => p.Color == newColor);
+                                    if (replacingList.Any())
+                                    {
+                                        var replacing = replacingList.Single();
+                                        result.Remove(replacing);
+                                        result.Add(new Pair(v, col));
+                                        result.Add(new Pair(v2, c2));
+                                    }
+                                });
                             }
                         }
                         foreach (var col in v2.AvalibleColors)
                         {
                             if (col != c2)
                             {
-                                vCombinedColors.Add(new Color(col.Value, col.Restrictions));
+                                var newColor = new Color(vCombinedColors.Max(c => c.Value) + 1, col.Restrictions);
+                                vCombinedColors.Add(newColor);
+                                instance.ResultRules.Push((IList<Pair> result) => {
+                                    var replacingList = result.Where(p => p.Color == newColor);
+                                    if (replacingList.Any())
+                                    {
+                                        var replacing = replacingList.Single();
+                                        result.Remove(replacing);
+                                        result.Add(new Pair(v2, col));
+                                        result.Add(new Pair(v, c));
+                                    }
+                                });
                             }
                         }
 #if DEBUG
@@ -42,7 +64,7 @@ namespace CSPSimplifying
 #endif
                         instance.RemoveVariable(v);
                         instance.RemoveVariable(v2);
-                        instance.AddVariableAndColorsRestrictions(vCombinedColors);  // ZAMIANA
+                        instance.AddVariableAndColorsRestrictions(vCombinedColors); 
 
                         return new() { instance };
                     }

@@ -1,4 +1,7 @@
 ﻿using CSP;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CSPSimplifying
 {
@@ -7,10 +10,10 @@ namespace CSPSimplifying
         public static void Lemma2(CspInstance instance, Variable variable, out bool applied)
         {
             applied = false;
-            if (variable.AvalibleColors.Count == 2)
+            if (variable.AvalibleColors.Count <= 2)
             {
                 applied = true;
-                RemoveVariableWith2Colors(instance, variable); // ZAMIANA
+                RemoveVariableWith2Colors(instance, variable); 
                 return;
             }
         }

@@ -28,9 +28,10 @@ namespace GraphLib.Definitions
 
         public bool AddEdge(int from, int to)
         {
+            if (from == to) return false;
             bool addedFromTo = adjacencyList[from].Add(to);
             bool addedToFrom = adjacencyList[to].Add(from);
-            if ((addedFromTo && !addedToFrom) && (!addedFromTo && addedToFrom)) 
+            if ((addedFromTo && !addedToFrom) || (!addedFromTo && addedToFrom)) 
                 throw new Exception("Not consistent - graph must not be directed.");
 
             return addedFromTo && addedToFrom;

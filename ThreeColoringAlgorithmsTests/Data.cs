@@ -28,14 +28,24 @@ namespace ThreeColoringAlgorithmsTests
             var data = new List<object[]>
             {
             new object[] { GetSimpleGraph() },
+            new object[] { GetSimpleGraph2() },
             new object[] { GetCycleGraph() },
             new object[] { GetGraph1() },
             };
 
             return data;
         }
-
         private static Graph GetSimpleGraph()
+        {
+            Graph g = new(3);
+            g.AddEdge(0, 1);
+            g.AddEdge(0, 2);
+            g.AddEdge(1, 2);
+
+            return g;
+        }
+
+        private static Graph GetSimpleGraph2()
         {
             Graph g = new(5);
             g.AddEdge(0, 1);
@@ -78,6 +88,7 @@ namespace ThreeColoringAlgorithmsTests
         {
             var data = new List<object[]>
             {
+            new object[] { NoColoring11() },
             new object[] { NoColoring1() },
             new object[] { NoColoring2() },
             new object[] { NoColoring3() },
@@ -85,10 +96,29 @@ namespace ThreeColoringAlgorithmsTests
 
             return data;
         }
+        private static Graph NoColoring11()
+        {
+            int veritceCount = 7;
+            Graph g = new(veritceCount);
+            g.AddEdge(3, 4);
+            g.AddEdge(3, 5);
+            g.AddEdge(3, 6);
+            g.AddEdge(4, 5);
+            g.AddEdge(4, 6);
+            g.AddEdge(5, 6);
 
+            for (int i = 0; i < veritceCount * 15; i++)
+            {
+                int v1 = new Random().Next(0, veritceCount - 1);
+                int v2 = new Random().Next(0, veritceCount - 1);
+                if (g.ContainsEdge(v1, v2)) continue;
+                g.AddEdge(v1, v2);
+            }
+            return g;
+        }
         private static Graph NoColoring1()
         {
-            Graph g = new(4);
+            Graph g = new(6);
             g.AddEdge(0, 1);
             g.AddEdge(0, 2);
             g.AddEdge(0, 3);
@@ -98,7 +128,7 @@ namespace ThreeColoringAlgorithmsTests
 
             return g;
         }
-
+       
         private static Graph NoColoring2()
         {
             int veritceCount = 40;

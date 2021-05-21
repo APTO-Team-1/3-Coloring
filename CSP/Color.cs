@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CSP
 {
@@ -31,6 +32,11 @@ namespace CSP
         internal bool RemoveRestriction(Pair pair)
         {
             return restrictions.Remove(pair);
+        }
+
+        public bool IsNeighborOf(Color color)
+        {
+            return Restrictions.Any(r => r.Color == color);
         }
     }
 }

@@ -27,7 +27,6 @@ namespace CSPSimplifying
                 (var instance2, var i2v, var i2c) = instance.CloneAndReturnCorresponding(v, c);
                 instance.AddToResult(v, c);
                 instance2.RemoveColor(i2v, i2c);
-                // TODO?: Analyze above cases more precisely?
                 return new() { instance, instance2 };
                 
             }

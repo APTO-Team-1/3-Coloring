@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSP
 {
@@ -18,9 +19,28 @@ namespace CSP
         private readonly List<Pair> result = new();
         public IReadOnlyList<Pair> Result { get => result; }
 
+        public Stack<Action<IList<Pair>>> ResultRules { get; private set; } = new();
+        public int[] GetResult()
+        {
+            while(ResultRules.Count > 0)
+            {
+                var rule = ResultRules.Pop();
+                rule(this.result);
+            }
+            int[] coloringResult = new int[Result.Count];
+            foreach (var pair in Result)
+            {
+                coloringResult[pair.Variable.Id] = pair.Color.Value;
+            }
+            return coloringResult;
+        }
+
         #region result
         public void AddToResult(Pair pair)
         {
+#if DEBUG
+            if (!Variables.Any(v => v == pair.Variable)) throw new ApplicationException("Trying to use variable that is not a part of the instance");
+#endif
             foreach (var restrictionPair in pair.Color.Restrictions)
             {
                 RemoveRestriction(pair, restrictionPair);
@@ -28,7 +48,7 @@ namespace CSP
                 {
                     RemoveRestriction(pair2, restrictionPair);
                 }
-                RemoveColor(restrictionPair.Variable, restrictionPair.Color);
+                RemoveColor(restrictionPair);
             }
             RemoveVariable(pair.Variable);
             result.Add(pair);
@@ -39,6 +59,11 @@ namespace CSP
         #region restriction
         public void AddRestriction(Restriction restriction)
         {
+            if(restriction.Pair1.Color == restriction.Pair2.Color)
+            {
+                this.RemoveColor(restriction.Pair1);
+                return;
+            }
             if (restriction.Pair1.Variable == restriction.Pair2.Variable) return;
             if (!restrictions.Contains(restriction))
             {
@@ -58,8 +83,12 @@ namespace CSP
                 var removed1 = restriction.Pair1.Color.RemoveRestriction(restriction.Pair2);
                 var removed2 = restriction.Pair2.Color.RemoveRestriction(restriction.Pair1);
 #if DEBUG
-                if (!removed1 || !removed2) throw new ApplicationException("Restriction not removed");
+                if ((!removed1 || !removed2)) throw new ApplicationException("Restriction not removed");
 #endif
+            }
+            else
+            {
+                throw new ApplicationException("Restriction does not exist");
             }
         }
         public void RemoveRestriction(Pair pair1, Pair pair2) => RemoveRestriction(new Restriction(pair1, pair2));
@@ -159,6 +188,8 @@ namespace CSP
                 cloned.result.Add(new Pair(clonedVariable, color)); // dont use AddResult, becouse variable is not in Variable set
             }
 
+            cloned.ResultRules = new(this.ResultRules);
+
             return cloned;
         }
 
@@ -177,35 +208,24 @@ namespace CSP
             if (vArr.Length != cArr.Length)
                 throw new ArgumentException("vArr.Length must be equal to cArr.Length");
 
-
-            var clonedInstance = Clone();
-            var correspondingVariables = new Variable[vArr.Length];
-            var correspondingColors = new Color[cArr.Length];
-
-            foreach(var clonedVaraible in clonedInstance.Variables)
+            Pair[] iP = new Pair[vArr.Length];
+            for (int i = 0; i < vArr.Length; i++)
             {
-                for (int i = 0; i < vArr.Length; i++)
-                {
-                    if (vArr[i].Id == clonedVaraible.Id)
-                    {
-                        correspondingVariables[i] = clonedVaraible;
-
-                        foreach(var clonedColor in clonedVaraible.AvalibleColors)
-                        {
-                            if (clonedColor.Value == cArr[i].Value)
-                            {
-                                correspondingColors[i] = clonedColor;
-                                break;
-                            }
-                        }
-                    }
-                }
+                iP[i] = new Pair(vArr[i], cArr[i]);
+            }
+            (var instance2, var i2p) = CloneAndReturnCorresponding(iP);
+            Variable[] i2v = new Variable[vArr.Length];
+            Color[] i2c = new Color[vArr.Length];
+            for (int i = 0; i < vArr.Length; i++)
+            {
+                i2v[i] = i2p[i].Variable;
+                i2c[i] = i2p[i].Color;
             }
 
-            return (clonedInstance, correspondingVariables, correspondingColors);
+            return (instance2, i2v, i2c);
         }
 
-        public (CspInstance instance, Pair[] pArr) CloneAndReturnCorresponding(Pair[] pArr)
+        public (CspInstance instance, Pair[] pArr) CloneAndReturnCorresponding(params Pair[] pArr)
         {
             var clonedInstance = Clone();
             var correspondingPairs = new Pair[pArr.Length];

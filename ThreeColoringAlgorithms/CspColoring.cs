@@ -12,33 +12,70 @@ namespace ThreeColoringAlgorithms
     public class CspColoring : IThreeColoringAlgorithm
     {
         delegate void Lemma(CspInstance instance, Variable v, out bool applied);
-        Lemma[] simpleLemmas = new Lemma[]
-           {
-                CSPLemmas.Lemma2, CSPLemmas.Lemma3,CSPLemmas.Lemma4,CSPLemmas.Lemma5,CSPLemmas.Lemma6,
-           };
+
 
         public int[] ThreeColorig(Graph g)
         {
             var instance = Converter.GraphToCSP(g);
-           
+
             return Rec(instance);
         }
 
         int[] Rec(CspInstance instance)
         {
-            bool applied;
-            for (int i = 0; i < simpleLemmas.Length; i++)
+
+            foreach (var v in instance.Variables)
             {
-                foreach (var v in instance.Variables)
+                if (v.AvalibleColors.Count == 0)
                 {
-                    simpleLemmas[i](instance, v, out applied);
-                    if (applied)
-                    {
-                        return Rec(instance);
-                    }
+                    return null;
                 }
-                
             }
+
+
+            bool applied;
+            foreach (var v in instance.Variables)
+            {
+                CSPLemmas.Lemma2(instance, v, out applied);
+                if (applied)
+                {
+                    return Rec(instance);
+                }
+            }
+            foreach (var v in instance.Variables)
+            {
+                CSPLemmas.Lemma3(instance, v, out applied);
+                if (applied)
+                {
+                    return Rec(instance);
+                }
+            }
+            foreach (var v in instance.Variables)
+            {
+                CSPLemmas.Lemma4(instance, v, out applied);
+                if (applied)
+                {
+                    return Rec(instance);
+                }
+            }
+            foreach (var v in instance.Variables)
+            {
+                CSPLemmas.Lemma5(instance, v, out applied);
+                if (applied)
+                {
+                    return Rec(instance);
+                }
+            }
+            foreach (var v in instance.Variables)
+            {
+                CSPLemmas.Lemma6(instance, v, out applied);
+                if (applied)
+                {
+                    return Rec(instance);
+                }
+            }
+
+
             List<CspInstance> instances = new() { instance };
 
             //lemma 8
@@ -199,14 +236,12 @@ namespace ThreeColoringAlgorithms
             var isColoring = CSPLemmas.Lemma19(instances[0]);
             if (isColoring)
             {
-
+                return instances[0].GetResult();
             }
             else
             {
                 return null;
             }
-
-            return null;
         }
     }
 }

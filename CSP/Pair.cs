@@ -28,6 +28,11 @@ namespace CSP
             color = Color;
         }
 
+        public bool IsNeighborOf(Pair pair)
+        {
+            return Color.IsNeighborOf(pair.Color);
+        }
+
         public bool Equals(Pair pair)
         {
             return Variable == pair.Variable && Color == pair.Color;

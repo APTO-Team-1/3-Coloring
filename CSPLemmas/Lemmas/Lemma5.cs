@@ -14,6 +14,7 @@ namespace CSPSimplifying
                 {
                     applied = true;
                     instance.AddToResult(v, c);
+                    return;
                 }
 
             }

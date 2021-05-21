@@ -22,14 +22,19 @@ namespace CSPSimplifying
                     applied = true;
                     if (v.AvalibleColors.Count == 3 && v2.AvalibleColors.Count == 3)
                     {
-                        List<Color> vCombinedColors = new();
+                        Variable vCombined = new(0);
+                        instance.AddVariable(vCombined);
                         foreach (var col in v.AvalibleColors)
                         {
                             if (col != c)
                             {
-                                var newColor = new Color(col.Value, col.Restrictions);
-                                vCombinedColors.Add(newColor);
-                                instance.ResultRules.Push((IList<Pair> result) => {
+                                var newColor = new Color(col.Value);
+                                instance.AddColor(vCombined, newColor);
+                                foreach (var res in col.Restrictions)
+                                {
+                                    instance.AddRestriction(new Pair(vCombined, newColor), res);
+                                }
+                                instance.ResultRules.Add((IList<Pair> result) => {
                                     var replacingList = result.Where(p => p.Color == newColor);
                                     if (replacingList.Any())
                                     {
@@ -45,9 +50,13 @@ namespace CSPSimplifying
                         {
                             if (col != c2)
                             {
-                                var newColor = new Color(vCombinedColors.Max(c => c.Value) + 1, col.Restrictions);
-                                vCombinedColors.Add(newColor);
-                                instance.ResultRules.Push((IList<Pair> result) => {
+                                var newColor = new Color(vCombined.AvalibleColors.Max(c => c.Value) + 1);
+                                instance.AddColor(vCombined, newColor);
+                                foreach (var res in col.Restrictions)
+                                {
+                                    instance.AddRestriction(new Pair(vCombined, newColor), res);
+                                }
+                                instance.ResultRules.Add((IList<Pair> result) => {
                                     var replacingList = result.Where(p => p.Color == newColor);
                                     if (replacingList.Any())
                                     {
@@ -60,11 +69,10 @@ namespace CSPSimplifying
                             }
                         }
 #if DEBUG
-                        if (vCombinedColors.Count != 4) throw new System.ApplicationException("Powinien mieć 4 kolory");
+                        if (vCombined.AvalibleColors.Count != 4) throw new System.ApplicationException("Powinien mieć 4 kolory");
 #endif
                         instance.RemoveVariable(v);
                         instance.RemoveVariable(v2);
-                        instance.AddVariableAndColorsRestrictions(vCombinedColors); 
 
                         return new() { instance };
                     }

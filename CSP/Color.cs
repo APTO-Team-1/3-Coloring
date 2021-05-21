@@ -10,15 +10,6 @@ namespace CSP
             this.Value = value;
         }
 
-        public Color(int value, IEnumerable<Pair> restrictions)
-        {
-            this.Value = value;
-            foreach (var restriction in restrictions)
-            {
-                this.restrictions.Add(restriction);
-            }
-        }
-
         public int Value { get; set; }
 
         private readonly HashSet<Pair> restrictions = new();
@@ -37,6 +28,11 @@ namespace CSP
         public bool IsNeighborOf(Color color)
         {
             return Restrictions.Any(r => r.Color == color);
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
         }
     }
 }

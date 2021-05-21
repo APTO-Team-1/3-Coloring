@@ -18,15 +18,16 @@ namespace CSP
 
         private readonly List<Pair> result = new();
         public IReadOnlyList<Pair> Result { get => result; }
+        public List<Action<IList<Pair>>> ResultRules { get; private set; } = new();
 
-        public Stack<Action<IList<Pair>>> ResultRules { get; private set; } = new();
         public int[] GetResult()
         {
-            while(ResultRules.Count > 0)
+            for (int i = ResultRules.Count - 1; i >= 0; i--)
             {
-                var rule = ResultRules.Pop();
+                var rule = ResultRules[i];
                 rule(this.result);
             }
+            
             int[] coloringResult = new int[Result.Count];
             foreach (var pair in Result)
             {
@@ -59,17 +60,17 @@ namespace CSP
         #region restriction
         public void AddRestriction(Restriction restriction)
         {
-            if(restriction.Pair1.Color == restriction.Pair2.Color)
-            {
-                this.RemoveColor(restriction.Pair1);
-                return;
-            }
-            if (restriction.Pair1.Variable == restriction.Pair2.Variable) return;
+            if (restriction.Pair1.Variable == restriction.Pair2.Variable && restriction.Pair1.Color != restriction.Pair2.Color) return;
             if (!restrictions.Contains(restriction))
             {
-                restrictions.Add(restriction);
-                restriction.Pair1.Color.AddRestriction(restriction.Pair2);
-                restriction.Pair2.Color.AddRestriction(restriction.Pair1);
+                bool added = restrictions.Add(restriction);
+                bool added2 = restriction.Pair1.Color.AddRestriction(restriction.Pair2);
+                bool added3 = true;
+                if (restriction.Pair1 != restriction.Pair2)
+                {
+                    added3 = restriction.Pair2.Color.AddRestriction(restriction.Pair1);
+                }
+                if (!added || !added2 || !added3)   throw new ApplicationException("RestrictionNotAdded");
             }
         }
         public void AddRestriction(Pair pair1, Pair pair2) => AddRestriction(new Restriction(pair1, pair2));
@@ -79,16 +80,16 @@ namespace CSP
         {
             if (restrictions.Contains(restriction))
             {
-                restrictions.Remove(restriction);
+                var removed = restrictions.Remove(restriction);
                 var removed1 = restriction.Pair1.Color.RemoveRestriction(restriction.Pair2);
-                var removed2 = restriction.Pair2.Color.RemoveRestriction(restriction.Pair1);
+                var removed2 = true;
+                if (restriction.Pair1 != restriction.Pair2)
+                {
+                    removed2 = restriction.Pair2.Color.RemoveRestriction(restriction.Pair1);
+                }
 #if DEBUG
-                if ((!removed1 || !removed2)) throw new ApplicationException("Restriction not removed");
+                if ((!removed1 || !removed2 || !removed)) throw new ApplicationException("Restriction not removed");
 #endif
-            }
-            else
-            {
-                throw new ApplicationException("Restriction does not exist");
             }
         }
         public void RemoveRestriction(Pair pair1, Pair pair2) => RemoveRestriction(new Restriction(pair1, pair2));
@@ -107,7 +108,9 @@ namespace CSP
 
         public void RemoveColor(Pair pair)
         {
-            foreach (var restriction in pair.Color.Restrictions)
+            var restrictionsCopy = new List<Pair>();
+            restrictionsCopy.AddRange(pair.Color.Restrictions);
+            foreach (var restriction in restrictionsCopy)
             {
                 RemoveRestriction(pair, restriction);
             }
@@ -138,7 +141,8 @@ namespace CSP
         {
             foreach (var c in v.AvalibleColors)
             {
-                foreach (var restriction in c.Restrictions)
+                var restrictionsCopy = new List<Pair>(c.Restrictions);
+                foreach (var restriction in restrictionsCopy)
                 {
                     RemoveRestriction(new Pair(v, c), restriction);
                 }
@@ -188,7 +192,7 @@ namespace CSP
                 cloned.result.Add(new Pair(clonedVariable, color)); // dont use AddResult, becouse variable is not in Variable set
             }
 
-            cloned.ResultRules = new(this.ResultRules);
+            cloned.ResultRules.AddRange(ResultRules);
 
             return cloned;
         }
@@ -199,8 +203,8 @@ namespace CSP
         /// <returns></returns>
         public (CspInstance instance, Variable v, Color c) CloneAndReturnCorresponding(Variable v, Color c)
         {
-            var (instance, vArr, cArr) =  CloneAndReturnCorresponding(new Variable[] { v }, new Color[] { c });
-            return (instance, vArr[0], cArr[0]);
+            var (instance, pArr) =  CloneAndReturnCorresponding(new Pair(v,c));
+            return (instance, pArr[0].Variable, pArr[0].Color);
         }
            
         public (CspInstance instance, Variable[] vArr, Color[] cArr) CloneAndReturnCorresponding(Variable[] vArr, Color[] cArr)

@@ -676,7 +676,7 @@ namespace CSPSimplifying.Tests
             //if two 3 - color vertices changed to one 4 - color
             if (v.AvalibleColors.Count == 3 && v2.AvalibleColors.Count == 3)
             {
-                var oldColors = v.AvalibleColors.Select(c => new Color(c.Value, c.Restrictions)).Union(v2.AvalibleColors.Select(c => new Color(c.Value, c.Restrictions))).ToList();
+                var oldColors = v.AvalibleColors.Select(c => new Color(c.Value)).Union(v2.AvalibleColors.Select(c => new Color(c.Value))).ToList();
                 var res = CSPLemmas.Lemma8(instance, v, c, out _);
                 Assert.Single(res);
                 Assert.Null(res[0].Variables.FirstOrDefault(vbl => vbl == v));

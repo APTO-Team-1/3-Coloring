@@ -26,7 +26,10 @@ namespace CSP
         public int Id { get; set; } = uniqueId++;
 
         internal List<Color> avalibleColors = new();
-        public IReadOnlyList<Color> AvalibleColors { get => avalibleColors;  } 
-
+        public IReadOnlyList<Color> AvalibleColors { get => avalibleColors;  }
+        public override string ToString()
+        {
+            return Id.ToString() + "(" + AvalibleColors.Count.ToString() + ") ";
+        }
     }
 }

@@ -47,5 +47,9 @@ namespace CSP
         public static bool operator !=(Pair first, Pair second) => !(first == second);
 
         public override int GetHashCode() => base.GetHashCode();
+        public override string ToString()
+        {
+            return $"[{Variable} : {Color}] ";
+        }
     }
 }

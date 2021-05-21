@@ -98,12 +98,8 @@ namespace CSP.Tests
             csp.AddVariable(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
-            var color3 = variable2.AvalibleColors[1];
             var restriction = new Restriction(variable1, color1, variable2, color2);
-            var restriction2 = new Restriction(variable1, color1, variable2, color3);
             csp.AddRestriction(restriction);
-            Assert.Equal(1, csp.Restrictions.Count);
-            csp.RemoveRestriction(restriction2);
             Assert.Equal(1, csp.Restrictions.Count);
             csp.RemoveRestriction(restriction);
             Assert.Equal(0, csp.Restrictions.Count);
@@ -122,10 +118,7 @@ namespace CSP.Tests
             csp.AddVariable(variable2);
             var color1 = variable1.AvalibleColors[0];
             var color2 = variable2.AvalibleColors[0];
-            var color3 = variable2.AvalibleColors[1];
             csp.AddRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
-            Assert.Equal(1, csp.Restrictions.Count);
-            csp.RemoveRestriction(new Pair(variable1, color1), new Pair(variable2, color3));
             Assert.Equal(1, csp.Restrictions.Count);
             csp.RemoveRestriction(new Pair(variable1, color1), new Pair(variable2, color2));
             Assert.Equal(0, csp.Restrictions.Count);
@@ -502,10 +495,13 @@ namespace CSP.Tests
                 {
                     foreach (var pair in color.Restrictions)
                     {
-                        Assert.Single(instance.Restrictions, r =>
+                        if(color != pair.Color)
                         {
-                            return r.Contains(color) && r.Contains(pair.Color) && r.Contains(variable) && r.Contains(pair.Variable);
-                        });
+                            Assert.Single(instance.Restrictions, r =>
+                            {
+                                return r.Contains(color) && r.Contains(pair.Color) && r.Contains(variable) && r.Contains(pair.Variable);
+                            });
+                        }
                     }
                 }
             }

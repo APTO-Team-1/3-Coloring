@@ -39,7 +39,7 @@ namespace CSP
 
         public bool Equals(Restriction other)
         {
-            return other.Contains(Pair1.Color) && other.Contains(Pair2.Color);
+            return (other.Pair1.Color == Pair1.Color && other.Pair2.Color == Pair2.Color) || (other.Pair2.Color == Pair1.Color && other.Pair1.Color == Pair2.Color);
         }
 
         public override bool Equals(object obj)
@@ -50,6 +50,11 @@ namespace CSP
         public override int GetHashCode()
         {
             return Pair1.Color.GetHashCode() + Pair2.Color.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"[{Pair1} <-> {Pair2}] ";
         }
     }
 }

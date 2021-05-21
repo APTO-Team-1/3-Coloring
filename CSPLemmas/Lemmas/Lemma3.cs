@@ -18,7 +18,7 @@ namespace CSPSimplifying
                     for (int j = 0; j < v2.AvalibleColors.Count; j++)
                     {
                         var c2 = v2.AvalibleColors[j];
-                        if (!c1.Restrictions.Select(r => r.Color).Contains(c2))
+                        if (!c1.Restrictions.Any(p => p.Color == c2) && !c2.Restrictions.Any(p => p.Color ==  c1))
                         {
                             var distinctVariables2 = c2.Restrictions.Select(r => r.Variable).Distinct();
                             if (distinctVariables2.Count() == 1)

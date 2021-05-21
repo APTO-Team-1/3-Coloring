@@ -18,8 +18,8 @@ namespace CSPSimplifying
             if(v.AvalibleColors.Count == 2)
             {
                 var c1Neighbors = new List<Pair>(v.AvalibleColors[0].Restrictions);
-                instance.ResultRules.Push((IList<Pair> result) => {
-                    if (result.Any(p => c1Neighbors.Any(n => n.Color == p.Color)))
+                instance.ResultRules.Add((IList<Pair> result) => {
+                    if (result.Any(p => c1Neighbors.Any(n => n.Variable.Id == p.Variable.Id && n.Color.Value == p.Color.Value))) // porównujemy po Id, bo się mogą skolować po drodze 
                     {
                         result.Add(new Pair(v, v.AvalibleColors[1]));
                     }

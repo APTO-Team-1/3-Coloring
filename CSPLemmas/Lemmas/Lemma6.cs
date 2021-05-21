@@ -14,7 +14,7 @@ namespace CSPSimplifying
                 var neighbors = c.Restrictions.Select(r => r.Variable).Distinct();
                 foreach (var v2 in neighbors)
                 {
-                    if (c.Restrictions.Where(r => r.Variable == v2).Count() == 3)
+                    if (c.Restrictions.Where(r => r.Variable == v2).Count() == v2.AvalibleColors.Count)
                     {
                         applied = true;
                         instance.RemoveColor(v, c);

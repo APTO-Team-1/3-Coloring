@@ -13,7 +13,7 @@ namespace ThreeColoringAlgorithmsTests
         public static void CheckColoringCorrectness(Graph g, int[] coloring)
         {
             Assert.NotNull(coloring);
-            var maxColor = coloring.Max();
+            var maxColor = coloring.Length > 0 ? coloring.Max() : 0;
             Assert.True(maxColor >= 0 && maxColor <= 2);
 
             for(int i =0; i< g.VerticesCount; i++)

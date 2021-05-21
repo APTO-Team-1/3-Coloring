@@ -51,12 +51,10 @@ namespace ThreeColoringAlgorithmsTests
             return data;
         }
 
-        static int e = 0;
         [Theory]
         [MemberData(nameof(GetRandomGraphs))]
         public void TestColoring(Graph g)
         {
-            e++;
             Stopwatch sw = new();
             sw.Start();
             var brut = new BruteForce().ThreeColorig(g);

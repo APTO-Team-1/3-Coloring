@@ -37,16 +37,11 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 0; i < 100; i++)
             {
-                g = GetRandomGraph(restrictionPercentage: i, randomSeed: i, vericesCount: i);
+                g = GetRandomGraph(restrictionPercentage: i, vericesCount: i, randomSeed:i);
                 data.Add(new[] { g });
             }
 
 
-            g = GetRandomGraph(restrictionPercentage: 50, randomSeed: 500, vericesCount: 500);
-            data.Add(new[] { g });
-
-            g = GetRandomGraph(restrictionPercentage: 50, randomSeed: 1000, vericesCount: 1000);
-            data.Add(new[] { g });
 
             return data;
         }

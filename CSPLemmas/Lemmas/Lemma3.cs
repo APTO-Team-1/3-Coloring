@@ -11,19 +11,18 @@ namespace CSPSimplifying
             for (int i = 0; i < v1.AvalibleColors.Count; i++)
             {
                 var c1 = v1.AvalibleColors[i];
-                var distinctVariables = c1.Restrictions.Select(r => r.Variable).Distinct();
-                if (distinctVariables.Count() == 1)
+                var v2 = GetDistinctSingleVariableFromColor(c1);
+                if (v2 != null)
                 {
-                    var v2 = distinctVariables.First();
                     for (int j = 0; j < v2.AvalibleColors.Count; j++)
                     {
-                        var c2 = v2.AvalibleColors[j];
-                        if (!c1.Restrictions.Any(p => p.Color == c2) && !c2.Restrictions.Any(p => p.Color ==  c1))
+                        var c2 = v2.AvalibleColors[j]; 
+                        var v21 = GetDistinctSingleVariableFromColor(c2);
+                        if (v21 != null)
                         {
-                            var distinctVariables2 = c2.Restrictions.Select(r => r.Variable).Distinct();
-                            if (distinctVariables2.Count() == 1)
+                            if (!c1.Restrictions.Any(p => p.Color == c2) && !c2.Restrictions.Any(p => p.Color == c1))
                             {
-                                var v21 = distinctVariables2.First();
+
                                 if (v1 == v21)
                                 {
                                     applied = true;
@@ -36,6 +35,17 @@ namespace CSPSimplifying
                     }
                 }
             }
+        }
+
+        public static Variable GetDistinctSingleVariableFromColor(Color color)
+        {
+            if (color.Restrictions.Count == 0) return null;
+            Pair first = color.Restrictions.First();
+            foreach (var pair in color.Restrictions)
+            {
+                if (pair.Variable.Id != first.Variable.Id) return null;
+            }
+            return first.Variable;
         }
     }
 }

@@ -72,7 +72,12 @@ namespace CSPSimplifying
                     {
                         (CspInstance instance2, Pair[] i2p) = instance.CloneAndReturnCorresponding(zR); // pomija zR
 
+                        var zRNeighbors = zR.Color.Restrictions.Select(r => r.Variable);
                         instance.AddToResult(zR);
+                        foreach (var v in zRNeighbors)
+                        {
+                            RemoveVariableWith2Colors(instance, v);
+                        }
                         var instances = Lemma9(instance, vR.Variable, vR.Color, out _);
                         instance2.RemoveColor(i2p[0]);
                         result.AddRange(instances);
@@ -83,8 +88,14 @@ namespace CSPSimplifying
                     {
                         (CspInstance instance2, Pair[] i2p) = instance.CloneAndReturnCorresponding(zR); // pomija zR
                         instance2.RemoveColor(i2p[0]);
+                        var zRNeighbors = zR.Color.Restrictions.Select(r => r.Variable);
                         instance.AddToResult(zR);
+                        foreach (var v in zRNeighbors)
+                        {
+                            RemoveVariableWith2Colors(instance, v);
+                        }
                         instance.AddToResult(vR);
+
                         result.Add(instance);
                         result.Add(instance2);
                         return result;

@@ -18,14 +18,37 @@ namespace CSP
 
         private readonly List<Pair> result = new();
         public IReadOnlyList<Pair> Result { get => result; }
-        public List<Action<IList<Pair>>> ResultRules { get; private set; } = new();
+        public List<(int LemmaNumber, List<Pair> lp, Pair a, Pair b)> ResultRules { get; private set; } = new();
 
         public int[] GetResult()
         {
             for (int i = ResultRules.Count - 1; i >= 0; i--)
             {
-                var rule = ResultRules[i];
-                rule(this.result);
+                (int LemmaNumber, List<Pair> lp, Pair a, Pair b) = ResultRules[i];
+                if (LemmaNumber == 2)
+                {
+                    if(result.Any(r => lp.Any(lp => lp.Variable.Id == r.Variable.Id && lp.Color.Value == r.Color.Value)))
+                    {
+                        result.Add(b);
+                    }
+                    else
+                    {
+                        result.Add(a);
+                    }
+                }
+                else if (LemmaNumber == 4)
+                {
+                    var pair = lp.Single();
+                    var pairInResult = result.FirstOrDefault(r => pair.Variable.Id == r.Variable.Id && pair.Color.Value == r.Color.Value);
+                    if (default != pairInResult)
+                    {
+                        result.Remove(pairInResult);
+                        result.Add(a);
+                        result.Add(b);
+                    }
+                }
+                else throw new ApplicationException("Not expected");
+
             }
             
             int[] coloringResult = new int[Result.Count];

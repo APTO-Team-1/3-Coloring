@@ -22,7 +22,7 @@ namespace CSPSimplifying
                             applied = true;
                             if (TwoComponent.Count == 4)  // cykl długości 4 kolorujemy po przekątnej
                             {
-                                (CspInstance instance2, Pair[] pair13) = instance.CloneAndReturnCorresponding(TwoComponent[1],TwoComponent[3]);
+                                (CspInstance instance2, Pair[] pair13) = instance.CloneAndReturnCorresponding(TwoComponent[1], TwoComponent[3]);
 
                                 instance.AddToResult(TwoComponent[0]);
                                 instance.AddToResult(TwoComponent[2]);
@@ -118,9 +118,8 @@ namespace CSPSimplifying
 
         private static bool HasDifferentVariables(List<Pair> pairs)
         {
-            for (int i = 0; i < pairs.Count; i++)
-                for (int j = i + 1; j < pairs.Count; j++)
-                    if (pairs[i].Variable.Id == pairs[j].Variable.Id) return false;
+            for (int j = 1; j < pairs.Count; j++)
+                if (pairs[0].Variable.Id == pairs[j].Variable.Id) return false;
             return true;
         }
 

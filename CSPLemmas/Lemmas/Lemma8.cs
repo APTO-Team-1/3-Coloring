@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
@@ -12,32 +12,53 @@ namespace CSPLemmas
         //      if resInstaces.Count > 0:
         //          recursion for every resnstaces[i]
 
-        public static List<CspInstance> Lemma8(CspInstance instance, Variable v, Color c)
+        public static List<CspInstance> Lemma8(CspInstance instance, Variable v, Color c, out bool applied)
         {
             if (c.Restrictions.Count == 1) // (v,c) has one constraint
             {
                 (var v2, var c2) = c.Restrictions.ElementAt(0);
                 if (c2.Restrictions.Count == 1) // (v2, c2) has one constraint too => isolated constraint
                 {
+                    applied = true;
                     if (v.AvalibleColors.Count == 3 && v2.AvalibleColors.Count == 3)
                     {
-                        List<Color> vCombinedColors = new();
+                        Variable vCombined = new(0);
+                        instance.AddVariable(vCombined);
                         foreach (var col in v.AvalibleColors)
+                        {
                             if (col != c)
-                                vCombinedColors.Add(new Color(col.Value, col.Restrictions));
+                            {
+                                var newColor = new Color(col.Value);
+                                instance.AddColor(vCombined, newColor);
+                                var newPair = new Pair(vCombined, newColor);
+                                instance.ResultRules.Add((4, new List<Pair> { newPair }, new Pair(v, col), new Pair(v2, c2)));
+                                foreach (var res in col.Restrictions)
+                                {
+                                    instance.AddRestriction(newPair, res);
+                                }
+                            }
+                        }
                         foreach (var col in v2.AvalibleColors)
+                        {
                             if (col != c2)
                             {
-                                var existingCombinedColor = vCombinedColors.FirstOrDefault(cc => cc.Value == col.Value);
-                                if (existingCombinedColor != null)
-                                    existingCombinedColor.Restrictions.Union(col.Restrictions);
-                                else
-                                    vCombinedColors.Add(new Color(col.Value, col.Restrictions));
+                                var newColor = new Color(vCombined.AvalibleColors.Max(c => c.Value) + 1);
+                                instance.AddColor(vCombined, newColor);
+                                var newPair = new Pair(vCombined, newColor);
+                                instance.ResultRules.Add((4, new List<Pair> { newPair }, new Pair(v2, col), new Pair(v, c)));
+                                foreach (var res in col.Restrictions)
+                                {
+                                    instance.AddRestriction(newPair, res);
+                                }
                             }
+                        }
+#if DEBUG
+                        if (vCombined.AvalibleColors.Count != 4) throw new System.ApplicationException("Powinien mieć 4 kolory");
+#endif
 
                         instance.RemoveVariable(v);
                         instance.RemoveVariable(v2);
-                        instance.AddVariableAndColorsRestrictions(vCombinedColors);
+
                         return new() { instance };
                     }
                     else
@@ -71,7 +92,8 @@ namespace CSPLemmas
                     }
                 }
             }
-            return new() { instance};
+            applied = false;
+            return new() { instance };
         }
 
     }

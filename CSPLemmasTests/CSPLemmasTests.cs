@@ -1,5 +1,5 @@
 ﻿using Xunit;
-using CSPLemmas;
+using CSPSimplifying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CSP;
 
-namespace CSPLemmas.Tests
+namespace CSPSimplifying.Tests
 {
     public class CSPLemmasTests
     {
@@ -15,7 +15,7 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma2()
         {
             var data = new List<object[]>();
-            for (int i = 1; i < 1000; i += 50)
+            for (int i = 1; i < 100; i += 50)
             {
                 CspInstance instance = new();
                 Variable v2colors = new(2);
@@ -33,7 +33,14 @@ namespace CSPLemmas.Tests
                     var v2 = variables[(j * 420 + 13) % variables.Count];
                     var c1 = v1.AvalibleColors[(j * 1337 + 7) % v1.AvalibleColors.Count];
                     var c2 = v2.AvalibleColors[(j * 1234 + 3) % v2.AvalibleColors.Count];
-                    instance.AddRestriction(new Pair(v1, c1), new Pair(v2, c2));
+                    if(c1 != c2)
+                    {
+                        instance.AddRestriction(new Pair(v1, c1), new Pair(v2, c2));
+                    }
+                }
+                foreach (var var in instance.Variables)
+                {
+                    if (var.AvalibleColors.Count == 0) instance.RemoveVariable(var);
                 }
                 data.Add(new object[] { instance, v2colors });
             }
@@ -66,8 +73,8 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma4()
         {
             var data = new List<object[]>();
-            Random r = new(123);
-            for (int i = 0; i < 20; i++)
+            Random r = new(125);
+            for (int i = 1; i < 20; i++)
             {
                 var instance = GetRandomInstance(3, 3, i * 50 + 1, i * 500 + 1);
                 List<Variable> variables = new();
@@ -111,7 +118,7 @@ namespace CSPLemmas.Tests
                 List<Variable> variables = new();
                 variables.AddRange(instance.Variables);
                 var v = variables[r.Next(0, variables.Count)];
-                var c = v.AvalibleColors[r.Next(0, v.AvalibleColors.Count)];
+                var c = v.AvalibleColors[0];
                 foreach (var pair in c.Restrictions)
                 {
                     instance.RemoveRestriction(new Pair(v, c), pair);
@@ -152,6 +159,9 @@ namespace CSPLemmas.Tests
             for (int i = 0; i < 30; i++)
             {
                 var instance = GetRandomInstance(maxColors: i >= 15 ? 3 : 4);
+
+                
+
                 int idx1;
                 int idx2;
 
@@ -179,7 +189,16 @@ namespace CSPLemmas.Tests
                 foreach (var restPair in c2.Restrictions)
                     instance.RemoveRestriction(new Pair(v2, c2), restPair);
 
-                instance.AddRestriction(new Pair(v1, c1), new Pair(v2, c2)); // isolated costraint
+                var isolated = new Restriction(new Pair(v1, c1), new Pair(v2, c2));
+                instance.AddRestriction(isolated); // isolated costraint
+
+                foreach (var res in instance.Restrictions)
+                {
+                    if (res.Pair1.Color.Restrictions.Count == 1 && res.Pair2.Color.Restrictions.Count == 1 && !res.Equals(isolated)) // żeby był tylko 1 zolowany
+                    {
+                        instance.RemoveRestriction(res);
+                    }
+                }
 
                 data.Add(new object[] { instance, v1, c1, v2, c2 });
             }
@@ -229,7 +248,6 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma11()
         {
             var data = new List<object[]>();
-            Random r = new(12345);
             for (int i = 0; i < 30; i++)
             {
                 var instance = GetRandomInstance(maxColors: i >= 15 ? 3 : 4);
@@ -243,10 +261,9 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma12()
         {
             var data = new List<object[]>();
-            Random r = new(12345);
             for (int i = 0; i < 50; i++)
             {
-                var instance = GetRandomInstance(maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
+                var instance = GetRandomInstance(maxColors: i >= 25 ? 3 : 4, maxRestrictionsCount: i >= 25 ? 1000 : 2000);
 
                 data.Add(new object[] { instance });
             }
@@ -257,10 +274,9 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma13()
         {
             var data = new List<object[]>();
-            Random r = new(12345);
             for (int i = 0; i < 50; i++)
             {
-                var instance = GetRandomInstance(maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
+                var instance = GetRandomInstance(maxColors: i >= 25 ? 3 : 4, maxRestrictionsCount: i >= 25 ? 1000 : 2000);
 
                 data.Add(new object[] { instance });
             }
@@ -271,18 +287,13 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma15()
         {
             var data = new List<object[]>();
-            Random r = new(12345);
-            for(int i = 0; i < 48; i++)
-            {
-                var instance = GetRandomInstance(minColors: 3, maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
-                data.Add(new object[] { instance });
-            }
+           
 
             CspInstance cspInstance = new();
-            Variable v = new Variable(3);
-            Variable w = new Variable(3);
-            Variable x = new Variable(3);
-            Variable y = new Variable(3);
+            Variable v = new(3);
+            Variable w = new(3);
+            Variable x = new(3);
+            Variable y = new(3);
             cspInstance.AddVariable(v);
             cspInstance.AddVariable(w);
             cspInstance.AddVariable(x);
@@ -303,10 +314,10 @@ namespace CSPLemmas.Tests
 
 
             CspInstance cspInstance2 = new();
-            Variable v2 = new Variable(3);
-            Variable w2 = new Variable(3);
-            Variable x2 = new Variable(3);
-            Variable y2 = new Variable(3);
+            Variable v2 = new(3);
+            Variable w2 = new(3);
+            Variable x2 = new(3);
+            Variable y2 = new(3);
             cspInstance2.AddVariable(v2);
             cspInstance2.AddVariable(w2);
             cspInstance2.AddVariable(x2);
@@ -331,22 +342,16 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma17()
         {
             var data = new List<object[]>();
-            Random r = new(12345);
-            for (int i = 0; i < 49; i++)
-            {
-                var instance = GetRandomInstance(minColors: 3, maxColors: i >= 25 ? 3 : 4, approximateRestrictionsCount: i >= 25 ? 1000 : 2000);
-                data.Add(new object[] { instance });
-            }
-
+            
             CspInstance cspInstance = new();
-            Variable v = new Variable(3);
-            Variable w = new Variable(3);
-            Variable x = new Variable(3);
-            Variable y = new Variable(3);
-            Variable z = new Variable(3);
-            Variable a = new Variable(3);
-            Variable b = new Variable(3);
-            Variable c = new Variable(3);
+            Variable v = new(3);
+            Variable w = new(3);
+            Variable x = new(3);
+            Variable y = new(3);
+            Variable z = new(3);
+            Variable a = new(3);
+            Variable b = new(3);
+            Variable c = new(3);
             cspInstance.AddVariable(v);
             cspInstance.AddVariable(w);
             cspInstance.AddVariable(x);
@@ -372,7 +377,7 @@ namespace CSPLemmas.Tests
             return data;
         }
 
-        private static CspInstance GetRandomInstance(int minColors = 2, int maxColors = 4, int variableCount = 100, int approximateRestrictionsCount = 1000)
+        private static CspInstance GetRandomInstance(int minColors = 2, int maxColors = 4, int variableCount = 100, int maxRestrictionsCount = 1000)
         {
             var instance = new CspInstance();
             List<Variable> variables = new();
@@ -383,14 +388,17 @@ namespace CSPLemmas.Tests
                 instance.AddVariable(v);
                 variables.Add(v);
             }
-            for (int i = 0; i < approximateRestrictionsCount; i++)
+            for (int i = 0; i < maxRestrictionsCount; i++)
             {
 
                 var v1 = variables[r.Next(0, variables.Count)];
                 var v2 = variables[r.Next(0, variables.Count)];
-                var c1 = v1.AvalibleColors[r.Next(0, v1.AvalibleColors.Count)];
-                var c2 = v2.AvalibleColors[r.Next(0, v2.AvalibleColors.Count)];
-                instance.AddRestriction(new Pair(v1, c1), new Pair(v2, c2));
+                if(v1.AvalibleColors.Count > 0 && v2.AvalibleColors.Count > 0)
+                {
+                    var c1 = v1.AvalibleColors[r.Next(0, v1.AvalibleColors.Count)];
+                    var c2 = v2.AvalibleColors[r.Next(0, v2.AvalibleColors.Count)];
+                    instance.AddRestriction(new Pair(v1, c1), new Pair(v2, c2));
+                }
             }
             return instance;
         }
@@ -398,11 +406,27 @@ namespace CSPLemmas.Tests
         public static IEnumerable<object[]> GetDataLemma10()
         {
             var data = new List<object[]>();
-            Random r = new(12345);
-            for (int i = 40; i < 50; i++)
+            for (int i = 0; i < 10; i++)
             {
-                var instance = GetRandomInstance(maxColors:4, approximateRestrictionsCount: 500);
+                var instance = GetRandomInstance(minColors: 3, maxColors: 4, maxRestrictionsCount: 50, variableCount: 10);
 
+                data.Add(new object[] { instance });
+            }
+
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetDataLemma18()
+        {
+            var data = new List<object[]>();
+            for (int i = 0; i < 10; i++)
+            {
+                var instance = GetRandomInstance(minColors: 3, maxColors: 4, maxRestrictionsCount: 0, variableCount: 10);
+                var vArr = instance.Variables.ToArray();
+                for (int j = 0; j < 5; j++)
+                {
+                    instance.AddRestriction(new Pair(vArr[i], vArr[i].AvalibleColors[0]), new Pair(vArr[(i + 1) % 5], vArr[(i + 1) % 5].AvalibleColors[0]));
+                }
                 data.Add(new object[] { instance });
             }
 
@@ -410,8 +434,8 @@ namespace CSPLemmas.Tests
         }
         public static IEnumerable<object[]> GetDataLemma19()
         {
-            List<Variable> variables = new();
-            CspInstance instance = new CspInstance();
+            List<Variable> variables;
+            CspInstance instance;
             var data = new List<object[]>();
             Random r = new(12345);
             for (int i = 14; i < 15; i++)
@@ -424,15 +448,15 @@ namespace CSPLemmas.Tests
                     instance.AddVariable(v);
                     variables.Add(v);
                 }
-                for(int j =0; j< 15; j++)
+                for (int j = 0; j < 15; j++)
                 {
                     FormGood3Component(i);
                     FormSmall2Component(i);
                 }
-                foreach(Variable var in variables)
+                foreach (Variable var in variables)
                 {
                     bool isInComponent = false;
-                    foreach(Color col in var.AvalibleColors)
+                    foreach (Color col in var.AvalibleColors)
                     {
                         if (col.Restrictions.Count > 0) isInComponent = true;
                     }
@@ -444,9 +468,9 @@ namespace CSPLemmas.Tests
 
             void FormGood3Component(int varCount)
             {
-                Random r = new Random(123);
+                Random r = new(123);
                 int v1 = r.Next(varCount);
-                Color c1 = new Color(1), c2 = new Color(1), c3 = new Color(1), c4 = new Color(1);
+                Color c1 = new(1), c2 = new(1), c3 = new(1), c4 = new(1);
                 int v2 = r.Next(varCount);
                 int v3 = r.Next(varCount);
                 int v4 = r.Next(varCount);
@@ -492,7 +516,7 @@ namespace CSPLemmas.Tests
                     }
                 }
                 if (!flag) return;
-                instance.AddRestriction(new Pair(variables[v1],c1), new Pair(variables[v2],c2));
+                instance.AddRestriction(new Pair(variables[v1], c1), new Pair(variables[v2], c2));
                 instance.AddRestriction(new Pair(variables[v1], c1), new Pair(variables[v3], c3));
                 instance.AddRestriction(new Pair(variables[v1], c1), new Pair(variables[v4], c4));
                 instance.AddRestriction(new Pair(variables[v2], c2), new Pair(variables[v3], c3));
@@ -501,12 +525,12 @@ namespace CSPLemmas.Tests
             }
             void FormSmall2Component(int varCount)
             {
-                Random r = new Random(123);
+                Random r = new(123);
                 int v1 = r.Next(varCount);
-                Color c1 = new Color(1), c2 = new Color(1), c3 = new Color(1);
+                Color c1 = new(1), c2 = new(1), c3 = new(1);
                 int v2 = r.Next(varCount);
                 int v3 = r.Next(varCount);
-                if (v1 == v2 || v1 == v3 || v2 == v3  )
+                if (v1 == v2 || v1 == v3 || v2 == v3)
                     return;
                 bool flag = false;
                 foreach (Color col in variables[v1].AvalibleColors)
@@ -552,6 +576,19 @@ namespace CSPLemmas.Tests
 
         #endregion
 
+        delegate void Lemma(CspInstance instance, Variable v, out bool applied);
+        private void UseLemma2to6(CspInstance instance, Lemma lemma)
+        {
+            foreach (var v in instance.Variables)
+            {
+                lemma(instance, v, out bool applied);
+                if (applied)
+                {
+                    UseLemma2to6(instance, lemma);
+                    return;
+                }
+            }
+        }
 
         [Theory]
         [MemberData(nameof(GetDataLemma2))]
@@ -585,7 +622,7 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma2))]
         public void Lemma2Test(CspInstance instance, Variable variable)
         {
-            CSPLemmas.Lemma2(instance);
+            UseLemma2to6(instance, CSPLemmas.Lemma2);
             Assert.DoesNotContain(variable, instance.Variables);
             NoVariableWith2Colors(instance);
         }
@@ -593,7 +630,7 @@ namespace CSPLemmas.Tests
         {
             foreach (var variable in instance.Variables)
             {
-                Assert.True(variable.AvalibleColors.Count > 2);
+                Assert.True(variable.AvalibleColors.Count > 2 || variable.AvalibleColors.Count == 2);
             }
         }
 
@@ -601,7 +638,7 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma3))]
         public void Lemma3Test(CspInstance instance, Pair pair1, Pair pair2)
         {
-            CSPLemmas.Lemma3(instance);
+            UseLemma2to6(instance, CSPLemmas.Lemma3);
             Assert.Contains(pair1, instance.Result);
             Assert.Contains(pair2, instance.Result);
             Assert.DoesNotContain(pair1.Variable, instance.Variables);
@@ -612,7 +649,7 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma4))]
         public void Lemma4Test(CspInstance instance, Pair pair1)
         {
-            CSPLemmas.Lemma4(instance);
+            UseLemma2to6(instance, CSPLemmas.Lemma4);
             Assert.DoesNotContain(pair1.Variable, instance.Variables);
         }
 
@@ -620,7 +657,7 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma5))]
         public void Lemma5Test(CspInstance instance, Pair pair)
         {
-            CSPLemmas.Lemma5(instance);
+            UseLemma2to6(instance, CSPLemmas.Lemma5);
             Assert.DoesNotContain(pair.Variable, instance.Variables);
             Assert.Contains(pair, instance.Result);
         }
@@ -629,10 +666,9 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma6))]
         public void Lemma6Test(CspInstance instance, Pair pair)
         {
-            CSPLemmas.Lemma6(instance);
+            UseLemma2to6(instance, CSPLemmas.Lemma6);
             Assert.DoesNotContain(pair.Color, pair.Variable.AvalibleColors);
         }
-
         [Theory]
         [MemberData(nameof(GetDataLemma8))]
         public void Lemma8Test(CspInstance instance, Variable v, Color c, Variable v2, Color c2)
@@ -640,20 +676,19 @@ namespace CSPLemmas.Tests
             //if two 3 - color vertices changed to one 4 - color
             if (v.AvalibleColors.Count == 3 && v2.AvalibleColors.Count == 3)
             {
-                var oldColors = v.AvalibleColors.Select(c => new Color(c.Value, c.Restrictions)).Union(v2.AvalibleColors.Select(c => new Color(c.Value, c.Restrictions)));
-                var res = CSPLemmas.Lemma8(instance, v, c);
+                var oldColors = v.AvalibleColors.Select(c => new Color(c.Value)).Union(v2.AvalibleColors.Select(c => new Color(c.Value))).ToList();
+                var res = CSPLemmas.Lemma8(instance, v, c, out _);
                 Assert.Single(res);
                 Assert.Null(res[0].Variables.FirstOrDefault(vbl => vbl == v));
                 Assert.Null(res[0].Variables.FirstOrDefault(vbl => vbl == v2));
                 var vCombined = res[0].Variables.FirstOrDefault(vbl =>
-                    vbl.AvalibleColors.Count == 4 &&
-                    vbl.AvalibleColors.All(avCol => oldColors.Any(oc => oc.Value == avCol.Value)));
+                    vbl.AvalibleColors.Count == 4);
                 Assert.NotNull(vCombined);
             }
             //if returend two correct instances
             else
             {
-                var res = CSPLemmas.Lemma8(instance, v, c);
+                var res = CSPLemmas.Lemma8(instance, v, c, out _);
                 Assert.Equal(2, res.Count);
                 Assert.True(
                     res.Any(inst => inst.Result.Any(p => p.Variable == v && p.Color == c)) ||
@@ -665,7 +700,7 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma9))]
         public void Lemma9Test(CspInstance instance, Variable v, Color c, Variable v2, Color c2)
         {
-            var res = CSPLemmas.Lemma9(instance, v, c);
+            var res = CSPLemmas.Lemma9(instance, v, c, out _);
             Assert.Equal(2, res.Count);
             Assert.True(
                 res.Any(inst => inst.Result.Any(p => p.Variable == v && p.Color == c)) ||
@@ -685,6 +720,7 @@ namespace CSPLemmas.Tests
                     if ((c.Restrictions.Count >= 3 && v.AvalibleColors.Count == 4) ||
                         (c.Restrictions.Count >= 4 && v.AvalibleColors.Count == 3)) // Lemma11 applies
                     {
+#if DEBUG
                         if (c.Restrictions.Select(r => r.Variable).Distinct().Count() != c.Restrictions.Select(r => r.Variable).Count())
                         {
                             Assert.Throws<ArgumentException>(() => CSPLemmas.Lemma11(instance, v, c));
@@ -695,6 +731,7 @@ namespace CSPLemmas.Tests
                             Assert.Equal(2, res.Count);
                             Assert.Contains(res, inst => inst.Result.Any(p => p.Variable == v && p.Color == c));
                         }
+#endif
                     }
                     else
                     {
@@ -777,33 +814,33 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma15))]
         public void Lemma15Test(CspInstance instance)
         {
-            (var res, bool b) = CSPLemmas.Lemma15(instance);
-            if(b == true)
+            var res = CSPLemmas.Lemma15(instance, out bool b);
+            if (b == true)
             {
                 foreach (var inst in res)
                 {
-                    if(inst != null)
+                    if (inst != null)
                     {
                         Lemma15Test(inst);
                     }
-                    
+
                 }
-            } 
+            }
             else
             {
-                Assert.Null(CSPLemmas.findSmallBadThreeComponent(instance.Restrictions));
+                Assert.Null(CSPLemmas.FindBadThreeComponent(instance, true));
             }
-            
+
         }
 
         [Theory]
         [MemberData(nameof(GetDataLemma17))]
         public void Lemma17Test(CspInstance instance)
         {
-            (var res, bool b) = CSPLemmas.Lemma17(instance);
-            if(b == false)
+            var res = CSPLemmas.Lemma17(instance, out bool applied);
+            if (applied == false)
             {
-                Assert.Null(CSPLemmas.findBigThreeComponent(instance.Restrictions));
+                Assert.Null(CSPLemmas.FindBadThreeComponent(instance, false));
             }
             else
             {
@@ -812,7 +849,7 @@ namespace CSPLemmas.Tests
                     Lemma17Test(inst);
                 }
             }
-            
+
         }
 
         [Theory]
@@ -837,29 +874,33 @@ namespace CSPLemmas.Tests
                 }
             }
 
+
             void Lemma10TestInternal()
             {
                 bool foundFlag = false;
                 int indexOfInst = 0;
                 Variable v = new(1), v2 = new(1);
                 Color c = new(1), c2_1 = new(1), c2_2 = new(1);
-                foreach(CspInstance inst in instances)
+                foreach (CspInstance inst in instances)
                 {
                     foreach (var var in inst.Variables)
                     {
                         foreach (var col in var.AvalibleColors)
                         {
-                            if (col.Restrictions.Count == 2)
+                            foreach (var pair in col.Restrictions)
                             {
-                                var tempTab = col.Restrictions.ToArray();
-                                if (tempTab[0].Variable == tempTab[1].Variable)
+                                int resToNeigh = col.Restrictions.Where(r => r.Variable == pair.Variable).Count();
+                                if (resToNeigh == pair.Variable.AvalibleColors.Count)
+                                {
+                                    inst.RemoveRestriction(new Pair(var, col), pair);
+                                    resToNeigh--;
+                                }
+                                if (resToNeigh > 1)
                                 {
                                     c = col;
                                     v = var;
-                                    c2_1 = tempTab[0].Color;
-                                    c2_2 = tempTab[1].Color;
                                     indexOfInst = instances.IndexOf(inst);
-                                    v2 = tempTab[0].Variable;
+                                    v2 = pair.Variable;
                                     foundFlag = true;
                                     break;
                                 }
@@ -870,11 +911,11 @@ namespace CSPLemmas.Tests
                     }
                     if (foundFlag) break;
                 }
-                if(foundFlag)
+                if (foundFlag)
                 {
                     CspInstance foundInst = instances[indexOfInst];
                     instances.RemoveAt(indexOfInst);
-                    var aaa = CSPLemmas.Lemma10(foundInst, v, c, v2, c2_1, c2_2);
+                    var aaa = CSPLemmas.Lemma10(foundInst, v, c, v2);
                     instances.AddRange(aaa);
                     Lemma10TestInternal();
                 }
@@ -883,7 +924,7 @@ namespace CSPLemmas.Tests
         }
 
         [Theory]
-        [MemberData(nameof(GetDataLemma10))]
+        [MemberData(nameof(GetDataLemma18))]
         public void Lemma18Test(CspInstance instance)
         {
             List<CspInstance> instances = new() { instance };
@@ -891,7 +932,7 @@ namespace CSPLemmas.Tests
 
             Lemma18TestInternal();
 
-            
+
             foreach (CspInstance inst in instances)  // sprawdzamy czy nie został jakis 2 komponent
             {
                 foreach (Variable var in inst.Variables)
@@ -933,10 +974,10 @@ namespace CSPLemmas.Tests
             void Lemma18TestInternal()
             {
                 bool flag = false;
-                foreach(CspInstance inst in instances)
+                foreach (CspInstance inst in instances)
                 {
-                    var afterLemmaInst = CSPLemmas.Lemma18(inst);
-                    if(afterLemmaInst.Count > 0)
+                    var afterLemmaInst = CSPLemmas.Lemma18(inst, out bool applied);
+                    if (applied)
                     {
                         instances.Remove(inst);
                         instances.AddRange(afterLemmaInst);
@@ -944,7 +985,7 @@ namespace CSPLemmas.Tests
                         break;
                     }
                 }
-                if(flag)
+                if (flag)
                 {
                     Lemma18TestInternal();
                 }
@@ -955,13 +996,12 @@ namespace CSPLemmas.Tests
         [MemberData(nameof(GetDataLemma19))]
         public void Lemma19Test(CspInstance instance)
         {
-            bool canColor = CSPLemmas.Lemma19(instance);
-            foreach(var R1 in instance.Result)
-                foreach(var R2 in instance.Result)
+            foreach (var R1 in instance.Result)
+                foreach (var R2 in instance.Result)
                 {
-                    bool test = instance.Restrictions.Contains(new Restriction(R1,R2));
+                    bool test = instance.Restrictions.Contains(new Restriction(R1, R2));
                     Assert.False(test);
-                }                
+                }
         }
     }
 }

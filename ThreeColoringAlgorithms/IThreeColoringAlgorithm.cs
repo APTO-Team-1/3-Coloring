@@ -13,7 +13,7 @@ namespace ThreeColoring.Algorithms
         /// 
         /// </summary>
         /// <param name="g"></param>
-        /// <returns>An array of colors corresponding to vertices of <paramref name="g"/> starting with 1.</returns>
+        /// <returns>An array of colors corresponding to vertices of <paramref name="g"/> starting with 0.</returns>
         public int[] ThreeColorig(Graph g);
     }
 }

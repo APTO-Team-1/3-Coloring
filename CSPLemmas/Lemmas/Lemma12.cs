@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
@@ -17,19 +17,19 @@ namespace CSPLemmas
         {
             if (c.Restrictions.Count == 3)
             {
-                foreach(var restrictionPair in c.Restrictions)
+                foreach (var restrictionPair in c.Restrictions)
                 {
                     (var v2, var c2) = restrictionPair;
                     if (v2.AvalibleColors.Count == 4) // Lemma12 applies
                     {
 #if DEBUG
-                        if (c2.Restrictions.Count!=2)
+                        if (c2.Restrictions.Count != 2)
                             throw new ArgumentException("We can assume (v2, c2) has only two constraints, else it would be covered by the previous lemma.");
 #endif
                         // second neighbor of v2
                         (var v3, var c3) = c2.Restrictions.Where(r => r.Variable != v).First();
 
-                        if(Do_v1c1v2c2v3c3_FormTraingle(v, c, c3))
+                        if (!Do_v1c1v2c2v3c3_FormTraingle(v, c, c3))
                         {
                             (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(new Variable[] { v, v2 }, new Color[] { c, c2 });
                             var i2v = i2vArr[0]; var i2v2 = i2vArr[1];
@@ -39,8 +39,8 @@ namespace CSPLemmas
                             instance2.RemoveColor(i2v, i2c); // creating a dangling constraint at (v2, c2)
 
                             var res = new List<CspInstance>() { instance };
-                            res.AddRange(Lemma9(instance2, i2v2, i2c2));
-                            
+                            res.AddRange(Lemma9(instance2, i2v2, i2c2, out _));
+
                             return res;
                         }
                         else
@@ -55,7 +55,7 @@ namespace CSPLemmas
                     }
                 }
             }
-           
+
             return new() { instance };
 
 
@@ -66,7 +66,5 @@ namespace CSPLemmas
                 return c3.Restrictions.Any(r => r.Variable == v && r.Color == c);
             }
         }
-
-       
     }
 }

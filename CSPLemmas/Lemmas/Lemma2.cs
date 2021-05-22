@@ -1,17 +1,20 @@
 ﻿using CSP;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
-        public static void Lemma2(CspInstance instance)
+        public static void Lemma2(CspInstance instance, Variable variable, out bool applied)
         {
-            foreach (var variable in instance.Variables)
+            applied = false;
+            if (variable.AvalibleColors.Count <= 2)
             {
-                if (variable.AvalibleColors.Count == 2)
-                {
-                    RemoveVariableWith2Colors(instance, variable);
-                }
+                applied = true;
+                RemoveVariableWith2Colors(instance, variable); 
+                return;
             }
         }
     }

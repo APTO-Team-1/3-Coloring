@@ -5,7 +5,7 @@ using System.Linq;
 using GraphLib.Definitions;
 using GraphLib.Algorithms;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
@@ -41,7 +41,6 @@ namespace CSPLemmas
                     }
                 }
             }
-            List<Variable> varibles = instance.Variables.ToList();
             Dictionary<int, int> idsToIndex = new();
             Dictionary<int, int> indexToId = new();
             int index = 0;

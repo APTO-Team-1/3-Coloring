@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CSP
 {
@@ -9,28 +10,29 @@ namespace CSP
             this.Value = value;
         }
 
-        public Color(int value, IEnumerable<Pair> restrictions)
-        {
-            this.Value = value;
-            foreach (var restriction in restrictions)
-            {
-                this.restrictions.Add(restriction);
-            }
-        }
-
         public int Value { get; set; }
 
         private readonly HashSet<Pair> restrictions = new();
 
         public IReadOnlySet<Pair> Restrictions { get => restrictions; }
 
-        internal void AddRestriction(Pair pair)
+        internal bool AddRestriction(Pair pair)
         {
-            restrictions.Add(pair);
+            return restrictions.Add(pair);
         }
-        internal void RemoveRestriction(Pair pair)
+        internal bool RemoveRestriction(Pair pair)
         {
-            restrictions.Remove(pair);
+            return restrictions.Remove(pair);
+        }
+
+        public bool IsNeighborOf(Color color)
+        {
+            return Restrictions.Any(r => r.Color == color);
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
         }
     }
 }

@@ -1,64 +1,145 @@
 ﻿using CSP;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
         // in main alg:
         //      for every (v, c) in instance:
-        //          if(c.restrictions.count == 2)
+        //          if c ma 2 ograniczenia (lub więcej) do jednej zmiennej
         //          {
         //              var tempTab = c.restrictions.ToArray();
         //              if(tempTab[0].variable == tempTab[1].variable)
         //                  res = lemma10(instance , ...)
-        //              if (res.count > 1) recursion
+        //                  recursion
         //
 
-        public static List<CspInstance> Lemma10(CspInstance instance, Variable v, Color c, Variable v2, Color c2_1, Color c2_2)
+        public static List<CspInstance> Lemma10(CspInstance instance, Variable v, Color c, Variable v2)
         {
+#if DEBUG
+            if (c.Restrictions.Where(r => r.Variable == v2).Count() <= 1) throw new ApplicationException("There should be 2 or more restriction from c to v2");
+#endif
+
             // w instance bierzemy kolor impikowany a w instance2 nie bierzemy
-
-            Color R = new(345376545);
-            foreach (Color col in v2.AvalibleColors)
-                if (col.Value != c2_1.Value && col.Value != c2_2.Value) R = col;
-            (CspInstance instance2,Variable[] clonedV,Color[] ClonedC )= instance.CloneAndReturnCorresponding(new Variable[] {v,v2,v,v2},new Color[] {c,c2_1,c2_2,R});
-            Variable vCloned = clonedV[0], v2Cloned = clonedV[1];
-            Color cCloned = ClonedC[0],RCloned = ClonedC[3];
-
-            if(v2.AvalibleColors.Count == 3)
+            List<Color> notNeighbors = new(v2.AvalibleColors);
+            var restrictionToV2 = c.Restrictions.Where(r => r.Variable == v2);
+            foreach (var res in restrictionToV2)
             {
-                instance.AddToResult(v2, R); // bierzemy kolor R
-                instance2.RemoveColor(v2Cloned, RCloned); // nie bierzemy kolora R
-                RemoveVariableWith2Colors(instance2, v2Cloned);  // zostały 2 kolory do wyboru
+                notNeighbors.Remove(res.Color);
             }
-            else if (v2.AvalibleColors.Count == 4)
+
+            if (notNeighbors.Count == 1) //
             {
-                Color R2 = new(345376545), R2Cloned = new(345376545);
-                foreach (Color col in v2.AvalibleColors)
-                    if (col.Value != c2_1.Value && col.Value != c2_2.Value && col.Value != R.Value) R2 = col;
-                foreach (Color col in clonedV[1].AvalibleColors)
-                    if (col.Value != c2_1.Value && col.Value != c2_2.Value && col.Value != R.Value) R2Cloned = col;
+                var c2 = notNeighbors[0]; // c2 jest implikowana przez c1;
+                var implicationFrom = GetImplicationFrom(new Pair(v2, c2));
+                List<Pair> cycle = new() { new Pair(v, c) };
+                bool isCycle = CreateImplicationCycle(cycle);
+                if (isCycle) // jest cykl implikacji
+                {
+                    bool allRestrictionInCycle = true;
+                    Pair vR = new();
+                    for (int i = 0; i < cycle.Count - 1; i++)
+                    {
+                        if (cycle[i].Color.Restrictions.Any(r => r.Color != cycle[i + 1].Color))
+                        {
+                            allRestrictionInCycle = false;
+                            vR = cycle[i];
+                            break;
+                        }
+                    }
+                    if (cycle[^1].Color.Restrictions.Any(r => r.Color != cycle[0].Color))
+                    {
+                        allRestrictionInCycle = false;
+                        vR = cycle[^1];
+                    }
+                    if (allRestrictionInCycle) // wybieramy wszystkie kolory z cyklu
+                    {
+                        foreach (var pair in cycle)
+                        {
+                            instance.AddToResult(pair);
+                        }
+                        return new() { instance };
+                    }
+                    else
+                    {
+                        (var instance2, var i2v, var i2c) = instance.CloneAndReturnCorresponding(cycle.Select(p => p.Variable).ToArray(), cycle.Select(p => p.Color).ToArray());
+                        foreach (var pair in cycle) // instance1 wybiera cykl
+                        {
+                            instance.AddToResult(pair);
+                        }
+                        for (int i = 0; i < i2v.Length; i++) // instance2 nie wybiera cyklu
+                        {
+                            instance2.RemoveColor(i2v[i], i2c[i]);
+                        }
 
-                instance.RemoveColor(v2, c2_1);  // nie bierzemy c2_1 i c2_2
-                instance.RemoveColor(v2, c2_2);
+                        return new() { instance, instance2 };
 
-                RemoveVariableWith2Colors(instance, v2); // bierzemy ktorys z 2 pozostałych kolorów
+                    }
+                }
+                else // nie ma cyklu
+                {
+                    (var instance2,var i2v, var i2c) = instance.CloneAndReturnCorresponding(new[] { v, v2 }, new[] { c, c2 });
 
-                instance2.RemoveColor(v2Cloned, RCloned);  // nie bierzemy R i R2
-                instance2.RemoveColor(v2Cloned, R2Cloned);
+                    instance.AddToResult(v2, c2); // instance1 wybiera c2
+                    instance2.RemoveColor(i2v[1], i2c[1]); // instance2 nie wybiera c2
+                    instance2.RemoveColor(i2v[0], i2c[0]); // , więc nie może też wybrać c
 
-                RemoveVariableWith2Colors(instance2, v2Cloned); // bierzemy ktorys z 2 pozostałych kolorów
+                    return new() { instance, instance2 };
+                }
             }
-            instance.AddToResult(v, c); // wzieliśmy wczesniej kolor R i bierezmy teraz zafriko c
-            if (v.AvalibleColors.Count == 3)
-            {             
-                instance2.RemoveColor(vCloned, cCloned);  // wzielismy ktoregos z sasiadow c wiec nie bierzemy go teraz
-                RemoveVariableWith2Colors(instance2, vCloned);  // zostały 2 kolory do wyboru
+            else if (notNeighbors.Count == 2)
+            {
+                var c21 = notNeighbors[0];
+                var c22 = notNeighbors[1];
+                (var instance2, var i2v, var i2c) = instance.CloneAndReturnCorresponding(new[] { v2, v2, v }, new[] { c21, c22, c });
+                instance2.RemoveColor(i2v[0], i2c[0]);
+                instance2.RemoveColor(i2v[1], i2c[1]);
+                instance2.RemoveColor(i2v[2], i2c[2]); // usuwamy v,c bo nie można go ustawić
+                // instance 1 zostawia nie sąsiadów
+                instance.RemoveColor(v2, c21);
+                instance.RemoveColor(v2, c22);
+                // instance 2 zostawia sąsiadów
+                
+                return new() { instance, instance2 };
             }
-            return new(){ instance, instance2 };
-
+            else
+            {
+                throw new ApplicationException("Not expected");
+            }
+        }
+        private static List<Pair> GetImplicationFrom(Pair pair)
+        {
+            var ret = new List<Pair>();
+            (var v, var c) = pair;
+            var neighbors = c.Restrictions.Select(r => r.Variable).Distinct();
+            foreach (var neighbor in neighbors)
+            {
+                var restrictionToNeighbor = c.Restrictions.Where(r => r.Variable == neighbor).Select(r => r.Color);
+                if (restrictionToNeighbor.Count() == neighbor.AvalibleColors.Count - 1)
+                {
+                    ret.Add(new Pair(neighbor, neighbor.AvalibleColors.First(c => !restrictionToNeighbor.Contains(c))));
+                }
+            }
+            return ret;
+        }
+        private static bool CreateImplicationCycle(List<Pair> cycle)
+        {
+            var implicationFrom = GetImplicationFrom(cycle.Last());
+            foreach (var pair in implicationFrom)
+            {
+                if (pair == cycle.First())
+                {
+                    return true;
+                }
+                cycle.Add(pair);
+                if (CreateImplicationCycle(cycle)) return true;
+            }
+            return false;
         }
     }
+
+
 }

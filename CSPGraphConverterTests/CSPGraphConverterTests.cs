@@ -78,28 +78,5 @@ namespace CSPGraphConverter.Tests
             Assert.Equal(4 * edgesCount, cspInstance4.Restrictions.Count);
         }
 
-        [Theory]
-        [MemberData(nameof(GetDataBiGraphToCSP))]
-        public void BiGraphToCSP(GraphLib.Definitions.BipartieGraph graph)
-        {
-            int verticesCount = graph.PartAVertices.Length + graph.PartBVertices.Length;
-            int edgesCount = 0;
-            for (int i = 0; i < graph.PartAVertices.Length; i++)
-            {
-                for(int j = 0; j < graph.PartBVertices.Length; j++)
-                {
-                    if (graph.ContainsEdgeAtoB(i, j))
-                        edgesCount += 1;
-                }
-            }
-
-            CSP.CspInstance cspInstance3 = Converter.BipartieGraphToCSP(graph, 3);
-            CSP.CspInstance cspInstance4 = Converter.BipartieGraphToCSP(graph, 4);
-
-            Assert.Equal(verticesCount, cspInstance3.Variables.Count);
-            Assert.Equal(3 * edgesCount, cspInstance3.Restrictions.Count);
-            Assert.Equal(verticesCount, cspInstance4.Variables.Count);
-            Assert.Equal(4 * edgesCount, cspInstance4.Restrictions.Count);
-        }
     }
 }

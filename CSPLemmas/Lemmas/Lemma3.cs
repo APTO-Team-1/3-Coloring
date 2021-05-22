@@ -1,47 +1,51 @@
 ﻿using CSP;
+using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
-        public static void Lemma3(CspInstance instance)
+        public static void Lemma3(CspInstance instance, Variable v1, out bool applied)
         {
-            foreach (var v1 in instance.Variables)
+            applied = false;
+            for (int i = 0; i < v1.AvalibleColors.Count; i++)
             {
-                for (int i = 0; i < v1.AvalibleColors.Count; i++)
+                var c1 = v1.AvalibleColors[i];
+                var v2 = GetDistinctSingleVariableFromColor(c1);
+                if (v2 != null)
                 {
-                    var c1 = v1.AvalibleColors[i];
-                    foreach (var v2 in instance.Variables)
+                    for (int j = 0; j < v2.AvalibleColors.Count; j++)
                     {
-                        for (int j = 0; j < v2.AvalibleColors.Count; j++)
+                        var c2 = v2.AvalibleColors[j]; 
+                        var v21 = GetDistinctSingleVariableFromColor(c2);
+                        if (v21 != null)
                         {
-                            var c2 = v2.AvalibleColors[j];
-                            bool b = true;
-                            foreach (var pair in c1.Restrictions)
+                            if (!c1.Restrictions.Any(p => p.Color == c2) && !c2.Restrictions.Any(p => p.Color == c1))
                             {
-                                if(pair.Variable != v2 || pair.Color == c2)
+
+                                if (v1 == v21)
                                 {
-                                    b = false;
-                                    break;
+                                    applied = true;
+                                    instance.AddToResult(v1, c1);
+                                    instance.AddToResult(v2, c2);
+                                    return;
                                 }
-                            }
-                            foreach (var pair in c2.Restrictions)
-                            {
-                                if (pair.Variable != v1 || pair.Color == c1)
-                                {
-                                    b = false;
-                                    break;
-                                }
-                            }
-                            if(b)
-                            {
-                                instance.AddToResult(v1, c1);
-                                instance.AddToResult(v2, c2);
                             }
                         }
                     }
                 }
             }
+        }
+
+        public static Variable GetDistinctSingleVariableFromColor(Color color)
+        {
+            if (color.Restrictions.Count == 0) return null;
+            Pair first = color.Restrictions.First();
+            foreach (var pair in color.Restrictions)
+            {
+                if (pair.Variable.Id != first.Variable.Id) return null;
+            }
+            return first.Variable;
         }
     }
 }

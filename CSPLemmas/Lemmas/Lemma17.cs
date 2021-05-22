@@ -1,154 +1,151 @@
 ﻿using CSP;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
-        public static (List<CspInstance>, bool) Lemma17(CspInstance instance)
+        public static List<CspInstance> Lemma17(CspInstance instance, out bool applied)
         {
-            List<CspInstance> result = new();
-            HashSet<Pair> set = findBigThreeComponent(instance.Restrictions);
-            if(set != null)
+            var result = new List<CspInstance>();
+            HashSet<Pair> set = FindBadThreeComponent(instance, false);
+            if (set != null)
             {
-                List<Pair> witness = findWitness(set, instance.Restrictions);
-                if(witness != null)
+                applied = true;
+                List<Pair> witness = FindWitness(set, instance.Restrictions);
+                if (witness != null)
                 {
-                    CspInstance instance1 = instance.Clone();
                     int neighbours = 0;
-                    if (instance.Restrictions.Contains(new Restriction(witness[4], witness[1]))) neighbours++;
-                    if (instance.Restrictions.Contains(new Restriction(witness[4], witness[2]))) neighbours++;
-                    if (instance.Restrictions.Contains(new Restriction(witness[4], witness[3]))) neighbours++;
+                    Pair vR = witness[0], wR = witness[1], xR = witness[2], yR = witness[3], zR = witness[4];
+                    if (zR.Color.Restrictions.Any(r => r == wR)) neighbours++;
+                    else throw new ApplicationException("Z should be neighbor of W");
+                    if (zR.Color.Restrictions.Any(r => r == xR)) neighbours++;
+                    if (zR.Color.Restrictions.Any(r => r == yR)) neighbours++;
 
-                    if(neighbours == 1)
+                    if (neighbours == 1)
                     {
-                        CspInstance instance2 = instance.Clone();
-                        instance1.AddToResult(witness[4]);
-                        instance2.RemoveColor(witness[4]);
-                        if(instance.Restrictions.Contains(new Restriction(witness[1], witness[2])))
+                        (CspInstance instance2,Pair[] i2p )= instance.CloneAndReturnCorresponding(zR);
+                        var zRNeighbors = i2p[0].Color.Restrictions.Select(r => r.Variable);
+                        instance2.AddToResult(i2p[0]); // instance2 wybiera zR
+                        result.Add(instance2);
+                        foreach (var v in zRNeighbors)
                         {
-                            CspInstance instance3 = instance2.Clone();
-                            CspInstance instance4 = instance2.Clone();
-                            instance2.AddToResult(witness[0]);
-                            instance3.AddToResult(witness[1]);
-                            instance4.AddToResult(witness[2]);
+                            RemoveVariableWith2Colors(instance2, v);
+                        }
 
-                            result.Add(instance1);
-                            result.Add(instance2);
+                        if (wR.Color.Restrictions.Any(r => r == xR))
+                        {
+                            (CspInstance instance3, Pair[] i3p) = instance.CloneAndReturnCorresponding(wR);
+                            (CspInstance instance4, Pair[] i4p) = instance.CloneAndReturnCorresponding(xR);
+                            instance.AddToResult(vR);
+                            instance3.AddToResult(i3p[0]);
+                            instance4.AddToResult(i4p[0]);
+
+                            result.Add(instance);
                             result.Add(instance3);
                             result.Add(instance4);
-                        } 
-                        else if(instance.Restrictions.Contains(new Restriction(witness[1], witness[3])))
+                            return result;
+                        }
+                        else if (wR.Color.Restrictions.Any(r => r == yR))
                         {
-                            CspInstance instance3 = instance2.Clone();
-                            CspInstance instance4 = instance2.Clone();
-                            instance2.AddToResult(witness[0]);
-                            instance3.AddToResult(witness[1]);
-                            instance4.AddToResult(witness[3]);
+                            (CspInstance instance3, Pair[] i3p) = instance.CloneAndReturnCorresponding(wR);
+                            (CspInstance instance4, Pair[] i4p) = instance.CloneAndReturnCorresponding(yR);
+                            instance.AddToResult(vR);
+                            instance3.AddToResult(i3p[0]);
+                            instance4.AddToResult(i4p[0]);
 
-                            result.Add(instance1);
-                            result.Add(instance2);
+                            result.Add(instance);
                             result.Add(instance3);
                             result.Add(instance4);
+                            return result;
                         }
                         else
                         {
-                            result.AddRange(Lemma13(instance1, witness[0].Variable, witness[0].Color));
-                            result.AddRange(Lemma13(instance2, witness[0].Variable, witness[0].Color));
+                            var instances = Lemma13(instance,vR.Variable, vR.Color);
+                            result.AddRange(instances);
+                            return result;
                         }
-                    } 
-                    else if(neighbours == 2)
-                    {
-                        CspInstance instance2 = instance1.Clone();
-                        instance1.AddToResult(witness[4]);
-                        foreach(Pair p in witness[4].Color.Restrictions)
-                        {
-                            RemoveVariableWith2Colors(instance1, p.Variable);
-                        }
-                        instance2.RemoveColor(witness[4]);
-                        result.Add(instance1);
-                        result.Add(instance2);
                     }
-                    else if(neighbours == 3)
+                    else if (neighbours == 2)
                     {
-                        CspInstance instance2 = instance1.Clone();
-                        instance1.AddToResult(witness[4]);
-                        instance1.AddToResult(witness[0]);
-                        instance2.RemoveColor(witness[4]);
-                        result.Add(instance1);
+                        (CspInstance instance2, Pair[] i2p) = instance.CloneAndReturnCorresponding(zR); // pomija zR
+
+                        var zRNeighbors = zR.Color.Restrictions.Select(r => r.Variable);
+                        instance.AddToResult(zR);
+                        foreach (var v in zRNeighbors)
+                        {
+                            RemoveVariableWith2Colors(instance, v);
+                        }
+                        var instances = Lemma9(instance, vR.Variable, vR.Color, out _);
+                        instance2.RemoveColor(i2p[0]);
+                        result.AddRange(instances);
                         result.Add(instance2);
+                        return result;
+                    }
+                    else if (neighbours == 3)
+                    {
+                        (CspInstance instance2, Pair[] i2p) = instance.CloneAndReturnCorresponding(zR); // pomija zR
+                        instance2.RemoveColor(i2p[0]);
+                        var zRNeighbors = zR.Color.Restrictions.Select(r => r.Variable);
+                        instance.AddToResult(zR);
+                        foreach (var v in zRNeighbors)
+                        {
+                            RemoveVariableWith2Colors(instance, v);
+                        }
+                        instance.AddToResult(vR);
+
+                        result.Add(instance);
+                        result.Add(instance2);
+                        return result;
                     }
                 }
-            } 
+                else //whitness not found
+                {
+                    throw new ApplicationException("whitness not found");
+                }
+                return result;
+            }
             else
             {
-                return (new() { instance }, false);
+                applied = false;
+                return new() { instance };
             }
 
-            return (result, true);
         }
-        public static HashSet<Pair> findBigThreeComponent(IReadOnlySet<Restriction> restrictions)
+
+        private static List<Pair> FindWitness(HashSet<Pair> component, IReadOnlySet<Restriction> restrictions)
         {
-            foreach (Restriction res in restrictions)
+            foreach (Pair p1 in component)
             {
-                if (res.Pair1.Color.Restrictions.Count == 3)
+                foreach (var p2 in p1.Color.Restrictions)
                 {
-                    HashSet<Pair> pairs = new() { res.Pair1 };
-                    findComponentForPair(restrictions, res.Pair1, pairs);
-                    if (pairs != null)
+                    var p3p4 = p1.Color.Restrictions.Where(r => r != p2);
+                    var p3 = p3p4.ElementAt(0);
+                    var p4 = p3p4.ElementAt(1);
+                    var p5list = p2.Color.Restrictions.Where(p => p != p1 && p != p2 && p != p3);
+                    if (p5list.Any())
                     {
-                        HashSet<Variable> distinctVariables = new();
-                        foreach (Pair p in pairs)
+                        var p5 = p5list.First();
+                        Pair vR = p1, wR = p2, xR = p3, yR = p4, zR = p5; 
+                        if(p2.IsNeighborOf(p3) && p3.IsNeighborOf(p5)) // ustawiamy tak żeby jeśli występuje trójkąt to nie miał 2 połączeć z zR
                         {
-                            distinctVariables.Add(p.Variable);
+                            vR = p2;
+                            wR = p1;
+                            xR = p3;
+                            yR = p5;
+                            zR = p4;
                         }
-                        if (distinctVariables.Count > 4)
+                        if (p2.IsNeighborOf(p4) && p4.IsNeighborOf(p5))
                         {
-                            return pairs;
+                            vR = p2;
+                            wR = p1;
+                            xR = p4;
+                            yR = p5;
+                            zR = p3;
                         }
-                    }
-                }
-                if (res.Pair2.Color.Restrictions.Count == 3)
-                {
-                    HashSet<Pair> pairs = new() { res.Pair2 };
-                    findComponentForPair(restrictions, res.Pair2, pairs);
-                    if (pairs != null)
-                    {
-                        HashSet<Variable> distinctVariables = new();
-                        foreach (Pair p in pairs)
-                        {
-                            distinctVariables.Add(p.Variable);
-                        }
-                        if (distinctVariables.Count > 4)
-                        {
-                            return pairs;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-        private static List<Pair> findWitness(HashSet<Pair> component, IReadOnlySet<Restriction> restrictions)
-        {
-            foreach(Pair p1 in component)
-            {
-                foreach(Pair p2 in component)
-                {
-                    if (!restrictions.Contains(new Restriction(p1, p2))) break;
-                    foreach(Pair p3 in component)
-                    {
-                        if (!restrictions.Contains(new Restriction(p1, p3)) || p3.Equals(p2)) break;
-                        foreach (Pair p4 in component)
-                        {
-                            if (!restrictions.Contains(new Restriction(p1, p4)) || p4.Equals(p2) || p4.Equals(p3)) break;
-                            foreach (Pair p5 in component)
-                            {
-                                if (!restrictions.Contains(new Restriction(p2, p5)) || p5.Equals(p1) || p5.Equals(p3) || p5.Equals(p4)) break;
-                                    
-                                return new List<Pair>() { p1, p2, p3, p4, p5 };
-                            }
-                        }
+                        return new() { vR,wR,xR,yR,zR };
                     }
                 }
             }

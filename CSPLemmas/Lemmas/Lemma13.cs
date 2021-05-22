@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSPLemmas
+namespace CSPSimplifying
 {
     public static partial class CSPLemmas
     {
@@ -37,7 +37,7 @@ namespace CSPLemmas
                             instance2.RemoveColor(i2v, i2c); // create a dangling constraint (v2, c2)
 
                             var res = new List<CspInstance>() { instance };
-                            res.AddRange(Lemma9(instance2, i2v2, i2c2));
+                            res.AddRange(Lemma9(instance2, i2v2, i2c2, out _));
 
                             return res;
                         }
@@ -72,7 +72,7 @@ namespace CSPLemmas
                                 instance2.RemoveColor(i2v, i2c); // create an isolated constraint (v2, c2)----(v3, c3)
 
                                 var res = new List<CspInstance>() { instance };
-                                res.AddRange(Lemma8(instance2, i2v2, i2c2));
+                                res.AddRange(Lemma8(instance2, i2v2, i2c2, out _));
 
                                 return res;
 

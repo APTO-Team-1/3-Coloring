@@ -82,7 +82,7 @@ namespace ThreeColoringAlgorithmsTests
                     sw.Start();
                     var brut = new BruteForce().ThreeColorig(g);
                     sw.Stop();
-                    output.WriteLine($"Graph with {i} vertices and {j} edge percentage:");
+                    output.WriteLine($"Radnom Graph with {i} vertices and {j} edge percentage:");
                     output.WriteLine("Brute time: " + sw.Elapsed);
                     sw.Reset();
                     sw.Start();
@@ -239,7 +239,7 @@ namespace ThreeColoringAlgorithmsTests
                     sw.Start();
                     var brut = new BruteForce().ThreeColorig(g);
                     sw.Stop();
-                    output.WriteLine($"Tree with {vertice_count} vertices:");
+                    output.WriteLine($"Bipartie Graph with {vertice_count} vertices and {10*res_percent} edge percentage:");
                     output.WriteLine("Brute time: " + sw.Elapsed);
                     sw.Reset();
                     sw.Start();

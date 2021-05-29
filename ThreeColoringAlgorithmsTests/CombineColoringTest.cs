@@ -49,7 +49,7 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 20; i < 100; i+=30)
             {
-                g = GetRandomGraph(restrictionPercentage: i, vericesCount: 10000, randomSeed: i);
+                g = GetRandomGraph(restrictionPercentage: i, vericesCount: 2000, randomSeed: i);
                 data.Add(new[] { g });
             }
             return data;
@@ -59,7 +59,7 @@ namespace ThreeColoringAlgorithmsTests
         {
             var data = new List<object[]>();
             Graph g;
-            for (int i = 10000; i <= 20000; i += 1000)
+            for (int i = 5000; i <= 10000; i += 1000)
             {
                 g = new Graph(i);
                 g.AddEdge(i - 1, 0);
@@ -76,7 +76,7 @@ namespace ThreeColoringAlgorithmsTests
         {
             var data = new List<object[]>();
             Graph g;
-            for (int i = 10000; i <= 20000; i += 1000)
+            for (int i = 5000; i <= 10000; i += 1000)
             {
                 g = new Graph(i);
                 int son = 1;
@@ -104,7 +104,7 @@ namespace ThreeColoringAlgorithmsTests
         {
             var data = new List<object[]>();
             Graph g;
-            int vertice_count = 10000;
+            int vertice_count = 2000;
             for (int i = 20; i <= 80; i += 30)
             {
                 g = new Graph(vertice_count);
@@ -254,7 +254,7 @@ namespace ThreeColoringAlgorithmsTests
         public void BigCliqueTest()
         {
             Stopwatch sw = new();
-            for (int i = 10000; i <= 20000; i +=5000)
+            for (int i = 1500; i <= 2000; i +=500)
             {
                 Graph g = new Graph(i);
 

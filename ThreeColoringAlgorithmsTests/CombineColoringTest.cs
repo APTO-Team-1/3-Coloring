@@ -71,7 +71,7 @@ namespace ThreeColoringAlgorithmsTests
         }
 
         [Fact]
-        public void BigRandomGraphsTest()
+        public void RandomGraphsTo1000VerticesTest()
         {
             Stopwatch sw = new();
             for (int i = 50; i <= 1000; i += 50)
@@ -99,13 +99,12 @@ namespace ThreeColoringAlgorithmsTests
                         ColoringTestUtils.CheckColoringCorrectness(g, super);
                     }
                 }
-
         }
         [Fact]
-        public void  CycleGraphTest()
+        public void  CycleGraphTo500VerticesTest()
         {
             Stopwatch sw = new();
-            for (int i = 50; i <= 1000; i += 50)
+            for (int i = 50; i <= 500; i += 50)
             {
                 Graph g = new Graph(i);
                 g.AddEdge(i - 1, 0);
@@ -137,7 +136,7 @@ namespace ThreeColoringAlgorithmsTests
         }
 
         [Fact]
-        public void CliqueTest()
+        public void CliqueTo1000VerticesTest()
         {
             Stopwatch sw = new();
             for (int i = 2; i <= 1000; i=i<10?i+1:i+50)
@@ -174,10 +173,10 @@ namespace ThreeColoringAlgorithmsTests
         }
         
         [Fact]
-        public void TreeTest()
+        public void TreeTo500VerticesTest()
         {
             Stopwatch sw = new();
-            for (int i = 50; i <= 1000; i+=50)
+            for (int i = 50; i <= 500; i+=50)
             {
                 Graph g = new Graph(i);
                 int son = 1;
@@ -222,17 +221,17 @@ namespace ThreeColoringAlgorithmsTests
         public void BipartieGraphTest()
         {
             Stopwatch sw = new();
-            for (int vertice_count = 50; vertice_count <= 1000; vertice_count += 50)
+            for (int vertice_count = 50; vertice_count <= 500; vertice_count += 50)
             {
                 for(int res_percent = 2; res_percent < 9; res_percent+=2)
                 {
                     Graph g = new Graph(vertice_count);
                     Random r = new Random();
                     int A = new Random().Next(1, 5);
-                    for (int k = 0; k < vertice_count * (vertice_count - 1) * res_percent / 10; vertice_count++)
+                    for (int k = 0; k < vertice_count * (vertice_count - 1) * res_percent / 10; k++)
                     {
                         int a = r.Next((int)(vertice_count*A/10));
-                        int b = r.Next((int)(vertice_count * A / 10)+1,vertice_count-1);
+                        int b = r.Next((int)(vertice_count * A / 10),vertice_count-1);
                         g.AddEdge(a, b);
                     }
                     sw.Reset();

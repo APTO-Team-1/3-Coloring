@@ -31,6 +31,50 @@ namespace ThreeColoringAlgorithmsTests
             return g;
         }
 
+        public static Graph GetGraphWithFewNeighbors(int vericesCount = 20, int? randomSeed = null)
+        {
+            Graph g = new(vericesCount);
+            Random r = randomSeed.HasValue ? new(randomSeed.Value) : new();
+            for (int i = 0; i < vericesCount; i++)
+            {
+                var n = r.Next(vericesCount);
+                while (n==i) n = r.Next(vericesCount);
+                g.AddEdge(i, n);
+                n = r.Next(vericesCount);
+                while (n == i) n = r.Next(vericesCount);
+                g.AddEdge(i, n);
+            }
+            return g;
+        }
+
+        [Fact]
+        public void FewNeighbors()
+        {
+            Graph g = GetGraphWithFewNeighbors(100);
+            Stopwatch sw = new();
+            sw.Reset();
+            sw.Start();
+            var brut = new BruteForce().ThreeColorig(g);
+            sw.Stop();
+            var found = brut == null ? "No" : "Yes";
+            output.WriteLine($"Brute time: {sw.Elapsed}. Found:  {found}");
+            sw.Reset();
+            sw.Start();
+            var super = new CspColoring().ThreeColorig(g);
+            sw.Stop();
+            found = super == null ? "No" : "Yes";
+            output.WriteLine($"CSP   time: {sw.Elapsed}. Found:  {found}");
+            output.WriteLine("-----------------------------------------------");
+            if (brut == null)
+            {
+                Assert.Null(super);
+            }
+            else
+            {
+                ColoringTestUtils.CheckColoringCorrectness(g, super);
+            }
+        }
+
         public static IEnumerable<object[]> GetRandomGraphs()
         {
             var data = new List<object[]>();
@@ -161,12 +205,14 @@ namespace ThreeColoringAlgorithmsTests
                     var brut = new BruteForce().ThreeColorig(g);
                     sw.Stop();
                     output.WriteLine($"Radnom Graph with {i} vertices and {j} edge percentage:");
-                    output.WriteLine("Brute time: " + sw.Elapsed);
+                    var found =  brut == null ? "No" : "Yes";
+                    output.WriteLine($"Brute time: {sw.Elapsed}. Found:  {found}");
                     sw.Reset();
                     sw.Start();
                     var super = new CspColoring().ThreeColorig(g);
                     sw.Stop();
-                    output.WriteLine("CSP time  : " + sw.Elapsed);
+                    found = super == null ? "No" : "Yes";
+                    output.WriteLine($"CSP   time: {sw.Elapsed}. Found:  {found}");
                     output.WriteLine("-----------------------------------------------");
                     if (brut == null)
                     {
@@ -398,6 +444,8 @@ namespace ThreeColoringAlgorithmsTests
                 ColoringTestUtils.CheckColoringCorrectness(g, super);
             }
         }
+
+       
 
         [Theory]
         [MemberData(nameof(GetBigTrees))]

@@ -167,15 +167,18 @@ namespace ThreeColoringAlgorithmsTests
                     var super = new CspColoring().ThreeColorig(g);
                     sw.Stop();
                     output.WriteLine("CSP time  : " + sw.Elapsed);
-                    output.WriteLine("-----------------------------------------------");
                     if (brut == null)
                     {
                         Assert.Null(super);
+                        output.WriteLine("Coloring not found");
+                        
                     }
                     else
                     {
                         ColoringTestUtils.CheckColoringCorrectness(g, super);
+                        ColoringTestUtils.CheckColoringCorrectness(g, brut);
                     }
+                    output.WriteLine("-----------------------------------------------");
                 }
         }
         [Fact]
@@ -210,6 +213,7 @@ namespace ThreeColoringAlgorithmsTests
                 {
                     ColoringTestUtils.CheckColoringCorrectness(g, super);
                 }
+                
             }
         }
 
@@ -475,6 +479,33 @@ namespace ThreeColoringAlgorithmsTests
             {
                 ColoringTestUtils.CheckColoringCorrectness(g, super);
             }
+        }
+
+        [Fact]
+        public void BruteTest()
+        {
+            Stopwatch sw = new();
+            for (int i = 10000; i <= 100000; i += 10000)
+                for (int j = 10; j <= 90; j += 20)
+                {
+                    sw.Reset();
+                    Graph g = GetRandomGraph(i, j);
+                    sw.Start();
+                    var brut = new BruteForce().ThreeColorig(g);
+                    sw.Stop();
+                    output.WriteLine($"Radnom Graph with {i} vertices and {j} edge percentage:");
+                    output.WriteLine("Brute time: " + sw.Elapsed);
+                    if (brut == null)
+                    {
+                        output.WriteLine("Coloring not found");
+                    }
+                    else
+                    { 
+                        ColoringTestUtils.CheckColoringCorrectness(g, brut);
+                    }
+                    output.WriteLine("-----------------------------------------------");
+
+                }
         }
     }
 }

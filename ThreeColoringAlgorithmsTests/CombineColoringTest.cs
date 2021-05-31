@@ -18,6 +18,48 @@ namespace ThreeColoringAlgorithmsTests
         {
             this.output = output;
         }
+
+        private void CheckAndWriteOutput(Graph g, string additionalInfo = "")
+        {
+            if(additionalInfo != "") output.WriteLine(additionalInfo);
+            Stopwatch sw = new();
+            sw.Reset();
+            sw.Start();
+            var brut = new BruteForce().ThreeColorig(g);
+            sw.Stop();
+            output.WriteLine($"Graph with {g.VerticesCount} vertices:");
+            var found = brut == null ? "No" : "Yes";
+            output.WriteLine($"Brute time: {sw.Elapsed}. Found:  {found}");
+            sw.Reset();
+            sw.Start();
+            var super = new CspColoring().ThreeColorig(g);
+            sw.Stop();
+            found = super == null ? "No" : "Yes";
+            output.WriteLine($"CSP   time: {sw.Elapsed}. Found:  {found}");
+            output.WriteLine("-----------------------------------------------");
+            if (brut == null)
+                Assert.Null(super);
+            else
+                ColoringTestUtils.CheckColoringCorrectness(g, super);
+        }
+
+        private void CheckAndWriteOutputOnlyCSP(Graph g, string additionalInfo = "")
+        {
+            if (additionalInfo != "") output.WriteLine(additionalInfo);
+            Stopwatch sw = new();
+            sw.Reset();
+            sw.Start();
+            var super = new CspColoring().ThreeColorig(g);
+            sw.Stop();
+            output.WriteLine($"Graph with {g.VerticesCount} vertices:");
+            var found = super == null ? "No" : "Yes";
+            output.WriteLine($"CSP   time: {sw.Elapsed}. Found:  {found}");
+            output.WriteLine("-----------------------------------------------");
+            if (super != null)
+                ColoringTestUtils.CheckColoringCorrectness(g, super);
+        }
+
+        #region DENSE GRAPHS
         public static Graph GetRandomGraph(int vericesCount = 20, int restrictionPercentage = 10, int? randomSeed = null)
         {
             Graph g = new(vericesCount);
@@ -29,50 +71,6 @@ namespace ThreeColoringAlgorithmsTests
                 g.AddEdge(a, b);
             }
             return g;
-        }
-
-        public static Graph GetGraphWithFewNeighbors(int vericesCount = 20, int? randomSeed = null)
-        {
-            Graph g = new(vericesCount);
-            Random r = randomSeed.HasValue ? new(randomSeed.Value) : new();
-            for (int i = 0; i < vericesCount; i++)
-            {
-                var n = r.Next(vericesCount);
-                while (n==i) n = r.Next(vericesCount);
-                g.AddEdge(i, n);
-                n = r.Next(vericesCount);
-                while (n == i) n = r.Next(vericesCount);
-                g.AddEdge(i, n);
-            }
-            return g;
-        }
-
-        [Fact]
-        public void FewNeighbors()
-        {
-            Graph g = GetGraphWithFewNeighbors(100);
-            Stopwatch sw = new();
-            sw.Reset();
-            sw.Start();
-            var brut = new BruteForce().ThreeColorig(g);
-            sw.Stop();
-            var found = brut == null ? "No" : "Yes";
-            output.WriteLine($"Brute time: {sw.Elapsed}. Found:  {found}");
-            sw.Reset();
-            sw.Start();
-            var super = new CspColoring().ThreeColorig(g);
-            sw.Stop();
-            found = super == null ? "No" : "Yes";
-            output.WriteLine($"CSP   time: {sw.Elapsed}. Found:  {found}");
-            output.WriteLine("-----------------------------------------------");
-            if (brut == null)
-            {
-                Assert.Null(super);
-            }
-            else
-            {
-                ColoringTestUtils.CheckColoringCorrectness(g, super);
-            }
         }
 
         public static IEnumerable<object[]> GetRandomGraphs()
@@ -169,69 +167,22 @@ namespace ThreeColoringAlgorithmsTests
         [MemberData(nameof(GetRandomGraphs))]
         public void TestColoring(Graph g)
         {
-            Stopwatch sw = new();
-            sw.Start();
-            var brut = new BruteForce().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine("-----------------------------------------------");
-            output.WriteLine("Brute time: " + sw.Elapsed);
-            sw.Reset();
-            sw.Start();
-            var super = new CspColoring().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine("CSP time  : " + sw.Elapsed);
-            output.WriteLine("-----------------------------------------------");
-            if (brut == null)
-            {
-                Assert.Null(super);
-            }
-            else
-            {
-                ColoringTestUtils.CheckColoringCorrectness(g, super);
-            }
-
+            CheckAndWriteOutput(g);
         }
 
         [Fact]
         public void RandomGraphsTo1000VerticesTest()
         {
-            Stopwatch sw = new();
             for (int i = 50; i <= 1000; i += 50)
                 for (int j = 10; j <= 90; j += 20)
                 {
-                    sw.Reset();
                     Graph g = GetRandomGraph(i, j);
-                    sw.Start();
-                    var brut = new BruteForce().ThreeColorig(g);
-                    sw.Stop();
-                    output.WriteLine($"Radnom Graph with {i} vertices and {j} edge percentage:");
-                    var found =  brut == null ? "No" : "Yes";
-                    output.WriteLine($"Brute time: {sw.Elapsed}. Found:  {found}");
-                    sw.Reset();
-                    sw.Start();
-                    var super = new CspColoring().ThreeColorig(g);
-                    sw.Stop();
-                    found = super == null ? "No" : "Yes";
-                    output.WriteLine($"CSP   time: {sw.Elapsed}. Found:  {found}");
-                    output.WriteLine("-----------------------------------------------");
-                    if (brut == null)
-                    {
-                        Assert.Null(super);
-                        output.WriteLine("Coloring not found");
-                        
-                    }
-                    else
-                    {
-                        ColoringTestUtils.CheckColoringCorrectness(g, super);
-                        ColoringTestUtils.CheckColoringCorrectness(g, brut);
-                    }
-                    output.WriteLine("-----------------------------------------------");
+                    CheckAndWriteOutput(g);
                 }
         }
         [Fact]
         public void  CycleGraphTo500VerticesTest()
         {
-            Stopwatch sw = new();
             for (int i = 50; i <= 500; i += 50)
             {
                 Graph g = new Graph(i);
@@ -240,34 +191,14 @@ namespace ThreeColoringAlgorithmsTests
                 {
                     g.AddEdge(j, j + 1);
                 }
-                sw.Reset();
-                sw.Start();
-                var brut = new BruteForce().ThreeColorig(g);
-                sw.Stop();
-                output.WriteLine($"Cycle with {i} vertices:");
-                output.WriteLine("Brute time: " + sw.Elapsed);
-                sw.Reset();
-                sw.Start();
-                var super = new CspColoring().ThreeColorig(g);
-                sw.Stop();
-                output.WriteLine("CSP time  : " + sw.Elapsed);
-                output.WriteLine("-----------------------------------------------");
-                if (brut == null)
-                {
-                    Assert.Null(super);
-                }
-                else
-                {
-                    ColoringTestUtils.CheckColoringCorrectness(g, super);
-                }
-                
+                CheckAndWriteOutput(g);
+
             }
         }
 
         [Fact]
         public void CliqueTo1000VerticesTest()
-        {
-            Stopwatch sw = new();
+        { 
             for (int i = 2; i <= 1000; i=i<10?i+1:i+50)
             {
                 Graph g = new Graph(i);
@@ -277,34 +208,13 @@ namespace ThreeColoringAlgorithmsTests
                     for (int k = j + 1; k < i; k++)
                         g.AddEdge(j, k);
                 }
-                sw.Reset();
-                sw.Start();
-                var brut = new BruteForce().ThreeColorig(g);
-                sw.Stop();
-                output.WriteLine($"Clique with {i} vertices:");
-                output.WriteLine("Brute time: " + sw.Elapsed);
-                sw.Reset();
-                sw.Start();
-                var super = new CspColoring().ThreeColorig(g);
-                sw.Stop();
-                output.WriteLine("CSP time  : " + sw.Elapsed);
-                output.WriteLine("-----------------------------------------------");
-                if (brut == null)
-                {
-                    Assert.Null(super);
-                }
-                else
-                {
-                    ColoringTestUtils.CheckColoringCorrectness(g, super);
-                }
-                if (i == 10) i = 50; 
+                CheckAndWriteOutput(g);
             }
         }
 
         [Fact]
         public void BigCliqueTest()
         {
-            Stopwatch sw = new();
             for (int i = 1500; i <= 2000; i +=500)
             {
                 Graph g = new Graph(i);
@@ -314,26 +224,7 @@ namespace ThreeColoringAlgorithmsTests
                     for (int k = j + 1; k < i; k++)
                         g.AddEdge(j, k);
                 }
-                sw.Reset();
-                sw.Start();
-                var brut = new BruteForce().ThreeColorig(g);
-                sw.Stop();
-                output.WriteLine($"Clique with {i} vertices:");
-                output.WriteLine("Brute time: " + sw.Elapsed);
-                sw.Reset();
-                sw.Start();
-                var super = new CspColoring().ThreeColorig(g);
-                sw.Stop();
-                output.WriteLine("CSP time  : " + sw.Elapsed);
-                output.WriteLine("-----------------------------------------------");
-                if (brut == null)
-                {
-                    Assert.Null(super);
-                }
-                else
-                {
-                    ColoringTestUtils.CheckColoringCorrectness(g, super);
-                }
+                CheckAndWriteOutput(g);
                 if (i == 10) i = 50;
             }
         }
@@ -341,7 +232,6 @@ namespace ThreeColoringAlgorithmsTests
         [Fact]
         public void TreeTo500VerticesTest()
         {
-            Stopwatch sw = new();
             for (int i = 50; i <= 500; i+=50)
             {
                 Graph g = new Graph(i);
@@ -361,32 +251,12 @@ namespace ThreeColoringAlgorithmsTests
                         if (son >= i - 1) break;
                     }
                 }
-                sw.Reset();
-                sw.Start();
-                var brut = new BruteForce().ThreeColorig(g);
-                sw.Stop();
-                output.WriteLine($"Tree with {i} vertices:");
-                output.WriteLine("Brute time: " + sw.Elapsed);
-                sw.Reset();
-                sw.Start();
-                var super = new CspColoring().ThreeColorig(g);
-                sw.Stop();
-                output.WriteLine("CSP time  : " + sw.Elapsed);
-                output.WriteLine("-----------------------------------------------");
-                if (brut == null)
-                {
-                    Assert.Null(super);
-                }
-                else
-                {
-                    ColoringTestUtils.CheckColoringCorrectness(g, super);
-                }
+                CheckAndWriteOutput(g);
             }
         }
         [Fact]
         public void BipartieGraphTest()
         {
-            Stopwatch sw = new();
             for (int vertice_count = 50; vertice_count <= 500; vertice_count += 50)
             {
                 for(int res_percent = 2; res_percent < 9; res_percent+=2)
@@ -400,26 +270,7 @@ namespace ThreeColoringAlgorithmsTests
                         int b = r.Next((int)(vertice_count * A / 10),vertice_count-1);
                         g.AddEdge(a, b);
                     }
-                    sw.Reset();
-                    sw.Start();
-                    var brut = new BruteForce().ThreeColorig(g);
-                    sw.Stop();
-                    output.WriteLine($"Bipartie Graph with {vertice_count} vertices and {10*res_percent} edge percentage:");
-                    output.WriteLine("Brute time: " + sw.Elapsed);
-                    sw.Reset();
-                    sw.Start();
-                    var super = new CspColoring().ThreeColorig(g);
-                    sw.Stop();
-                    output.WriteLine("CSP time  : " + sw.Elapsed);
-                    output.WriteLine("-----------------------------------------------");
-                    if (brut == null)
-                    {
-                        Assert.Null(super);
-                    }
-                    else
-                    {
-                        ColoringTestUtils.CheckColoringCorrectness(g, super);
-                    }
+                    CheckAndWriteOutput(g);
                 }
             }
         }
@@ -428,26 +279,7 @@ namespace ThreeColoringAlgorithmsTests
         [MemberData(nameof(GetBigCycles))]
         public void BigCycleTest(Graph g)
         {
-            Stopwatch sw = new();
-            sw.Start();
-            var brut = new BruteForce().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine($"Big cycle with {g.VerticesCount} vertices");
-            output.WriteLine("Brute time: " + sw.Elapsed);
-            sw.Reset();
-            sw.Start();
-            var super = new CspColoring().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine("CSP time  : " + sw.Elapsed);
-            output.WriteLine("-----------------------------------------------");
-            if (brut == null)
-            {
-                Assert.Null(super);
-            }
-            else
-            {
-                ColoringTestUtils.CheckColoringCorrectness(g, super);
-            }
+            CheckAndWriteOutput(g);
         }
 
        
@@ -456,105 +288,237 @@ namespace ThreeColoringAlgorithmsTests
         [MemberData(nameof(GetBigTrees))]
         public void BigTreeTest(Graph g)
         {
-            Stopwatch sw = new();
-            sw.Start();
-            var brut = new BruteForce().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine($"Big tree with {g.VerticesCount} vertices");
-            output.WriteLine("Brute time: " + sw.Elapsed);
-            sw.Reset();
-            sw.Start();
-            var super = new CspColoring().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine("CSP time  : " + sw.Elapsed);
-            output.WriteLine("-----------------------------------------------");
-            if (brut == null)
-            {
-                Assert.Null(super);
-            }
-            else
-            {
-                ColoringTestUtils.CheckColoringCorrectness(g, super);
-            }
+            CheckAndWriteOutput(g);
         }
 
         [Theory]
         [MemberData(nameof(GetBigRandomGraphs))]
         public void BigRandomGraphTest(Graph g)
         {
-            Stopwatch sw = new();
-            sw.Start();
-            var brut = new BruteForce().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine($"Big random graph with {g.VerticesCount} vertices");
-            output.WriteLine("Brute time: " + sw.Elapsed);
-            sw.Reset();
-            sw.Start();
-            var super = new CspColoring().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine("CSP time  : " + sw.Elapsed);
-            output.WriteLine("-----------------------------------------------");
-            if (brut == null)
-            {
-                Assert.Null(super);
-            }
-            else
-            {
-                ColoringTestUtils.CheckColoringCorrectness(g, super);
-            }
+            CheckAndWriteOutput(g);
         }
 
         [Theory]
         [MemberData(nameof(GetBigBipartite))]
         public void BigBipartiteTest(Graph g)
         {
-            Stopwatch sw = new();
-            sw.Start();
-            var brut = new BruteForce().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine($"Big bipartite graph {g.VerticesCount} vertices");
-            output.WriteLine("Brute time: " + sw.Elapsed);
-            sw.Reset();
-            sw.Start();
-            var super = new CspColoring().ThreeColorig(g);
-            sw.Stop();
-            output.WriteLine("CSP time  : " + sw.Elapsed);
-            output.WriteLine("-----------------------------------------------");
-            if (brut == null)
+            CheckAndWriteOutput(g);
+        }       
+        #endregion
+
+        public static Graph GetGraphWithFewNeighbors(int vericesCount = 20, int? randomSeed = null)
+        {
+            Graph g = new(vericesCount);
+            Random r = randomSeed.HasValue ? new(randomSeed.Value) : new();
+            for (int i = 0; i < vericesCount; i++)
             {
-                Assert.Null(super);
+                var n = r.Next(vericesCount);
+                while (n == i) n = r.Next(vericesCount);
+                g.AddEdge(i, n);
+                n = r.Next(vericesCount);
+                while (n == i) n = r.Next(vericesCount);
+                g.AddEdge(i, n);
             }
-            else
+            return g;
+        }
+
+        public static Graph GenerateGraphWithApproximateNeighbours(int verticesCount = 20,int approximateNeighbours = 3, int? randomSeed = null)
+        {           
+            Random r = randomSeed.HasValue ? new(randomSeed.Value) : new();
+            int[] coloring = new int[verticesCount];
+            HashSet<int>[] adjacencyList = new HashSet<int>[verticesCount];
+            for (int i = 0; i < verticesCount; i++) 
             {
-                ColoringTestUtils.CheckColoringCorrectness(g, super);
+                coloring[i] = -1;
+                adjacencyList[i] = new HashSet<int>();
+            }
+
+            coloring[0] = 0;
+
+            for(int i = 0; i < verticesCount; i++)
+            {
+                if (coloring[i] == -1) coloring[i] = r.Next(0, 3);
+                int neighbours = approximateNeighbours - adjacencyList[i].Count;
+                for (int j=0;j<neighbours;j++)
+                {
+                    int neighbour = r.Next(0, verticesCount);
+                    int counter = 0;
+                    while(counter < 10 && coloring[neighbour] == coloring[i])
+                    {
+                        neighbour = r.Next(0, verticesCount);
+                        counter++;
+                    }
+                    if (counter == 10) continue;
+                    coloring[neighbour] = r.NextDouble() > 0.5 ? (coloring[i] + 2) % 3 : (coloring[i] + 1) % 3;
+                    adjacencyList[i].Add(neighbour);
+                    adjacencyList[neighbour].Add(i);
+                }
+            }
+
+            Graph g = new(adjacencyList);
+            return g;
+        }
+
+        public static Graph GenerateGraphWithRandomNeighbours(int verticesCount = 20, int maxNeighbours = 10, int? randomSeed = null)
+        {
+            Random r = randomSeed.HasValue ? new(randomSeed.Value) : new();
+            int[] coloring = new int[verticesCount];
+            HashSet<int>[] adjacencyList = new HashSet<int>[verticesCount];
+            for (int i = 0; i < verticesCount; i++)
+            {
+                coloring[i] = -1;
+                adjacencyList[i] = new HashSet<int>();
+            }
+
+            coloring[0] = 0;
+
+            for (int i = 0; i < verticesCount; i++)
+            {
+                if (coloring[i] == -1) coloring[i] = r.Next(0, 3);
+                int neighbours = r.Next(1, maxNeighbours);
+                for (int j = 0; j < neighbours; j++)
+                {
+                    int neighbour = r.Next(0, verticesCount);
+                    int counter = 0;
+                    while (counter < 10 && coloring[neighbour] == coloring[i])
+                    {
+                        neighbour = r.Next(0, verticesCount);
+                        counter++;
+                    }
+                    if (counter == 10) continue;
+                    coloring[neighbour] = r.NextDouble() > 0.5 ? (coloring[i] + 2) % 3 : (coloring[i] + 1) % 3;
+                    adjacencyList[i].Add(neighbour);
+                    adjacencyList[neighbour].Add(i);
+                    if (adjacencyList[i].Count >= maxNeighbours) break;
+                }
+            }
+
+            Graph g = new(adjacencyList);
+            return g;
+        }
+
+        [Fact]
+        public void FewNeighborsTest()
+        {
+            for(int i = 50; i<=100; i+=10)
+            {
+                Graph g = GetGraphWithFewNeighbors(i);
+                CheckAndWriteOutput(g);
             }
         }
 
         [Fact]
-        public void BruteTest()
+        public void ApproximateNeighboursSmallTest()
         {
-            Stopwatch sw = new();
-            for (int i = 10000; i <= 100000; i += 10000)
-                for (int j = 10; j <= 90; j += 20)
-                {
-                    sw.Reset();
-                    Graph g = GetRandomGraph(i, j);
-                    sw.Start();
-                    var brut = new BruteForce().ThreeColorig(g);
-                    sw.Stop();
-                    output.WriteLine($"Radnom Graph with {i} vertices and {j} edge percentage:");
-                    output.WriteLine("Brute time: " + sw.Elapsed);
-                    if (brut == null)
-                    {
-                        output.WriteLine("Coloring not found");
-                    }
-                    else
-                    { 
-                        ColoringTestUtils.CheckColoringCorrectness(g, brut);
-                    }
-                    output.WriteLine("-----------------------------------------------");
-
+            for(int neigh = 2; neigh <= 6; neigh++)
+            {
+                for (int i = 20; i <= 80; i += 10 )
+                {                
+                    Graph g = GenerateGraphWithApproximateNeighbours(i, neigh);    
+                    CheckAndWriteOutput(g, $"Grpah with approximate {neigh} neighbours");
                 }
+            }          
+        }
+        [Fact]
+        public void RandomNeighboursSmallTest()
+        {
+            for (int i = 15; i <= 75; i += 5)
+            {
+                int maxNeigh = i > 40 ? 7 : 4;
+                Graph g = GenerateGraphWithRandomNeighbours(i, maxNeigh);
+                CheckAndWriteOutput(g, $"Random graph with max {maxNeigh} neighbours");
+            }
+        }
+
+        public static IEnumerable<object[]> GetRandomGraphs100V()
+        {
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 3; i < 7; i++)
+            {
+                g = GenerateGraphWithRandomNeighbours(100,i);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetRandomGraphs200V()
+        {
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 3; i < 10; i++)
+            {
+                g = GenerateGraphWithRandomNeighbours(200, i);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetRandomGraphs500V()
+        {
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 6; i < 9; i++)
+            {
+                g = GenerateGraphWithRandomNeighbours(300, i);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetRandomGraphs1000V()
+        {
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 10; i <= 10; i++)
+            {
+                g = GenerateGraphWithRandomNeighbours(500, i);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+
+        public static IEnumerable<object[]> GetRandomGraphs3or4neighs()
+        {
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 500; i <= 1000; i+=50)
+            {
+                g = GenerateGraphWithApproximateNeighbours(i, new Random().Next(3,5),i+ 99);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs3or4neighs))]
+        public void ThreeOrFourNeighsTEst(Graph g)
+        {
+            CheckAndWriteOutputOnlyCSP(g, $"Random graph with 3 or 4 neighs approximately");
+        }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs100V))]
+        public void HoundredVerticesRandTest(Graph g)
+        {
+            CheckAndWriteOutputOnlyCSP(g, $"Random graph");
+        }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs200V))]
+        public void TwoHoundredVerticesRandTest(Graph g)
+        {
+            CheckAndWriteOutputOnlyCSP(g, $"Random graph");
+        }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs500V))]
+        public void FiveHoundredVerticesRandTest(Graph g)
+        {
+            CheckAndWriteOutputOnlyCSP(g, $"Random graph");
+        }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs1000V))]
+        public void ThousandVerticesRandTest(Graph g)
+        {
+            CheckAndWriteOutputOnlyCSP(g, $"Random graph");
         }
     }
+
 }

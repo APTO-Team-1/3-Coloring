@@ -412,7 +412,7 @@ namespace ThreeColoringAlgorithmsTests
         {
             for(int neigh = 2; neigh <= 6; neigh++)
             {
-                for (int i = 20; i <= 80; i += 10 )
+                for (int i = 80; i <= 80; i += 10 )
                 {                
                     Graph g = GenerateGraphWithApproximateNeighbours(i, neigh);    
                     CheckAndWriteOutput(g, $"Grpah with approximate {neigh} neighbours");
@@ -482,9 +482,20 @@ namespace ThreeColoringAlgorithmsTests
         {
             var data = new List<object[]>();
             Graph g;
-            for (int i = 500; i <= 1000; i+=50)
+            for (int i = 650; i <= 1000; i+=50)
             {
-                g = GenerateGraphWithApproximateNeighbours(i, new Random().Next(3,5),i+ 99);
+                g = GenerateGraphWithApproximateNeighbours(i, new Random().Next(3,5),i+ 97);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+        public static IEnumerable<object[]> GetRandomGraphs3or4neighs22()
+        {
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 650; i <= 1000; i += 50)
+            {
+                g = GenerateGraphWithApproximateNeighbours(i, new Random().Next(3, 5), i + 97);
                 data.Add(new[] { g });
             }
             return data;
@@ -494,6 +505,18 @@ namespace ThreeColoringAlgorithmsTests
         public void ThreeOrFourNeighsTEst(Graph g)
         {
             CheckAndWriteOutputOnlyCSP(g, $"Random graph with 3 or 4 neighs approximately");
+        }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs3or4neighs))]
+        public void Rand3or4neighs(Graph g)
+        {
+            CheckAndWriteOutputOnlyCSP(g, "3 or 4  neighs");
+        }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs3or4neighs22))]
+        public void Rand3or4neigh(Graph  g)
+        {
+            CheckAndWriteOutputOnlyCSP(g);
         }
         [Theory]
         [MemberData(nameof(GetRandomGraphs100V))]

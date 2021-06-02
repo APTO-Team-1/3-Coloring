@@ -70,3 +70,6 @@ CSP   time: 00:00:00.7528115. Found:  Yes
 Graph with 500 vertices:
 CSP   time: 00:00:01.1002747. Found:  Yes
 -----------------------------------------------
+Graph with 500 vertices:
+CSP   time: 00:00:00.7862841. Found:  Yes
+-----------------------------------------------

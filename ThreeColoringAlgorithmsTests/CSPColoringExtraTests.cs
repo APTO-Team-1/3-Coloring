@@ -182,5 +182,16 @@ namespace ThreeColoringAlgorithmsTests
                     CheckAndWriteOutput(g);
                 }
         }
+        [Fact]
+        public void RandomGraphsPart2()
+        {
+            for (int i = 700; i <= 700; i += 100)
+                for (int j = 0; j < 1; j++)
+                {
+                    Graph g = GenerateGraph(verticesCount: i, maxNeighbours: 5, minNeighbours: 3,
+                        isColorable: new Random().NextDouble() > 0.5 ? true : false);
+                    CheckAndWriteOutput(g);
+                }
+        }
     }
 }

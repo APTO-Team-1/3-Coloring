@@ -98,48 +98,134 @@ namespace ThreeColoringAlgorithmsTests
             var found = super == null ? "No" : "Yes";
             if (super != null)
                 ColoringTestUtils.CheckColoringCorrectness(g, super);
-            File.AppendAllLines(@"C:\Users\micha\source\repos\3-Coloring\Output.txt", new string[]
+            File.AppendAllLines(@"..", new string[]
             {$"Graph with {g.VerticesCount} vertices:"
                 , $"CSP   time: {sw.Elapsed}. Found:  {found}"
                 ,"-----------------------------------------------"});
         }
-        public static IEnumerable<object[]> GetRandomColorableGraphsTo200Vertices()
+        public static IEnumerable<object[]> GetRandomGraphs100Vertices()
         {
+            int vertices = 100;
             var data = new List<object[]>();
             Graph g;
-            for (int i = 0; i <= 10; i++)
+            for (int i = 0; i < 5; i++)
             {
-                g = GenerateGraph(verticesCount: 100 + i * 10, maxNeighbours: 5, verticesWithHighDegree:0.01, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta:4, isColorable: true);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: 100 + i * 10, maxNeighbours: 8, delta: 4, verticesWithHighDegree: 0.01, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 6, verticesWithHighDegree: 0.01, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 6, delta: 3, verticesWithHighDegree: 0.05, isColorable: false);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 7, delta: 5, verticesWithHighDegree: 0.01, isColorable: false);
                 data.Add(new[] { g });
             }
             return data;
         }
 
-        public static IEnumerable<object[]> GetRandomGraphsWithAround4VerticesTo600V()
+        public static IEnumerable<object[]> GetRandomGraphs200Vertices()
         {
+            int vertices = 200;
             var data = new List<object[]>();
             Graph g;
-            for (int i = 1; i <= 6; i++)
+            for (int i = 0; i < 5; i++)
             {
-                g = GenerateGraph(verticesCount: 100 * i, maxNeighbours: 6, delta: 4, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: 100 * i, maxNeighbours: 6, delta: 4, isColorable: false);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, verticesWithHighDegree: 0.01, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 6, delta: 3, verticesWithHighDegree: 0.04, isColorable: false);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 7, delta: 5, verticesWithHighDegree: 0.01, isColorable: false);
                 data.Add(new[] { g });
             }
             return data;
         }
-
-        public static IEnumerable<object[]> GetRandomGraphsWithAround4VerticesTo1000V()
+        public static IEnumerable<object[]> GetRandomGraphs300Vertices()
         {
+            int vertices = 300;
             var data = new List<object[]>();
             Graph g;
-            for (int i = 9; i <= 10; i++)
+            for (int i = 0; i < 5; i++)
             {
-                g = GenerateGraph(verticesCount: 100 * i, maxNeighbours: 6, delta: 4, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: 100 * i, maxNeighbours: 6, delta: 4, isColorable: false);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, verticesWithHighDegree: 0.01, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 3, verticesWithHighDegree: 0.03, isColorable: false);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 7, delta: 5, verticesWithHighDegree: 0.01, isColorable: false);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+        public static IEnumerable<object[]> GetRandomGraphs400Vertices()
+        {
+            int vertices = 400;
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 0; i < 5; i++)
+            {
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, verticesWithHighDegree: 0.005, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 3, verticesWithHighDegree: 0.03, isColorable: false);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 7, delta: 5, verticesWithHighDegree: 0.02, isColorable: false);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+        public static IEnumerable<object[]> GetRandomGraphs500Vertices()
+        {
+            int vertices = 500;
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 0; i < 5; i++)
+            {
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, verticesWithHighDegree: 0.005, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 2, verticesWithHighDegree: 0.02, isColorable: false);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 6, delta: 5, verticesWithHighDegree: 0.02, isColorable: false);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+        public static IEnumerable<object[]> GetRandomGraphs600Vertices()
+        {
+            int vertices = 600;
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 0; i < 5; i++)
+            {
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, verticesWithHighDegree: 0.004, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 2, verticesWithHighDegree: 0.02, isColorable: false);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 6, delta: 5, verticesWithHighDegree: 0.02, isColorable: false);
+                data.Add(new[] { g });
+            }
+            return data;
+        }
+        public static IEnumerable<object[]> GetRandomGraphs700Vertices()
+        {
+            int vertices = 700;
+            var data = new List<object[]>();
+            Graph g;
+            for (int i = 0; i < 5; i++)
+            {
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, verticesWithHighDegree: 0.004, isColorable: true);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 2, verticesWithHighDegree: 0.01);
+                data.Add(new[] { g });
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 5, verticesWithHighDegree: 0.01);
                 data.Add(new[] { g });
             }
             return data;
@@ -153,45 +239,46 @@ namespace ThreeColoringAlgorithmsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetRandomColorableGraphsTo200Vertices))]
-        public void RandomColorableGraphsTo200VerticesTest(Graph g)
-        {
-            CheckAndWriteOutput(g);
-        }
-
-        [Theory]
-        [MemberData(nameof(GetRandomGraphsWithAround4VerticesTo600V))]
-        public void RandomGraphsAround4VerticesTo600V(Graph g)
+        [MemberData(nameof(GetRandomGraphs100Vertices))]
+        public void RandomGraphs100VerticesTest(Graph g)
         {
             CheckAndWriteOutput(g);
         }
         [Theory]
-        [MemberData(nameof(GetRandomGraphsWithAround4VerticesTo1000V))]
-        public void RandomGraphsAround4VerticesTo1000V(Graph g)
+        [MemberData(nameof(GetRandomGraphs200Vertices))]
+        public void RandomGraphs200VerticesTest(Graph g)
         {
             CheckAndWriteOutput(g);
         }
-        [Fact]
-        public void RandomGraphsPart1()
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs300Vertices))]
+        public void RandomGraphs300VerticesTest(Graph g)
         {
-            for(int i = 700; i <= 700; i+=100)
-                for(int j=0;j<1;j++)
-                {
-                    Graph g = GenerateGraph(verticesCount: i, maxNeighbours: 5,minNeighbours:3,
-                        isColorable: new Random().NextDouble() > 0.5 ? true : false);
-                    CheckAndWriteOutput(g);
-                }
+            CheckAndWriteOutput(g);
         }
-        [Fact]
-        public void RandomGraphsPart2()
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs400Vertices))]
+        public void RandomGraphs400VerticesTest(Graph g)
         {
-            for (int i = 700; i <= 700; i += 100)
-                for (int j = 0; j < 1; j++)
-                {
-                    Graph g = GenerateGraph(verticesCount: i, maxNeighbours: 5, minNeighbours: 3,
-                        isColorable: new Random().NextDouble() > 0.5 ? true : false);
-                    CheckAndWriteOutput(g);
-                }
+            CheckAndWriteOutput(g);
         }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs500Vertices))]
+        public void RandomGraphs500VerticesTest(Graph g)
+        {
+            CheckAndWriteOutput(g);
+        }
+        [Theory]
+        [MemberData(nameof(GetRandomGraphs600Vertices))]
+        public void RandomGraphs600VerticesTest(Graph g)
+        {
+            CheckAndWriteOutput(g);
+        }
+        //[Theory]
+        //[MemberData(nameof(GetRandomGraphs700Vertices))]
+        //public void RandomGraphs700VerticesTest(Graph g)
+        //{
+        //    CheckAndWriteOutput(g);
+        //}
     }
 }

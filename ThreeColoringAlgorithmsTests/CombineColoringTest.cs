@@ -181,9 +181,9 @@ namespace ThreeColoringAlgorithmsTests
                 }
         }
         [Fact]
-        public void  CycleGraphTo500VerticesTest()
+        public void  CycleGraphTo600VerticesTest()
         {
-            for (int i = 50; i <= 500; i += 50)
+            for (int i = 50; i <= 600; i += 50)
             {
                 Graph g = new Graph(i);
                 g.AddEdge(i - 1, 0);
@@ -230,9 +230,9 @@ namespace ThreeColoringAlgorithmsTests
         }
 
         [Fact]
-        public void TreeTo500VerticesTest()
+        public void TreeTo600VerticesTest()
         {
-            for (int i = 50; i <= 500; i+=50)
+            for (int i = 50; i <= 600; i+=50)
             {
                 Graph g = new Graph(i);
                 int son = 1;

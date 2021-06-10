@@ -22,7 +22,7 @@ namespace CSPSimplifying
                 instance.RemoveColor(v2, c2);
                 instance.AddToResult(v, c);
                 instance2.AddToResult(i2v2, i2c2);
-                return new() { instance, instance2 };  
+                return new() { instance, instance2 };
             }
             applied = false;
             return new() { instance };

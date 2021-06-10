@@ -1,9 +1,8 @@
 ﻿using CSP;
-using System;
+using GraphLib.Algorithms;
+using GraphLib.Definitions;
 using System.Collections.Generic;
 using System.Linq;
-using GraphLib.Definitions;
-using GraphLib.Algorithms;
 
 namespace CSPSimplifying
 {

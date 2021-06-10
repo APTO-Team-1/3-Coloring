@@ -1,14 +1,9 @@
 ﻿using GraphLib.Definitions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ThreeColoring.Algorithms;
 
 namespace GraphLib.Algorithms
 {
-    public class BruteForce: IThreeColoringAlgorithm
+    public class BruteForce : IThreeColoringAlgorithm
     {
         public int[] ThreeColorig(Graph g)
         {
@@ -27,7 +22,7 @@ namespace GraphLib.Algorithms
 
                 foreach (var n in g.GetNeighbors(currV))
                 {
-                    if(coloring[n] != -1)
+                    if (coloring[n] != -1)
                         isColorFree[coloring[n]] = false;
                 }
                 for (int i = 0; i < isColorFree.Length; i++)
@@ -36,8 +31,8 @@ namespace GraphLib.Algorithms
                     {
                         coloring[currV] = i;
                         if (ThreeColoringInternal(currV + 1)) return true;
-                        
-                        int v = currV+1;
+
+                        int v = currV + 1;
                         do
                         {
                             if (coloring[v] == -1) break;

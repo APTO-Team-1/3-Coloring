@@ -81,7 +81,7 @@ namespace CSPSimplifying
                 }
                 else // nie ma cyklu
                 {
-                    (var instance2,var i2v, var i2c) = instance.CloneAndReturnCorresponding(new[] { v, v2 }, new[] { c, c2 });
+                    (var instance2, var i2v, var i2c) = instance.CloneAndReturnCorresponding(new[] { v, v2 }, new[] { c, c2 });
 
                     instance.AddToResult(v2, c2); // instance1 wybiera c2
                     instance2.RemoveColor(i2v[1], i2c[1]); // instance2 nie wybiera c2
@@ -102,7 +102,7 @@ namespace CSPSimplifying
                 instance.RemoveColor(v2, c21);
                 instance.RemoveColor(v2, c22);
                 // instance 2 zostawia sąsiadów
-                
+
                 return new() { instance, instance2 };
             }
             else
@@ -128,14 +128,17 @@ namespace CSPSimplifying
         private static bool CreateImplicationCycle(List<Pair> cycle)
         {
             var implicationFrom = GetImplicationFrom(cycle.Last());
+
             foreach (var pair in implicationFrom)
             {
                 if (pair == cycle.First())
                 {
                     return true;
                 }
+                if (cycle.Contains(pair)) continue;
                 cycle.Add(pair);
                 if (CreateImplicationCycle(cycle)) return true;
+                cycle.RemoveAt(cycle.Count - 1);
             }
             return false;
         }

@@ -1,5 +1,4 @@
-﻿using CSP;
-using Xunit;
+﻿using Xunit;
 
 namespace CSP.Tests
 {

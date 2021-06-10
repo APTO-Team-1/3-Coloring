@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraphLib.Definitions
 {
@@ -11,7 +8,7 @@ namespace GraphLib.Definitions
         // vertices numbered with sequential numbers starting form 0
         protected HashSet<int>[] adjacencyList;
 
-        public int VerticesCount { get => adjacencyList.Length; } 
+        public int VerticesCount { get => adjacencyList.Length; }
 
         /// <param name="n">number of vertices</param>
         public Graph(int n)
@@ -31,7 +28,7 @@ namespace GraphLib.Definitions
             if (from == to) return false;
             bool addedFromTo = adjacencyList[from].Add(to);
             bool addedToFrom = adjacencyList[to].Add(from);
-            if ((addedFromTo && !addedToFrom) || (!addedFromTo && addedToFrom)) 
+            if ((addedFromTo && !addedToFrom) || (!addedFromTo && addedToFrom))
                 throw new Exception("Not consistent - graph must not be directed.");
 
             return addedFromTo && addedToFrom;

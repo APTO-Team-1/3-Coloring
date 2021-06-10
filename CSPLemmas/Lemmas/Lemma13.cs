@@ -1,5 +1,4 @@
 ﻿using CSP;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,17 +16,17 @@ namespace CSPSimplifying
         {
             if (c.Restrictions.Count == 3)
             {
-                foreach(var restrictionPair in c.Restrictions)
+                foreach (var restrictionPair in c.Restrictions)
                 {
                     (var v2, var c2) = restrictionPair;
-                    if(c2.Restrictions.Count ==2) // Lemma13 applies
+                    if (c2.Restrictions.Count == 2) // Lemma13 applies
                     {
 #if DEBUG
                         if (c.Restrictions.Any(r => r.Variable.AvalibleColors.Count != 3))
                             throw new ArgumentException("Since previous lema is  assumed not to apply, all neighbors of (v, c) must have only three color choices.");
 #endif
                         var v3c3 = GetThirdTriangleVertex(v, c, c2);
-                        if(v3c3==null)
+                        if (v3c3 == null)
                         {
                             (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(new Variable[] { v, v2 }, new Color[] { c, c2 });
                             var i2v = i2vArr[0]; var i2v2 = i2vArr[1];
@@ -44,7 +43,7 @@ namespace CSPSimplifying
                         else
                         {
                             (var v3, var c3) = (Pair)v3c3;
-                            if(c3.Restrictions.Count == 3)
+                            if (c3.Restrictions.Count == 3)
                             {
                                 (var instance2, var i2v2, var i2c2) = instance.CloneAndReturnCorresponding(v2, c2);
                                 (var instance3, var i3v3, var i3c3) = instance.CloneAndReturnCorresponding(v3, c3);
@@ -53,7 +52,7 @@ namespace CSPSimplifying
                                 instance3.AddToResult(i3v3, i3c3);
                                 return new() { instance, instance2, instance3 };
                             }
-                            else if(c3.Restrictions.Count == 2)
+                            else if (c3.Restrictions.Count == 2)
                             {
                                 (var instance2, var i2vArr, var i2cArr) = instance.CloneAndReturnCorresponding(new Variable[] { v, v2 }, new Color[] { c, c2 });
                                 var i2v = i2vArr[0]; var i2v2 = i2vArr[1];
@@ -82,21 +81,21 @@ namespace CSPSimplifying
                     }
                 }
             }
-           
+
             return new() { instance };
 
-            Pair? GetThirdTriangleVertex(Variable v, Color c,Color c2)
+            Pair? GetThirdTriangleVertex(Variable v, Color c, Color c2)
             {
                 // we know that (v, c)-----(v2, c2) and (v2, c2)-----(v3, c3).
                 // let's find (v3, c3) such that (v3, c3)-----(v, c) or return null:
                 foreach (var restr in c2.Restrictions)
                     if (restr.Color.Restrictions.Any(r => r.Variable == v && r.Color == c))
                         return restr;
-                
+
                 return null;
             }
         }
 
-       
+
     }
 }

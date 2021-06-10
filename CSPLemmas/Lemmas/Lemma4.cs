@@ -19,7 +19,7 @@ namespace CSPSimplifying
                         {
                             applied = true;
                             instance.RemoveColor(v, c2);
-                            if(v.AvalibleColors.Count <= 2)
+                            if (v.AvalibleColors.Count <= 2)
                             {
                                 RemoveVariableWith2Colors(instance, v);
                             }

@@ -1,39 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraphLib.Definitions
 {
-    //public class BipartieGraph : Graph
-    //{
-    //    /// <summary>
-    //    /// Vertices from A part. If not in part A, then in B.
-    //    /// </summary>
-    //    public int[] PartAVertices { get; }
-    //    public int[] PartBVertices { get; }
-
-    //    /// <param name="n">number of vertices</param>
-    //    public BipartieGraph(int n, int[]  partAVertices, int[] partBVertices) : base(n)
-    //    {
-    //        this.PartAVertices = partAVertices;
-    //        this.PartBVertices = partBVertices;
-    //    }
-
-    //    public BipartieGraph(HashSet<int>[] adjacencyList, int[] partAVertices, int[] partBVertices) : base( adjacencyList)
-    //    {
-    //        this.PartAVertices = partAVertices;
-    //        this.PartBVertices = partBVertices;
-    //    }
-
-    //    //public bool IsVertexInPartA(int v)
-    //    //{
-    //    //    return PartAVertices.Contains(v);
-    //    //}
-    //}
-
-
     public class BipartieGraph
     {
         public HashSet<int>[] PartAVertices { get; }
@@ -42,7 +11,7 @@ namespace GraphLib.Definitions
 
         /// <param name="nA">number of vertices in A</param>
         /// <param name="nB">number of vertices in B</param>
-        public BipartieGraph(int nA, int nB) 
+        public BipartieGraph(int nA, int nB)
         {
             this.PartAVertices = new HashSet<int>[nA];
             for (int i = 0; i < nA; i++)
@@ -52,7 +21,7 @@ namespace GraphLib.Definitions
                 PartBVertices[i] = new();
         }
 
-        public BipartieGraph(HashSet<int>[] partAVertices, HashSet<int>[] partBVertices) 
+        public BipartieGraph(HashSet<int>[] partAVertices, HashSet<int>[] partBVertices)
         {
             this.PartAVertices = partAVertices;
             this.PartBVertices = partBVertices;

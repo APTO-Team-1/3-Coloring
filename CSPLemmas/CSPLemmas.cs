@@ -29,8 +29,8 @@ namespace CSPSimplifying
                     {
                         instance.AddRestriction(pair1, pair2);
                     }
+                    
                 }
-
                 instance.RemoveVariable(v);
             }
             else if (v.AvalibleColors.Count == 1)

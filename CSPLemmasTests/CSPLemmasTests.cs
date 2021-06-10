@@ -1,11 +1,8 @@
-﻿using Xunit;
-using CSPSimplifying;
+﻿using CSP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CSP;
+using Xunit;
 
 namespace CSPSimplifying.Tests
 {
@@ -33,7 +30,7 @@ namespace CSPSimplifying.Tests
                     var v2 = variables[(j * 420 + 13) % variables.Count];
                     var c1 = v1.AvalibleColors[(j * 1337 + 7) % v1.AvalibleColors.Count];
                     var c2 = v2.AvalibleColors[(j * 1234 + 3) % v2.AvalibleColors.Count];
-                    if(c1 != c2)
+                    if (c1 != c2)
                     {
                         instance.AddRestriction(new Pair(v1, c1), new Pair(v2, c2));
                     }
@@ -160,7 +157,7 @@ namespace CSPSimplifying.Tests
             {
                 var instance = GetRandomInstance(maxColors: i >= 15 ? 3 : 4);
 
-                
+
 
                 int idx1;
                 int idx2;
@@ -287,7 +284,7 @@ namespace CSPSimplifying.Tests
         public static IEnumerable<object[]> GetDataLemma15()
         {
             var data = new List<object[]>();
-           
+
 
             CspInstance cspInstance = new();
             Variable v = new(3);
@@ -342,7 +339,7 @@ namespace CSPSimplifying.Tests
         public static IEnumerable<object[]> GetDataLemma17()
         {
             var data = new List<object[]>();
-            
+
             CspInstance cspInstance = new();
             Variable v = new(3);
             Variable w = new(3);
@@ -393,7 +390,7 @@ namespace CSPSimplifying.Tests
 
                 var v1 = variables[r.Next(0, variables.Count)];
                 var v2 = variables[r.Next(0, variables.Count)];
-                if(v1.AvalibleColors.Count > 0 && v2.AvalibleColors.Count > 0)
+                if (v1.AvalibleColors.Count > 0 && v2.AvalibleColors.Count > 0)
                 {
                     var c1 = v1.AvalibleColors[r.Next(0, v1.AvalibleColors.Count)];
                     var c2 = v2.AvalibleColors[r.Next(0, v2.AvalibleColors.Count)];

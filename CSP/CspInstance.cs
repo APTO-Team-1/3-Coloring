@@ -11,7 +11,7 @@ namespace CSP
         }
 
         private readonly HashSet<Variable> variables = new();
-        public IReadOnlySet<Variable> Variables { get => variables; } 
+        public IReadOnlySet<Variable> Variables { get => variables; }
 
         private readonly HashSet<Restriction> restrictions = new();
         public IReadOnlySet<Restriction> Restrictions { get => restrictions; }
@@ -27,7 +27,7 @@ namespace CSP
                 (int LemmaNumber, List<Pair> lp, Pair a, Pair b) = ResultRules[i];
                 if (LemmaNumber == 2)
                 {
-                    if(result.Any(r => lp.Any(lp => lp.Variable.Id == r.Variable.Id && lp.Color.Value == r.Color.Value)))
+                    if (result.Any(r => lp.Any(lp => lp.Variable.Id == r.Variable.Id && lp.Color.Value == r.Color.Value)))
                     {
                         result.Add(b);
                     }
@@ -50,7 +50,7 @@ namespace CSP
                 else throw new ApplicationException("Not expected");
 
             }
-            
+
             int[] coloringResult = new int[Result.Count];
             foreach (var pair in Result)
             {
@@ -93,7 +93,7 @@ namespace CSP
                 {
                     added3 = restriction.Pair2.Color.AddRestriction(restriction.Pair1);
                 }
-                if (!added || !added2 || !added3)   throw new ApplicationException("RestrictionNotAdded");
+                if (!added || !added2 || !added3) throw new ApplicationException("RestrictionNotAdded");
             }
         }
         public void AddRestriction(Pair pair1, Pair pair2) => AddRestriction(new Restriction(pair1, pair2));
@@ -122,7 +122,7 @@ namespace CSP
         #endregion
 
         #region color
-       
+
         public void AddColor(Variable variable, Color color)
         {
             variable.avalibleColors.Add(color);
@@ -229,10 +229,10 @@ namespace CSP
         /// <returns></returns>
         public (CspInstance instance, Variable v, Color c) CloneAndReturnCorresponding(Variable v, Color c)
         {
-            var (instance, pArr) =  CloneAndReturnCorresponding(new Pair(v,c));
+            var (instance, pArr) = CloneAndReturnCorresponding(new Pair(v, c));
             return (instance, pArr[0].Variable, pArr[0].Color);
         }
-           
+
         public (CspInstance instance, Variable[] vArr, Color[] cArr) CloneAndReturnCorresponding(Variable[] vArr, Color[] cArr)
         {
             if (vArr.Length != cArr.Length)
@@ -270,7 +270,7 @@ namespace CSP
                         {
                             if (clonedColor.Value == pArr[i].Color.Value)
                             {
-                                correspondingPairs[i] = new Pair(clonedVaraible,clonedColor);
+                                correspondingPairs[i] = new Pair(clonedVaraible, clonedColor);
                                 break;
                             }
                         }

@@ -16,7 +16,7 @@ namespace CSPSimplifying
                 {
                     for (int j = 0; j < v2.AvalibleColors.Count; j++)
                     {
-                        var c2 = v2.AvalibleColors[j]; 
+                        var c2 = v2.AvalibleColors[j];
                         var v21 = GetDistinctSingleVariableFromColor(c2);
                         if (v21 != null)
                         {

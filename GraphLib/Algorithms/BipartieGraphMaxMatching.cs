@@ -1,13 +1,8 @@
 ﻿using GraphLib.Definitions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraphLib.Algorithms
 {
-    public  class BipartieGraphMaxMatching
+    public class BipartieGraphMaxMatching
     {
         // Returns maximum number of 
         // matching from M to N
@@ -46,40 +41,40 @@ namespace GraphLib.Algorithms
         }
 
 
-    // A DFS based recursive function 
-    // that returns true if a matching 
-    // for vertex u is possible
-    bool bpm(BipartieGraph bg, int u, 
-             bool []seen, int []matchR)
-    {
-        // Try every job one by one
-        for (int v = 0; v < bg.PartBVertices.Length; v++)
+        // A DFS based recursive function 
+        // that returns true if a matching 
+        // for vertex u is possible
+        bool bpm(BipartieGraph bg, int u,
+                 bool[] seen, int[] matchR)
         {
-            // If applicant u is interested 
-            // in job v and v is not visited
-            if ( bg.ContainsEdgeAtoB(u, v) && !seen[v])
+            // Try every job one by one
+            for (int v = 0; v < bg.PartBVertices.Length; v++)
             {
-                // Mark v as visited
-                seen[v] = true; 
-  
-                // If job 'v' is not assigned to
-                // an applicant OR previously assigned 
-                // applicant for job v (which is matchR[v])
-                // has an alternate job available.
-                // Since v is marked as visited in the above 
-                // line, matchR[v] in the following recursive 
-                // call will not get job 'v' again
-                if (matchR[v] < 0 || bpm(bg, matchR[v],
-                                         seen, matchR))
+                // If applicant u is interested 
+                // in job v and v is not visited
+                if (bg.ContainsEdgeAtoB(u, v) && !seen[v])
                 {
-                    matchR[v] = u;
-                    return true;
+                    // Mark v as visited
+                    seen[v] = true;
+
+                    // If job 'v' is not assigned to
+                    // an applicant OR previously assigned 
+                    // applicant for job v (which is matchR[v])
+                    // has an alternate job available.
+                    // Since v is marked as visited in the above 
+                    // line, matchR[v] in the following recursive 
+                    // call will not get job 'v' again
+                    if (matchR[v] < 0 || bpm(bg, matchR[v],
+                                             seen, matchR))
+                    {
+                        matchR[v] = u;
+                        return true;
+                    }
                 }
             }
+            return false;
         }
-        return false;
-    }
-  
-     
+
+
     }
 }

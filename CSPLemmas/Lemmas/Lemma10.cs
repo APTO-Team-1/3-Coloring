@@ -35,60 +35,60 @@ namespace CSPSimplifying
             {
                 var c2 = notNeighbors[0]; // c2 jest implikowana przez c1;
                 var implicationFrom = GetImplicationFrom(new Pair(v2, c2));
-                //List<Pair> cycle = new() { new Pair(v, c) };
-                //bool isCycle = CreateImplicationCycle(cycle);
-                //if (isCycle) // jest cykl implikacji
-                //{
-                //    bool allRestrictionInCycle = true;
-                //    Pair vR = new();
-                //    for (int i = 0; i < cycle.Count - 1; i++)
-                //    {
-                //        if (cycle[i].Color.Restrictions.Any(r => r.Color != cycle[i + 1].Color))
-                //        {
-                //            allRestrictionInCycle = false;
-                //            vR = cycle[i];
-                //            break;
-                //        }
-                //    }
-                //    if (cycle[^1].Color.Restrictions.Any(r => r.Color != cycle[0].Color))
-                //    {
-                //        allRestrictionInCycle = false;
-                //        vR = cycle[^1];
-                //    }
-                //    if (allRestrictionInCycle) // wybieramy wszystkie kolory z cyklu
-                //    {
-                //        foreach (var pair in cycle)
-                //        {
-                //            instance.AddToResult(pair);
-                //        }
-                //        return new() { instance };
-                //    }
-                //    else
-                //    {
-                //        (var instance2, var i2v, var i2c) = instance.CloneAndReturnCorresponding(cycle.Select(p => p.Variable).ToArray(), cycle.Select(p => p.Color).ToArray());
-                //        foreach (var pair in cycle) // instance1 wybiera cykl
-                //        {
-                //            instance.AddToResult(pair);
-                //        }
-                //        for (int i = 0; i < i2v.Length; i++) // instance2 nie wybiera cyklu
-                //        {
-                //            instance2.RemoveColor(i2v[i], i2c[i]);
-                //        }
+                List<Pair> cycle = new() { new Pair(v, c) };
+                bool isCycle = CreateImplicationCycle(cycle);
+                if (isCycle) // jest cykl implikacji
+                {
+                    bool allRestrictionInCycle = true;
+                    Pair vR = new();
+                    for (int i = 0; i < cycle.Count - 1; i++)
+                    {
+                        if (cycle[i].Color.Restrictions.Any(r => r.Color != cycle[i + 1].Color))
+                        {
+                            allRestrictionInCycle = false;
+                            vR = cycle[i];
+                            break;
+                        }
+                    }
+                    if (cycle[^1].Color.Restrictions.Any(r => r.Color != cycle[0].Color))
+                    {
+                        allRestrictionInCycle = false;
+                        vR = cycle[^1];
+                    }
+                    if (allRestrictionInCycle) // wybieramy wszystkie kolory z cyklu
+                    {
+                        foreach (var pair in cycle)
+                        {
+                            instance.AddToResult(pair);
+                        }
+                        return new() { instance };
+                    }
+                    else
+                    {
+                        (var instance2, var i2v, var i2c) = instance.CloneAndReturnCorresponding(cycle.Select(p => p.Variable).ToArray(), cycle.Select(p => p.Color).ToArray());
+                        foreach (var pair in cycle) // instance1 wybiera cykl
+                        {
+                            instance.AddToResult(pair);
+                        }
+                        for (int i = 0; i < i2v.Length; i++) // instance2 nie wybiera cyklu
+                        {
+                            instance2.RemoveColor(i2v[i], i2c[i]);
+                        }
 
-                //        return new() { instance, instance2 };
+                        return new() { instance, instance2 };
 
-                //    }
-                //}
-                //else // nie ma cyklu
-                //{
-                (var instance2,var i2v, var i2c) = instance.CloneAndReturnCorresponding(new[] { v, v2 }, new[] { c, c2 });
+                    }
+                }
+                else // nie ma cyklu
+                {
+                    (var instance2, var i2v, var i2c) = instance.CloneAndReturnCorresponding(new[] { v, v2 }, new[] { c, c2 });
 
-                instance.AddToResult(v2, c2); // instance1 wybiera c2
-                instance2.RemoveColor(i2v[1], i2c[1]); // instance2 nie wybiera c2
-                instance2.RemoveColor(i2v[0], i2c[0]); // , więc nie może też wybrać c
+                    instance.AddToResult(v2, c2); // instance1 wybiera c2
+                    instance2.RemoveColor(i2v[1], i2c[1]); // instance2 nie wybiera c2
+                    instance2.RemoveColor(i2v[0], i2c[0]); // , więc nie może też wybrać c
 
-                return new() { instance, instance2 };
-                //}
+                    return new() { instance, instance2 };
+                }
             }
             else if (notNeighbors.Count == 2)
             {
@@ -102,7 +102,7 @@ namespace CSPSimplifying
                 instance.RemoveColor(v2, c21);
                 instance.RemoveColor(v2, c22);
                 // instance 2 zostawia sąsiadów
-                
+
                 return new() { instance, instance2 };
             }
             else
@@ -125,20 +125,23 @@ namespace CSPSimplifying
             }
             return ret;
         }
-        //private static bool CreateImplicationCycle(List<Pair> cycle)
-        //{
-        //    var implicationFrom = GetImplicationFrom(cycle.Last());
-        //    foreach (var pair in implicationFrom)
-        //    {
-        //        if (pair == cycle.First())
-        //        {
-        //            return true;
-        //        }
-        //        cycle.Add(pair);
-        //        if (CreateImplicationCycle(cycle)) return true;
-        //    }
-        //    return false;
-        //}
+        private static bool CreateImplicationCycle(List<Pair> cycle)
+        {
+            var implicationFrom = GetImplicationFrom(cycle.Last());
+
+            foreach (var pair in implicationFrom)
+            {
+                if (pair == cycle.First())
+                {
+                    return true;
+                }
+                if (cycle.Contains(pair)) continue;
+                cycle.Add(pair);
+                if (CreateImplicationCycle(cycle)) return true;
+                cycle.RemoveAt(cycle.Count - 1);
+            }
+            return false;
+        }
     }
 
 

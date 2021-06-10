@@ -15,12 +15,12 @@ namespace CSPGraphConverter.Tests
             for (int i = 0; i < 50; i++)
             {
                 var graph = new GraphLib.Definitions.Graph(r.Next(1, 100));
-                
-                for(int j = 0; j < graph.VerticesCount * (graph.VerticesCount-1) / 2; j++)
+
+                for (int j = 0; j < graph.VerticesCount * (graph.VerticesCount - 1) / 2; j++)
                 {
                     var from = r.Next(0, graph.VerticesCount);
                     var to = r.Next(0, graph.VerticesCount);
-                    if(from != to && !graph.ContainsEdge(from, to))
+                    if (from != to && !graph.ContainsEdge(from, to))
                     {
                         graph.AddEdge(from, to);
                     }
@@ -63,7 +63,7 @@ namespace CSPGraphConverter.Tests
         {
             int verticesCount = graph.VerticesCount;
             int edgesCount = 0;
-            for(int i = 0; i < verticesCount; i++)
+            for (int i = 0; i < verticesCount; i++)
             {
                 edgesCount += graph.GetNeighbors(i).Count;
             }

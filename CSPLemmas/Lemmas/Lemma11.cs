@@ -1,12 +1,10 @@
 ﻿using CSP;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CSPSimplifying
 {
     public static partial class CSPLemmas
-    {  
+    {
         // in the main alog:
         //      for each (v, c) in instance:
         //          res = Lemma11(instance, v, c)
@@ -15,7 +13,7 @@ namespace CSPSimplifying
         //                  recurrsion for inst
         public static List<CspInstance> Lemma11(CspInstance instance, Variable v, Color c)
         {
-            if((c.Restrictions.Count >=3 && v.AvalibleColors.Count == 4) ||
+            if ((c.Restrictions.Count >= 3 && v.AvalibleColors.Count == 4) ||
                (c.Restrictions.Count >= 4 && v.AvalibleColors.Count == 3)) // Lemma11 applies
             {
 #if DEBUG
@@ -28,7 +26,7 @@ namespace CSPSimplifying
                 instance.AddToResult(v, c);
                 instance2.RemoveColor(i2v, i2c);
                 return new() { instance, instance2 };
-                
+
             }
             return new() { instance };
 

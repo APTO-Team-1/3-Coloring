@@ -1,5 +1,4 @@
-﻿using CSP;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -327,7 +326,7 @@ namespace CSP.Tests
             {
                 var variable1 = variablesList[(i * 21 + 5) % variablesCount];
                 var variable2 = variablesList[(i * 12 + 11) % variablesCount];
-                if(variable1.AvalibleColors.Count > 0 && variable2.AvalibleColors.Count > 0)
+                if (variable1.AvalibleColors.Count > 0 && variable2.AvalibleColors.Count > 0)
                 {
                     var color1 = variable1.AvalibleColors[i % variable1.AvalibleColors.Count];
                     var color2 = variable2.AvalibleColors[i % variable2.AvalibleColors.Count];
@@ -495,7 +494,7 @@ namespace CSP.Tests
                 {
                     foreach (var pair in color.Restrictions)
                     {
-                        if(color != pair.Color)
+                        if (color != pair.Color)
                         {
                             Assert.Single(instance.Restrictions, r =>
                             {
@@ -531,8 +530,8 @@ namespace CSP.Tests
             instance.AddRestriction(new Pair(variable3, color31), new Pair(variable2, color22));
             instance.AddRestriction(new Pair(variable3, color32), new Pair(variable2, color22));
             instance.AddRestriction(new Pair(variable3, color32), new Pair(variable2, color23));
-            
-            instance.RemoveColor(variable1,color11);
+
+            instance.RemoveColor(variable1, color11);
 
             Assert.Equal(3, instance.Variables.Count);
             Assert.Equal(1, variable1.AvalibleColors.Count);

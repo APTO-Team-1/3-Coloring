@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CSP
 {
@@ -26,7 +22,7 @@ namespace CSP
         public int Id { get; set; } = uniqueId++;
 
         internal List<Color> avalibleColors = new();
-        public IReadOnlyList<Color> AvalibleColors { get => avalibleColors;  }
+        public IReadOnlyList<Color> AvalibleColors { get => avalibleColors; }
         public override string ToString()
         {
             return Id.ToString() + "(" + AvalibleColors.Count.ToString() + ") ";

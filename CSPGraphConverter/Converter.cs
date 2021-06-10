@@ -1,7 +1,5 @@
-﻿using System;
+﻿using CSP;
 using System.Collections.Generic;
-using CSP;
-using GraphLib;
 
 namespace CSPGraphConverter
 {
@@ -21,7 +19,7 @@ namespace CSPGraphConverter
                 {
                     if (neighbour < i)
                     {
-                        for(int j = 0; j < numberOfColors; j++)
+                        for (int j = 0; j < numberOfColors; j++)
                         {
                             cspInstance.AddRestriction(new Pair(addedVariables[i], addedVariables[i].AvalibleColors[j]), new Pair(addedVariables[neighbour], addedVariables[neighbour].AvalibleColors[j]));
                         }

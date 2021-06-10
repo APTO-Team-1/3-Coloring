@@ -26,7 +26,7 @@ namespace CSPSimplifying
 
                     if (neighbours == 1)
                     {
-                        (CspInstance instance2,Pair[] i2p )= instance.CloneAndReturnCorresponding(zR);
+                        (CspInstance instance2, Pair[] i2p) = instance.CloneAndReturnCorresponding(zR);
                         var zRNeighbors = i2p[0].Color.Restrictions.Select(r => r.Variable);
                         instance2.AddToResult(i2p[0]); // instance2 wybiera zR
                         result.Add(instance2);
@@ -63,7 +63,7 @@ namespace CSPSimplifying
                         }
                         else
                         {
-                            var instances = Lemma13(instance,vR.Variable, vR.Color);
+                            var instances = Lemma13(instance, vR.Variable, vR.Color);
                             result.AddRange(instances);
                             return result;
                         }
@@ -128,8 +128,8 @@ namespace CSPSimplifying
                     if (p5list.Any())
                     {
                         var p5 = p5list.First();
-                        Pair vR = p1, wR = p2, xR = p3, yR = p4, zR = p5; 
-                        if(p2.IsNeighborOf(p3) && p3.IsNeighborOf(p5)) // ustawiamy tak żeby jeśli występuje trójkąt to nie miał 2 połączeć z zR
+                        Pair vR = p1, wR = p2, xR = p3, yR = p4, zR = p5;
+                        if (p2.IsNeighborOf(p3) && p3.IsNeighborOf(p5)) // ustawiamy tak żeby jeśli występuje trójkąt to nie miał 2 połączeć z zR
                         {
                             vR = p2;
                             wR = p1;
@@ -145,7 +145,7 @@ namespace CSPSimplifying
                             yR = p5;
                             zR = p3;
                         }
-                        return new() { vR,wR,xR,yR,zR };
+                        return new() { vR, wR, xR, yR, zR };
                     }
                 }
             }

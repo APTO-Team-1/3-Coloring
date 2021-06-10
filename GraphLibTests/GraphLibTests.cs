@@ -18,11 +18,11 @@ namespace GraphLibTests
             IsMatching(matching);
         }
 
-        private static void IsMatching( int[] matching)
+        private static void IsMatching(int[] matching)
         {
             // apart from -1 values should be unique
             Array.FindAll(matching, v => v != -1);
-            Assert.Equal(matching.Length, matching.Distinct().Count()); 
+            Assert.Equal(matching.Length, matching.Distinct().Count());
         }
 
         #region getting data
@@ -52,7 +52,7 @@ namespace GraphLibTests
         private static BipartieGraph GetObviousGraph()
         {
             BipartieGraph bg = new(100, 100);
-            for(int i =0; i<100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 bg.AddEdge(i, i);
             }

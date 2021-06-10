@@ -2,11 +2,10 @@ using GraphLib.Algorithms;
 using GraphLib.Definitions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using ThreeColoringAlgorithms;
 using Xunit;
 using Xunit.Abstractions;
-using System.Diagnostics;
 
 namespace ThreeColoringAlgorithmsTests
 {
@@ -21,7 +20,7 @@ namespace ThreeColoringAlgorithmsTests
 
         private void CheckAndWriteOutput(Graph g, string additionalInfo = "")
         {
-            if(additionalInfo != "") output.WriteLine(additionalInfo);
+            if (additionalInfo != "") output.WriteLine(additionalInfo);
             Stopwatch sw = new();
             sw.Reset();
             sw.Start();
@@ -79,7 +78,7 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 0; i < 100; i++)
             {
-                g = GetRandomGraph(restrictionPercentage: i, vericesCount: i, randomSeed:i);
+                g = GetRandomGraph(restrictionPercentage: i, vericesCount: i, randomSeed: i);
                 data.Add(new[] { g });
             }
             return data;
@@ -89,7 +88,7 @@ namespace ThreeColoringAlgorithmsTests
         {
             var data = new List<object[]>();
             Graph g;
-            for (int i = 20; i < 100; i+=30)
+            for (int i = 20; i < 100; i += 30)
             {
                 g = GetRandomGraph(restrictionPercentage: i, vericesCount: 2000, randomSeed: i);
                 data.Add(new[] { g });
@@ -122,12 +121,11 @@ namespace ThreeColoringAlgorithmsTests
             {
                 g = new Graph(i);
                 int son = 1;
-                Queue<int> fathers = new Queue<int>();
+                Queue<int> fathers = new();
                 fathers.Enqueue(0);
                 while (son < i - 1)
                 {
-                    int currentFather;
-                    if (!fathers.TryDequeue(out currentFather)) break;
+                    if (!fathers.TryDequeue(out int currentFather)) break;
                     int count = new Random().Next(1, 30);
                     for (int j = 0; j < count; j++)
                     {
@@ -150,7 +148,7 @@ namespace ThreeColoringAlgorithmsTests
             for (int i = 20; i <= 80; i += 30)
             {
                 g = new Graph(vertice_count);
-                Random r = new Random(i);
+                Random r = new(i);
                 int A = new Random().Next(1, 5);
                 for (int k = 0; k < vertice_count * (vertice_count - 1) * i / 10; k++)
                 {
@@ -171,9 +169,9 @@ namespace ThreeColoringAlgorithmsTests
         }
 
         [Fact]
-        public void RandomGraphsTo1000VerticesTest()
+        public void RandomGraphsTo200VerticesTest()
         {
-            for (int i = 50; i <= 1000; i += 50)
+            for (int i = 50; i <= 200; i += 50)
                 for (int j = 10; j <= 90; j += 20)
                 {
                     Graph g = GetRandomGraph(i, j);
@@ -181,11 +179,11 @@ namespace ThreeColoringAlgorithmsTests
                 }
         }
         [Fact]
-        public void  CycleGraphTo600VerticesTest()
+        public void CycleGraphTo600VerticesTest()
         {
             for (int i = 50; i <= 600; i += 50)
             {
-                Graph g = new Graph(i);
+                Graph g = new(i);
                 g.AddEdge(i - 1, 0);
                 for (int j = 0; j < i - 1; j++)
                 {
@@ -198,11 +196,11 @@ namespace ThreeColoringAlgorithmsTests
 
         [Fact]
         public void CliqueTo1000VerticesTest()
-        { 
-            for (int i = 2; i <= 1000; i=i<10?i+1:i+50)
+        {
+            for (int i = 2; i <= 1000; i = i < 10 ? i + 1 : i + 50)
             {
-                Graph g = new Graph(i);
-                
+                Graph g = new(i);
+
                 for (int j = 0; j < i; j++)
                 {
                     for (int k = j + 1; k < i; k++)
@@ -215,9 +213,9 @@ namespace ThreeColoringAlgorithmsTests
         [Fact]
         public void BigCliqueTest()
         {
-            for (int i = 1500; i <= 2000; i +=500)
+            for (int i = 1500; i <= 2000; i += 500)
             {
-                Graph g = new Graph(i);
+                Graph g = new(i);
 
                 for (int j = 0; j < i; j++)
                 {
@@ -232,17 +230,16 @@ namespace ThreeColoringAlgorithmsTests
         [Fact]
         public void TreeTo600VerticesTest()
         {
-            for (int i = 50; i <= 600; i+=50)
+            for (int i = 50; i <= 600; i += 50)
             {
-                Graph g = new Graph(i);
+                Graph g = new(i);
                 int son = 1;
-                Queue<int> fathers = new Queue<int>();
+                Queue<int> fathers = new();
                 fathers.Enqueue(0);
-                while(son < i - 1 )
+                while (son < i - 1)
                 {
-                    int currentFather;
-                    if (!fathers.TryDequeue(out currentFather)) break;
-                    int count = new Random().Next(1,15);
+                    if (!fathers.TryDequeue(out int currentFather)) break;
+                    int count = new Random().Next(1, 15);
                     for (int j = 0; j < count; j++)
                     {
                         g.AddEdge(currentFather, son);
@@ -259,15 +256,15 @@ namespace ThreeColoringAlgorithmsTests
         {
             for (int vertice_count = 50; vertice_count <= 500; vertice_count += 50)
             {
-                for(int res_percent = 2; res_percent < 9; res_percent+=2)
+                for (int res_percent = 2; res_percent < 9; res_percent += 2)
                 {
-                    Graph g = new Graph(vertice_count);
-                    Random r = new Random();
+                    Graph g = new(vertice_count);
+                    Random r = new();
                     int A = new Random().Next(1, 5);
                     for (int k = 0; k < vertice_count * (vertice_count - 1) * res_percent / 10; k++)
                     {
-                        int a = r.Next((int)(vertice_count*A/10));
-                        int b = r.Next((int)(vertice_count * A / 10),vertice_count-1);
+                        int a = r.Next((int)(vertice_count * A / 10));
+                        int b = r.Next((int)(vertice_count * A / 10), vertice_count - 1);
                         g.AddEdge(a, b);
                     }
                     CheckAndWriteOutput(g);
@@ -282,7 +279,7 @@ namespace ThreeColoringAlgorithmsTests
             CheckAndWriteOutput(g);
         }
 
-       
+
 
         [Theory]
         [MemberData(nameof(GetBigTrees))]
@@ -303,7 +300,7 @@ namespace ThreeColoringAlgorithmsTests
         public void BigBipartiteTest(Graph g)
         {
             CheckAndWriteOutput(g);
-        }       
+        }
         #endregion
 
         public static Graph GetGraphWithFewNeighbors(int vericesCount = 20, int? randomSeed = null)
@@ -322,12 +319,12 @@ namespace ThreeColoringAlgorithmsTests
             return g;
         }
 
-        public static Graph GenerateGraphWithApproximateNeighbours(int verticesCount = 20,int approximateNeighbours = 3, int? randomSeed = null)
-        {           
+        public static Graph GenerateGraphWithApproximateNeighbours(int verticesCount = 20, int approximateNeighbours = 3, int? randomSeed = null)
+        {
             Random r = randomSeed.HasValue ? new(randomSeed.Value) : new();
             int[] coloring = new int[verticesCount];
             HashSet<int>[] adjacencyList = new HashSet<int>[verticesCount];
-            for (int i = 0; i < verticesCount; i++) 
+            for (int i = 0; i < verticesCount; i++)
             {
                 coloring[i] = -1;
                 adjacencyList[i] = new HashSet<int>();
@@ -335,15 +332,15 @@ namespace ThreeColoringAlgorithmsTests
 
             coloring[0] = 0;
 
-            for(int i = 0; i < verticesCount; i++)
+            for (int i = 0; i < verticesCount; i++)
             {
                 if (coloring[i] == -1) coloring[i] = r.Next(0, 3);
                 int neighbours = approximateNeighbours - adjacencyList[i].Count;
-                for (int j=0;j<neighbours;j++)
+                for (int j = 0; j < neighbours; j++)
                 {
                     int neighbour = r.Next(0, verticesCount);
                     int counter = 0;
-                    while(counter < 10 && coloring[neighbour] == coloring[i])
+                    while (counter < 10 && coloring[neighbour] == coloring[i])
                     {
                         neighbour = r.Next(0, verticesCount);
                         counter++;
@@ -400,7 +397,7 @@ namespace ThreeColoringAlgorithmsTests
         [Fact]
         public void FewNeighborsTest()
         {
-            for(int i = 50; i<=100; i+=10)
+            for (int i = 50; i <= 100; i += 10)
             {
                 Graph g = GetGraphWithFewNeighbors(i);
                 CheckAndWriteOutput(g);
@@ -410,14 +407,14 @@ namespace ThreeColoringAlgorithmsTests
         [Fact]
         public void ApproximateNeighboursSmallTest()
         {
-            for(int neigh = 2; neigh <= 6; neigh++)
+            for (int neigh = 2; neigh <= 6; neigh++)
             {
-                for (int i = 80; i <= 80; i += 10 )
-                {                
-                    Graph g = GenerateGraphWithApproximateNeighbours(i, neigh);    
+                for (int i = 80; i <= 80; i += 10)
+                {
+                    Graph g = GenerateGraphWithApproximateNeighbours(i, neigh);
                     CheckAndWriteOutput(g, $"Grpah with approximate {neigh} neighbours");
                 }
-            }          
+            }
         }
         [Fact]
         public void RandomNeighboursSmallTest()
@@ -436,7 +433,7 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 3; i < 7; i++)
             {
-                g = GenerateGraphWithRandomNeighbours(100,i);
+                g = GenerateGraphWithRandomNeighbours(100, i);
                 data.Add(new[] { g });
             }
             return data;
@@ -448,7 +445,7 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 3; i < 10; i++)
             {
-                g = GenerateGraphWithRandomNeighbours(200, i);
+                g = GenerateGraphWithRandomNeighbours(200, i, 20);
                 data.Add(new[] { g });
             }
             return data;
@@ -482,9 +479,9 @@ namespace ThreeColoringAlgorithmsTests
         {
             var data = new List<object[]>();
             Graph g;
-            for (int i = 650; i <= 1000; i+=50)
+            for (int i = 650; i <= 1000; i += 50)
             {
-                g = GenerateGraphWithApproximateNeighbours(i, new Random().Next(3,5),i+ 97);
+                g = GenerateGraphWithApproximateNeighbours(i, new Random().Next(3, 5), i + 97);
                 data.Add(new[] { g });
             }
             return data;
@@ -514,7 +511,7 @@ namespace ThreeColoringAlgorithmsTests
         }
         [Theory]
         [MemberData(nameof(GetRandomGraphs3or4neighs22))]
-        public void Rand3or4neigh(Graph  g)
+        public void Rand3or4neigh(Graph g)
         {
             CheckAndWriteOutputOnlyCSP(g);
         }

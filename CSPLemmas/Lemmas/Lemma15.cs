@@ -1,7 +1,6 @@
 ﻿using CSP;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace CSPSimplifying
@@ -65,11 +64,11 @@ namespace CSPSimplifying
                                 foreach (var color in ip[i][j].Variable.AvalibleColors)
                                 {
                                     int index = Array.IndexOf(ip[i], new Pair(ip[i][j].Variable, color));
-                                    if(index > 0)
+                                    if (index > 0)
                                     {
                                         used[index] = true;
                                     }
-                                    
+
                                 }
                                 instances[i].AddToResult(ip[i][j]);
                                 addedToResult[j] = true;

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CSP
 {
     public class Restriction : IEquatable<Restriction>
     {
-        public Restriction(Variable variable1, Color color1, Variable variable2, Color color2): this(new Pair(variable1, color1), new Pair(variable2, color2))
+        public Restriction(Variable variable1, Color color1, Variable variable2, Color color2) : this(new Pair(variable1, color1), new Pair(variable2, color2))
         {
         }
 

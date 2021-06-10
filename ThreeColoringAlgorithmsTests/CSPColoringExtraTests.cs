@@ -1,32 +1,28 @@
-﻿using GraphLib.Algorithms;
-using GraphLib.Definitions;
+﻿using GraphLib.Definitions;
 using System;
-using System.IO;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using ThreeColoringAlgorithms;
 using Xunit;
-using Xunit.Abstractions;
-using System.Diagnostics;
 
 namespace ThreeColoringAlgorithmsTests
 {
     public class CSPColoringExtraTests
-    {     
-        public static Graph GenerateGraph(int verticesCount = 100, int? minNeighbours = null, int? maxNeighbours = null, int? delta = null, 
+    {
+        public static Graph GenerateGraph(int verticesCount = 100, int? minNeighbours = null, int? maxNeighbours = null, int? delta = null,
             double? verticesWithHighDegree = null, bool? isColorable = null, int? randomSeed = null)
         {
             int min, max;
-            min = minNeighbours.HasValue ? minNeighbours.Value : 0;
+            min = minNeighbours ?? 0;
             max = maxNeighbours.HasValue ? maxNeighbours.Value + 1 : verticesCount - 1;
-            double bigDeltaVChance = verticesWithHighDegree.HasValue ? verticesWithHighDegree.Value : 0.001;
+            double bigDeltaVChance = verticesWithHighDegree ?? 0.001;
             Random r = randomSeed.HasValue ? new(randomSeed.Value) : new();
 
-            bool colorable = isColorable.HasValue ? isColorable.Value : false;
+            bool colorable = isColorable ?? false;
             int[] coloring;
             HashSet<int>[] adjacencyList = new HashSet<int>[verticesCount];
-            int edges_count = 0;          
+            int edges_count = 0;
             int max_edges = verticesCount * (verticesCount - 1) / 4;
 
             for (int i = 0; i < verticesCount; i++)
@@ -39,17 +35,17 @@ namespace ThreeColoringAlgorithmsTests
                 for (int i = 0; i < verticesCount; i++)
                 {
                     coloring[i] = r.Next(0, 3);
-                }              
+                }
 
                 for (int i = 0; i < verticesCount - max; i++)
                 {
-                    int neighbours = delta.HasValue ? (r.Next(min, max ) + delta.Value) / 2 : r.Next(min, max);
+                    int neighbours = delta.HasValue ? (r.Next(min, max) + delta.Value) / 2 : r.Next(min, max);
                     if (bigDeltaVChance > r.NextDouble()) neighbours = max < verticesCount / 10 ? max * 2 : max;
                     if (edges_count > max_edges) break;
                     for (int j = adjacencyList[i].Count; j < neighbours; j++)
                     {
                         int counter = 0;
-                        int neighbour = r.Next(i+1, verticesCount);
+                        int neighbour = r.Next(i + 1, verticesCount);
                         while (counter < 10 && adjacencyList[neighbour].Count >= maxNeighbours && coloring[neighbour] == coloring[i])
                         {
                             counter++;
@@ -66,14 +62,14 @@ namespace ThreeColoringAlgorithmsTests
             {
                 for (int i = 0; i < verticesCount - max; i++)
                 {
-                    int neighbours = delta.HasValue? (r.Next(min, max ) + delta.Value )/2 : r.Next(min, max + 1);
+                    int neighbours = delta.HasValue ? (r.Next(min, max) + delta.Value) / 2 : r.Next(min, max + 1);
                     if (bigDeltaVChance > r.NextDouble()) neighbours = max < verticesCount / 10 ? max * 2 : max;
-                    if (edges_count > max_edges) break;                
+                    if (edges_count > max_edges) break;
                     for (int j = adjacencyList[i].Count; j < neighbours; j++)
                     {
                         int counter = 0;
-                        int neighbour = r.Next(i+1, verticesCount);
-                        while (counter < 10 && adjacencyList[neighbour].Count >= maxNeighbours )
+                        int neighbour = r.Next(i + 1, verticesCount);
+                        while (counter < 10 && adjacencyList[neighbour].Count >= maxNeighbours)
                         {
                             counter++;
                             neighbour = r.Next(i + 1, verticesCount);
@@ -88,7 +84,8 @@ namespace ThreeColoringAlgorithmsTests
             Graph g = new(adjacencyList);
             return g;
         }
-        private static void CheckAndWriteOutput(Graph g)
+
+        public static void CheckAndWriteOutput(Graph g)
         {
             Stopwatch sw = new();
             sw.Reset();
@@ -98,7 +95,7 @@ namespace ThreeColoringAlgorithmsTests
             var found = super == null ? "No" : "Yes";
             if (super != null)
                 ColoringTestUtils.CheckColoringCorrectness(g, super);
-            File.AppendAllLines(@"..", new string[]
+            File.AppendAllLines(@"..\result.txt", new string[]
             {$"Graph with {g.VerticesCount} vertices:"
                 , $"CSP   time: {sw.Elapsed}. Found:  {found}"
                 ,"-----------------------------------------------"});
@@ -110,7 +107,7 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 0; i < 5; i++)
             {
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta:4, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
                 data.Add(new[] { g });
                 g = GenerateGraph(verticesCount: vertices, maxNeighbours: 6, verticesWithHighDegree: 0.01, isColorable: true);
                 data.Add(new[] { g });
@@ -147,13 +144,13 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 0; i < 5; i++)
             {
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true, randomSeed: 32);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, verticesWithHighDegree: 0.01, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, verticesWithHighDegree: 0.01, isColorable: true, randomSeed: 32);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 3, verticesWithHighDegree: 0.03, isColorable: false);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 3, verticesWithHighDegree: 0.03, isColorable: false, randomSeed: 32);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 7, delta: 5, verticesWithHighDegree: 0.01, isColorable: false);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 7, delta: 5, verticesWithHighDegree: 0.01, isColorable: false, randomSeed: 32);
                 data.Add(new[] { g });
             }
             return data;
@@ -165,13 +162,13 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 0; i < 5; i++)
             {
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true, randomSeed: 1);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, verticesWithHighDegree: 0.005, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, verticesWithHighDegree: 0.005, isColorable: true, randomSeed: 1);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 3, verticesWithHighDegree: 0.03, isColorable: false);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 3, verticesWithHighDegree: 0.03, isColorable: false, randomSeed: 1);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 7, delta: 5, verticesWithHighDegree: 0.02, isColorable: false);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 7, delta: 5, verticesWithHighDegree: 0.02, isColorable: false, randomSeed: 1);
                 data.Add(new[] { g });
             }
             return data;
@@ -201,13 +198,13 @@ namespace ThreeColoringAlgorithmsTests
             Graph g;
             for (int i = 0; i < 5; i++)
             {
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, delta: 4, isColorable: true, randomSeed: 1);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, verticesWithHighDegree: 0.004, isColorable: true);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 4, verticesWithHighDegree: 0.004, isColorable: true, randomSeed: 1);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 2, verticesWithHighDegree: 0.02, isColorable: false);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 5, delta: 2, verticesWithHighDegree: 0.02, isColorable: false, randomSeed: 1);
                 data.Add(new[] { g });
-                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 6, delta: 5, verticesWithHighDegree: 0.02, isColorable: false);
+                g = GenerateGraph(verticesCount: vertices, maxNeighbours: 6, delta: 5, verticesWithHighDegree: 0.02, isColorable: false, randomSeed: 1);
                 data.Add(new[] { g });
             }
             return data;
@@ -234,7 +231,7 @@ namespace ThreeColoringAlgorithmsTests
         [Fact]
         public void GeneratorTest()
         {
-            Graph g = GenerateGraph(verticesCount: 200,isColorable: true, maxNeighbours: 5);
+            Graph g = GenerateGraph(verticesCount: 200, isColorable: true, maxNeighbours: 5);
             Assert.NotNull(g);
         }
 
@@ -262,17 +259,11 @@ namespace ThreeColoringAlgorithmsTests
         {
             CheckAndWriteOutput(g);
         }
+
         [Theory]
         [MemberData(nameof(GetRandomGraphs500Vertices))]
         public void RandomGraphs500VerticesTest(Graph g)
         {
-            for (int i = 700; i <= 700; i += 100)
-                for (int j = 0; j < 1; j++)
-                {
-                    Graph g = GenerateGraph(verticesCount: i, maxNeighbours: 5, minNeighbours: 3,
-                        isColorable: new Random().NextDouble() > 0.5 ? true : false, randomSeed: 1);
-                    CheckAndWriteOutput(g);
-                }
             CheckAndWriteOutput(g);
         }
         [Theory]

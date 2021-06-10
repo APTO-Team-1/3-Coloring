@@ -98,10 +98,6 @@ namespace ThreeColoringAlgorithmsTests
             var found = super == null ? "No" : "Yes";
             if (super != null)
                 ColoringTestUtils.CheckColoringCorrectness(g, super);
-            File.AppendAllLines(@"C:\Users\micha\source\repos\3-Coloring\Output.txt", new string[]
-            {$"Graph with {g.VerticesCount} vertices:"
-                , $"CSP   time: {sw.Elapsed}. Found:  {found}"
-                ,"-----------------------------------------------"});
         }
         public static IEnumerable<object[]> GetRandomColorableGraphsTo200Vertices()
         {
@@ -189,7 +185,7 @@ namespace ThreeColoringAlgorithmsTests
                 for (int j = 0; j < 1; j++)
                 {
                     Graph g = GenerateGraph(verticesCount: i, maxNeighbours: 5, minNeighbours: 3,
-                        isColorable: new Random().NextDouble() > 0.5 ? true : false);
+                        isColorable: new Random().NextDouble() > 0.5 ? true : false, randomSeed: 1);
                     CheckAndWriteOutput(g);
                 }
         }

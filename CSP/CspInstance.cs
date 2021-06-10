@@ -115,7 +115,10 @@ namespace CSP
 #endif
             }
         }
-        public void RemoveRestriction(Pair pair1, Pair pair2) => RemoveRestriction(new Restriction(pair1, pair2));
+        public void RemoveRestriction(Pair pair1, Pair pair2)
+        {
+            RemoveRestriction(new Restriction(pair1, pair2));
+        }
         #endregion
 
         #region color
